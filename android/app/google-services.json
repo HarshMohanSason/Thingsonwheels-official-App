@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "541625264570",
+    "project_id": "thingsonwheels-751ca",
+    "storage_bucket": "thingsonwheels-751ca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:541625264570:android:1a4a6c3b71d4c105809583",
+        "android_client_info": {
+          "package_name": "com.example.thingsonwheels"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbPcDAgnUY3cFAlON3M5hkB4XfLJmUDrw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
