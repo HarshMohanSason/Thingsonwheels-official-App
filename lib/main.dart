@@ -4,12 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
-import 'package:thingsonwheels/HomeScreen.dart';
 import 'package:thingsonwheels/InternetProvider.dart';
-import 'package:thingsonwheels/UserLogin/IntroLoginScreenUI.dart';
 import 'package:flutter/services.dart';
 import 'package:thingsonwheels/UserLogin/GoogleLogin/GoogleLoginAuth.dart';
-
 import 'UserLogin/CheckIfLoggedIn.dart';
 
 Color colorTheme = Colors.orange; //Global color theme for the app
@@ -21,6 +18,7 @@ FlutterView view = WidgetsBinding.instance.platformDispatcher.views.first;
 Size screenSize = view.physicalSize / view.devicePixelRatio;
 double screenWidth = screenSize.width;
 double screenHeight = screenSize.height;
+
 FlutterSecureStorage storage = const FlutterSecureStorage();
 
 void main() async {
