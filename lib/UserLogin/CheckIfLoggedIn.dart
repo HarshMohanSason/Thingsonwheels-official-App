@@ -20,10 +20,11 @@ class CheckIfLoggedIn extends StatefulWidget {
 class _CheckIfLoggedInState extends State<CheckIfLoggedIn> {
 
   FlutterSecureStorage storage = const FlutterSecureStorage();
-  late bool ifLoggedIn;
 
   @override
   void initState() {
+
+    initFuture();
     super.initState();
   }
 
@@ -31,12 +32,12 @@ class _CheckIfLoggedInState extends State<CheckIfLoggedIn> {
   void dispose()
   {
     super.dispose();
-   // _getUserIDAndFlag.dispose();
+
   }
 
   Future<void> initFuture()
   async {
-    ifLoggedIn  = await checkIfLoggedIn();
+    await checkIfLoggedIn();
   }
 
   @override
@@ -50,7 +51,7 @@ class _CheckIfLoggedInState extends State<CheckIfLoggedIn> {
             {
               return const CircularProgressIndicator();
             }
-            else if(snapshot.hasData)
+            else if(snapshot.data == true)
             {
               return const HomeScreen();
             }

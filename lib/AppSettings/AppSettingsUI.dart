@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:thingsonwheels/AppSettings/AboutUs.dart';
 import 'package:thingsonwheels/AppSettings/Privacy%20Policy.dart';
 import 'package:thingsonwheels/AppSettings/Terms&Conditions.dart';
+import 'package:thingsonwheels/UserLogin/GoogleLogin/GoogleLoginAuth.dart';
 import 'package:thingsonwheels/UserLogin/IntroLoginScreenUI.dart';
 import 'package:thingsonwheels/main.dart';
 
@@ -121,7 +122,8 @@ class AppSettingsState extends State<AppSettings>
             }
           else
             {
-              FirebaseAuth.instance.signOut(); //sign the user out
+              GoogleSignInProvider googleSignInProvider = GoogleSignInProvider();
+              await googleSignInProvider.signOut();
               await storage.deleteAll();
               if(mounted) {
                 Navigator.push(context, MaterialPageRoute(

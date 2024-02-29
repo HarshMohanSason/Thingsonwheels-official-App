@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
+import 'package:thingsonwheels/HomeScreen.dart';
 import 'package:thingsonwheels/InternetProvider.dart';
 import 'package:thingsonwheels/UserLogin/IntroLoginScreenUI.dart';
 import 'package:flutter/services.dart';
@@ -48,7 +49,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: colorTheme),
           useMaterial3: true,
         ),
-         home: const CheckIfLoggedIn() ),
+         home: const CheckIfLoggedIn()),
     );
   }
 }
