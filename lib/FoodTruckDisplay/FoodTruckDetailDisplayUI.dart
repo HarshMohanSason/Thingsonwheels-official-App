@@ -22,7 +22,7 @@ class FoodTruckDetailDisplayUIState extends State<FoodTruckDetailDisplayUI> {
     return PopScope(
       canPop: false,
       child: Scaffold(
-          backgroundColor: colorTheme,
+          backgroundColor: Colors.white,
           body: SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: SizedBox(
@@ -116,7 +116,7 @@ class FoodTruckDetailDisplayUIState extends State<FoodTruckDetailDisplayUI> {
   Widget _buildDetailedFoodTruckUI(FoodTruck foodTruck) {
     List<String> imageUrls = foodTruck.truckImages;
     return Container(
-        color: Colors.orange,
+        color: Colors.white,
         width: screenWidth,
         height: screenHeight - 450,
         child: PageView.builder(
@@ -145,8 +145,8 @@ class FoodTruckDetailDisplayUIState extends State<FoodTruckDetailDisplayUI> {
   Widget circleIndicator()
   {
     return CirclePageIndicator(
-      selectedDotColor: Colors.white,
-      dotColor: Colors.white,
+      selectedDotColor: Colors.black,
+      dotColor: Colors.black,
       size: screenWidth/30,
       selectedSize: screenWidth/26,
       itemCount: widget.foodTruck.truckImages.length,

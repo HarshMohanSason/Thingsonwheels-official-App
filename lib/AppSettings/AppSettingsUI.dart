@@ -42,7 +42,7 @@ class AppSettingsState extends State<AppSettings>
     return  PopScope(
       canPop: false,
       child:  Scaffold(
-        backgroundColor: colorTheme,
+        backgroundColor: Colors.white,
         body: SafeArea(child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -98,13 +98,13 @@ class AppSettingsState extends State<AppSettings>
 
   Widget _buildTile(BuildContext context, String title) {
     return Card(
-      color: Colors.black,
+      color: Colors.orange,
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: ListTile(
         title: Text(
           title,
-          style: TextStyle(fontSize: screenWidth/21, fontWeight: FontWeight.bold, color: Colors.white),
+          style: TextStyle(fontSize: screenWidth/21, fontWeight: FontWeight.bold, color: Colors.black),
         ),
         onTap: () async {
 

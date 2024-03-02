@@ -13,20 +13,6 @@ class FoodTruck {
   FoodTruck({required this.truckImages, required this.truckName, required this.truckAddress,
   required this.truckPhoneNo, required this.truckTime, required this.isAvailable});
 
-  //function to convert object values to map in order to upload to
-  Map<String, dynamic> toMap()
-  {
-    return ({
-
-      'truckImages': truckImages,
-      'truckName': truckName,
-      'truckAddress': truckAddress,
-      'truckPhoneNo': truckPhoneNo,
-      'truckTime': truckTime,
-      'isAvailable': isAvailable,
-    });
-
-  }
 
   // Static function returning list of FoodTruck objects
   static Future<List<FoodTruck>> getTruckDataFirestore() async {
@@ -52,7 +38,7 @@ class FoodTruck {
       return trucks;
     } catch (e) {
       // Handle exceptions gracefully
-      print('Error fetching data: $e');
+      //print('Error fetching data: $e');
       return []; // Return an empty list in case of error
     }
   }

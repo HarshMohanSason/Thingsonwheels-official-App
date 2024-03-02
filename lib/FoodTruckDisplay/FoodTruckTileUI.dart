@@ -20,7 +20,7 @@ class FoodTruckTileUIState extends State<FoodTruckTileUI> {
             (BuildContext context, AsyncSnapshot<List<FoodTruck>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
-                child: const Text(
+                child: Text(
               "Loading..",
               style:
                   TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -64,7 +64,7 @@ class FoodTruckTileUIState extends State<FoodTruckTileUI> {
             horizontal: screenWidth / 36, vertical: screenHeight / 120),
         // Adjust margin relative to screenWidth and screenHeight
         child: Container(
-          decoration: const BoxDecoration(color: Colors.black),
+          decoration: const BoxDecoration(color: Colors.orange),
           // White background
           child: ListTile(
             contentPadding: EdgeInsets.symmetric(
@@ -76,7 +76,7 @@ class FoodTruckTileUIState extends State<FoodTruckTileUI> {
                 border: Border(
                   right: BorderSide(width: screenWidth / 750,
                       color: Colors
-                          .white), // Adjust border width relative to screenWidth
+                          .black), // Adjust border width relative to screenWidth
                 ),
               ),
               child: CircleAvatar(
@@ -92,7 +92,7 @@ class FoodTruckTileUIState extends State<FoodTruckTileUI> {
             title: Text(
               foodTruck.truckName,
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.black,
                 fontWeight: FontWeight.bold,
                 fontSize: screenWidth /
                     24, // Adjust fontSize relative to screenWidth
@@ -104,7 +104,7 @@ class FoodTruckTileUIState extends State<FoodTruckTileUI> {
                 Text(
                   foodTruck.truckAddress,
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.black,
                     fontSize: screenWidth / 30, // Adjust fontSize relative to screenWidth
                   ),
                 ),

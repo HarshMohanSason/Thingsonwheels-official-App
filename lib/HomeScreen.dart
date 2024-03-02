@@ -25,7 +25,7 @@ class HomeScreenState extends State<HomeScreen>
         builder: (context, internetProvider, _) {
           if (internetProvider.connectionStatus == ConnectionStatus.disconnected) {
             return Scaffold(
-              backgroundColor: colorTheme,
+              backgroundColor: Colors.white,
               body: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -51,7 +51,7 @@ class HomeScreenState extends State<HomeScreen>
           } else {
             // Return your original Scaffold if the internet connection is not disconnected
             return Scaffold(
-              backgroundColor: colorTheme,
+              backgroundColor: Colors.white,
               body: SafeArea(
                 child: Column(
                   children: [
