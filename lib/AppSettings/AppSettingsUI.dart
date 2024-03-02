@@ -4,6 +4,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:thingsonwheels/AppSettings/AboutUs.dart';
 import 'package:thingsonwheels/AppSettings/Privacy%20Policy.dart';
 import 'package:thingsonwheels/AppSettings/Terms&Conditions.dart';
@@ -122,14 +123,29 @@ class AppSettingsState extends State<AppSettings>
             }
           else
             {
-              GoogleSignInProvider googleSignInProvider = GoogleSignInProvider();
-              await googleSignInProvider.signOut();
-              await storage.deleteAll();
-              if(mounted) {
-                Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => const LoginScreen()));
+              final sp = context.read<GoogleSignInProvider>();
+              if (sp.isSignedIn!) { // If the user is signed in with Google
+
+               await sp.signOut(); // Sign out from Google
+               if (mounted) {//Navigate to the homeScreen
+                 Navigator.push(
+                   context,
+                   MaterialPageRoute(builder: (context) => const LoginScreen()),
+                 );
+               }
+             }
+
+            // Sign out from the Firebase Authentication
+            await FirebaseAuth.instance.signOut();
+            // Clear any local storage data
+            await storage.deleteAll();
+              if (mounted) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                );
               }
-            }
+          }
         },
       ),
     );

@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:thingsonwheels/InternetProvider.dart';
 import 'package:flutter/services.dart';
 import 'package:thingsonwheels/UserLogin/GoogleLogin/GoogleLoginAuth.dart';
+import 'package:thingsonwheels/UserLogin/IntroLoginScreenUI.dart';
 import 'UserLogin/CheckIfLoggedIn.dart';
 
 Color colorTheme = Colors.orange; //Global color theme for the app

@@ -39,8 +39,8 @@ class HomeScreenState extends State<HomeScreen>
                         internetProvider.retryInternetConnection();
                       },
                       child: Text('Retry', style: TextStyle(
-                        fontSize: screenWidth/15, fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        fontSize: screenWidth/20, fontWeight: FontWeight.bold,
+                        color: Colors.orange,
                       ),
                       ),
                     ),

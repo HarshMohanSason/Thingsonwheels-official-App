@@ -11,21 +11,25 @@ class InternetProvider extends ChangeNotifier {
 
   bool get hasInternet => _hasInternet;
 
-  InternetProvider() {
+  InternetProvider()
+  {
     checkInternetConnection();
   }
 
-  Future checkInternetConnection() async {
+  Future checkInternetConnection() async
+  {
     var result = await Connectivity().checkConnectivity();
     _updateConnectionStatus(result);
     notifyListeners();
   }
 
-  Future<void> retryInternetConnection() async {
+  Future<void> retryInternetConnection() async
+  {
 
     connectionStatus = ConnectionStatus.connecting;
-    notifyListeners();
     await checkInternetConnection();
+    notifyListeners();
+
   }
 
   void _updateConnectionStatus(ConnectivityResult result)

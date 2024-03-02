@@ -28,7 +28,7 @@ class FoodTruckTileUIState extends State<FoodTruckTileUI> {
           }
           if (snapshot.hasError) {
             return const Center(
-                child: const Text(
+                child:  Text(
               "Error fetching data",
               style: TextStyle(color: Colors.white),
             ));

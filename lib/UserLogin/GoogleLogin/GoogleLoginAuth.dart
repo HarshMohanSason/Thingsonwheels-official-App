@@ -3,8 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:pinput/pinput.dart';
 
-class GoogleSignInProvider extends ChangeNotifier{
+import '../../main.dart';
+
+class GoogleSignInProvider extends ChangeNotifier {
 
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;//firebase auth instance
   final GoogleSignIn googleSignIn = GoogleSignIn(); //google Sign in instance
@@ -34,18 +37,15 @@ class GoogleSignInProvider extends ChangeNotifier{
   String? get imageURL => _imageURL;
 
 
-  GoogleSignInProvider()
-  {
-    //
-  }
-
   //Future function to signInWithGoogle
   Future signInWithGoogle() async {
 
-    final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn(); //Start the signin process
+    final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn(); //Start the signIn process
 
     if (googleSignInAccount != null) {
+
       try {
+
         final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount
             .authentication;
         final AuthCredential credential = GoogleAuthProvider.credential(
@@ -82,11 +82,13 @@ class GoogleSignInProvider extends ChangeNotifier{
           case "null":
             _errorCode = "Some unexpected error came while trying to sign in";
              _hasError = true;
+             //print("nothing");
              notifyListeners();
              break;
 
           default:
             _errorCode = e.toString();
+            //print("nothing");
             _hasError = true;
             notifyListeners();
             }
@@ -103,8 +105,11 @@ class GoogleSignInProvider extends ChangeNotifier{
   //Function to sign the userOUT
   Future signOut() async {
 
-    await firebaseAuth.signOut();
     await googleSignIn.signOut();
+    await firebaseAuth.signOut();
+    _isSignedIn = false;
+    await storage.deleteAll();
+    notifyListeners();
 
   }
 

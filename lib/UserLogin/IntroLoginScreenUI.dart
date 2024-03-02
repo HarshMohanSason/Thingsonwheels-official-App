@@ -55,10 +55,16 @@ class LoginScreenState extends State<LoginScreen>
                           Buttons.Google,
                           onPressed: () async {
 
-                           await handleGoogleLogin();
-
+                            try {
+                              await handleGoogleLogin();
+                            }
+                            catch(e)
+                            {
+                              print(e);
+                            }
                            // Check if the user is signed in with Google and then navigate to HomeScreen
                            if (mounted && context.read<GoogleSignInProvider>().isSignedIn == true) {
+                             const CircularProgressIndicator();
                              Navigator.push(context, MaterialPageRoute(
                                builder: (context) => const HomeScreen(),
                              ));
@@ -89,7 +95,7 @@ class LoginScreenState extends State<LoginScreen>
 
   //Button for phone Login()
   Widget phoneLoginButton() {
-    
+
     return Container(
       width: 218,
       height: 37,
@@ -107,8 +113,9 @@ class LoginScreenState extends State<LoginScreen>
       child: Material(
         child: InkWell(
           borderRadius: BorderRadius.circular(2.0),
-          onTap: () {
-           Navigator.push(context, MaterialPageRoute(builder: (context) => const PhoneLoginFormUI()));
+          onTap: () async{
+
+            await handlePhoneLogin(context);
           },
           child: const Center(
             child: Row(
@@ -138,29 +145,60 @@ class LoginScreenState extends State<LoginScreen>
     );
   }
 
-  Future handleGoogleLogin() async
-  {
-    final sp = context.read<GoogleSignInProvider>(); //setup Provide for the googleSignInProvider
-    final ip = context.read<InternetProvider>(); //setup provider for InternetProvider
+  Future<void> handleGoogleLogin() async {
 
-    await ip.checkInternetConnection();  //check the internet connection
+    final sp = context.read<GoogleSignInProvider>();
+    final ip = context.read<InternetProvider>();
 
-    if(ip.hasInternet == false)
-      {
-        //Display a toast message if there is no internet connection present
-        Fluttertoast.showToast(
-          msg: 'Check your Internet Connections',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          backgroundColor: Colors.white,
-          textColor: Colors.black,
-        );
-      }
-    else
-      {
+    await ip.checkInternetConnection(); // Check internet connection
+
+    if (!ip.hasInternet) {
+      // Display a toast message if there is no internet connection
+      Fluttertoast.showToast(
+        msg: 'Check your Internet Connection',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        backgroundColor: Colors.white,
+        textColor: Colors.black,
+      );
+    }
+    else {
+      try {
+        // Attempt sign in with Google
         await sp.signInWithGoogle();
         await storage.write(key: 'LoggedIn', value: "true");
+       } catch (e) {
+        rethrow;
       }
+    }
+  }
+
+  Future<void> handlePhoneLogin(BuildContext context) async
+  {
+    final ip = context.read<InternetProvider>();
+
+    await ip.checkInternetConnection(); // Check internet connection
+
+    if (!ip.hasInternet) {
+      // Display a toast message if there is no internet connection
+      Fluttertoast.showToast(
+        msg: 'Check your Internet Connection',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        backgroundColor: Colors.white,
+        textColor: Colors.black,
+      );
+    }
+    else {
+      try {
+        if(mounted) {
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) => const PhoneLoginFormUI()));
+        }
+      } catch (e) {
+        rethrow;
+      }
+    }
   }
 
 }
