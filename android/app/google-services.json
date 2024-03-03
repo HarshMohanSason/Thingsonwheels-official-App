@@ -12,7 +12,20 @@
           "package_name": "com.example.thingsonwheels"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "541625264570-33gd8rhofsopuqlqekmu0qfkqbdko7p8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.thingsonwheels",
+            "certificate_hash": "6197cf4d73f70381c715b1b44ba9257eebaa34f7"
+          }
+        },
+        {
+          "client_id": "541625264570-d5cjfq58ks68i7qmbvcbl3mnanjtbein.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDbPcDAgnUY3cFAlON3M5hkB4XfLJmUDrw"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "541625264570-d5cjfq58ks68i7qmbvcbl3mnanjtbein.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "541625264570-3nmjvv79aio8sf2k2bd4eitah99ms2ba.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.thingsonwheels"
+              }
+            }
+          ]
         }
       }
     }

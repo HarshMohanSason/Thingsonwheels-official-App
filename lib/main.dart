@@ -1,5 +1,6 @@
 
 import 'dart:ui';
+import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -7,7 +8,6 @@ import 'package:provider/provider.dart';
 import 'package:thingsonwheels/InternetProvider.dart';
 import 'package:flutter/services.dart';
 import 'package:thingsonwheels/UserLogin/GoogleLogin/GoogleLoginAuth.dart';
-import 'package:thingsonwheels/UserLogin/IntroLoginScreenUI.dart';
 import 'UserLogin/CheckIfLoggedIn.dart';
 
 Color colorTheme = Colors.orange; //Global color theme for the app
@@ -25,7 +25,9 @@ FlutterSecureStorage storage = const FlutterSecureStorage();
 void main() async {
 
   WidgetsFlutterBinding.ensureInitialized(); //ensure all the widgets are initialized
-  await Firebase.initializeApp(); // Initialize Firebase without options
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]) //Make sure the app is in portrait mode only
       .then((value) => runApp(const MyApp()));
 }
