@@ -4,6 +4,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:thingsonwheels/main.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class AboutUs extends StatelessWidget
 {
@@ -33,7 +34,7 @@ class AboutUs extends StatelessWidget
           ),
         backgroundColor: colorTheme,),
         backgroundColor: Colors.white,
-        body: const SingleChildScrollView(
+        body:  SingleChildScrollView(
           child:  SafeArea(
            child: Padding(
              padding: EdgeInsets.only(top: 20),
@@ -53,6 +54,48 @@ Thank you for joining us on this journey. Together, let's unlock the essence of 
                     style: TextStyle(
                     ),
                   ),
+                  const Text("Developers:",
+                  style: TextStyle(
+
+                    fontSize: 14,
+                  ),),
+             Padding(
+               padding: const EdgeInsets.only(top: 5),
+                 child: InkWell(
+                    onTap: () async {
+
+                      if (await canLaunchUrlString("https://www.linkedin.com/in/harsh-mohan-sason-50a72119b/")) {
+                        await launchUrlString("https://www.linkedin.com/in/harsh-mohan-sason-50a72119b/");
+                      } else {
+                        throw 'Could not launch the link';
+                      }
+                    },
+                    child: const Text("Harsh's Linkedin", style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                        color: Colors.lightBlue
+                    ),),
+                  ),
+             ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5),
+                    child: InkWell(
+                      onTap: () async {
+
+                        if (await canLaunchUrlString("https://www.linkedin.com/in/satyam-sm")) {
+                          await launchUrlString("https://www.linkedin.com/in/satyam-sm");
+                        } else {
+                          throw 'Could not launch the link';
+                        }
+                      },
+                      child: const Text("Satyam's Linkedin", style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                          color: Colors.lightBlue
+                      ),),
+                    ),
+                  ),
+
              ],
               ),
            ),

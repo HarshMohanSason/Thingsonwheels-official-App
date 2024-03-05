@@ -22,7 +22,7 @@ class OtpUIState extends State<OtpUI> {
   final _formKey = GlobalKey<FormState>(); // GlobalKey for the Form
   late Timer timer;
   int remainingTime = 60; // Initial remaining time in seconds
-
+  bool isResent = false;
   @override
   void initState() {
 
@@ -61,69 +61,55 @@ class OtpUIState extends State<OtpUI> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: colorTheme,
-      body: Padding(
-        padding: EdgeInsets.only(top: screenWidth / 7),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            InkWell(
-                onTap: () {
-                  if (mounted) {
-                    Navigator.pop(context);
-                  }
-                },
-                child: Icon(
-                  Icons.arrow_back,
-                  size: screenWidth / 12,
-                )),
-            const Padding(
-              padding: EdgeInsets.only(top: 40.0),
-              child: Center(child: TOWLogoAnimation()),
-            ),
-            SizedBox(height: screenWidth/2.5),
-            Center(child: Form(
-                key: _formKey,
-                child: _pinInputUI(context))),
-            const SizedBox(height: 15),
-             Center(
-                child: InkWell(
-                  onTap: () async
-                  {
-                    if(remainingTime < 1)
-                    {
-                        otpTextController.clear();
-                        //String newOTPVerificationID = await sendOTP(widget.phoneNo); //send the OTP again.
-                       // bool ifValidated = await checkOTP(newOTPVerificationID, widget.phoneNo);
-                    }
-                    else
-                    {
-                      return;
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Padding(
+          padding: EdgeInsets.only(top: screenWidth / 7),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              InkWell(
+                  onTap: () {
+                    if (mounted) {
+                      Navigator.pop(context);
                     }
                   },
-                  child: Text(
-                                "Resend OTP?  $remainingTime s",
-                                style: const TextStyle(fontSize: 14.5),
-                           ),
-                )),
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Center(child:  InkWell(
-                  onTap: () async {
-
-                    if (_formKey.currentState!.validate()) {
-                      bool verifyOTP = await checkOTP(widget.verificationID, otpTextController.text); //check if the otp is verified
-
-                      if (verifyOTP && mounted) {
-
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
-                        await storage.write(key: 'LoggedIn', value: "true");
+                  child: Icon(
+                    Icons.arrow_back,
+                    size: screenWidth / 12,
+                  )),
+              const Padding(
+                padding: EdgeInsets.only(top: 40.0),
+                child: Center(child: TOWLogoAnimation()),
+              ),
+              SizedBox(height: screenWidth/2.5),
+              Center(child: Form(
+                  key: _formKey,
+                  child: _pinInputUI(context))),
+              const SizedBox(height: 15),
+               Center(
+                  child: InkWell(
+                    onTap: () async
+                    {
+                      if(remainingTime < 1)
+                      {
+                          otpTextController.clear();
+                          String newOTPVerificationID = await sendOTP(widget.phoneNo); //send the OTP again.
+                          isResent = await checkOTP(newOTPVerificationID, widget.phoneNo);
                       }
-                    }
-                  },
-                  child: Icon(Icons.arrow_forward, size: screenWidth / 12,)),),
-            )
-          ],
+                      else
+                      {
+                        return;
+                      }
+                    },
+                    child: Text(
+                                  "Resend OTP?  $remainingTime s",
+                                  style: const TextStyle(fontSize: 14.5),
+                             ),
+                  )),
+            ],
+          ),
         ),
       ),
     );
@@ -134,6 +120,7 @@ class OtpUIState extends State<OtpUI> {
     return SizedBox(
       width: screenWidth - 20,
       child: Pinput(
+          pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
           controller: otpTextController,
           length: 6, // Length for the OTP being entered
           defaultPinTheme: PinTheme(
@@ -154,11 +141,26 @@ class OtpUIState extends State<OtpUI> {
            color: Colors.white,
            fontWeight: FontWeight.bold,
          ),
-          onSubmitted: (value)
-          {
-            setState(() {
-              value = otpTextController.text;
-            });
+
+          onCompleted: (value)
+          async {
+            const CircularProgressIndicator();
+            if (_formKey.currentState!.validate()) {
+
+              bool verifyOTP = await checkOTP(widget.verificationID, otpTextController.text); //check if the otp is verified
+
+              if (verifyOTP && mounted) {
+
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+                await storage.write(key: 'LoggedIn', value: "true");
+              }
+              else if(isResent && mounted)
+                {
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+                  await storage.write(key: 'LoggedIn', value: "true");
+                }
+            }
+
           },
           validator: (value) {
             final nonNumericRegExp = RegExp(r'^[0-9]');

@@ -24,6 +24,12 @@ class FoodTruckDetailDisplayUIState extends State<FoodTruckDetailDisplayUI> {
     return PopScope(
       canPop: false,
       child: Scaffold(
+          appBar: AppBar(
+              backgroundColor: colorTheme,
+              leading: InkWell(
+                  onTap: () => Navigator.pop(context),
+                  child: Icon(Icons.arrow_back,
+                      size: screenWidth / 12, color: Colors.black))),
           backgroundColor: Colors.white,
           body: SingleChildScrollView(
               scrollDirection: Axis.vertical,
@@ -34,17 +40,6 @@ class FoodTruckDetailDisplayUIState extends State<FoodTruckDetailDisplayUI> {
                   children: <Widget>[
                     Stack(children: [
                       _buildDetailedFoodTruckUI(widget.foodTruck),
-
-                      Padding(
-                        padding: const EdgeInsets.only(top: 60, left: 10),
-                        child: Align(
-                            alignment: Alignment.topLeft,
-                            child: InkWell(
-                                onTap: () => Navigator.pop(context),
-                                child: Icon(Icons.arrow_back,
-                                    size: screenWidth / 12,
-                                    color: Colors.black))),
-                      ),
                     ]),
                     Padding(
                       padding: const EdgeInsets.only(left: 15),
@@ -52,7 +47,7 @@ class FoodTruckDetailDisplayUIState extends State<FoodTruckDetailDisplayUI> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: 10),
-                           Center(child: circleIndicator()),
+                          Center(child: circleIndicator()),
                           const SizedBox(height: 20),
                           Text(widget.foodTruck.truckName,
                               style: TextStyle(
@@ -84,56 +79,73 @@ class FoodTruckDetailDisplayUIState extends State<FoodTruckDetailDisplayUI> {
                             ],
                           ),
                           const SizedBox(height: 20),
-                          Row(
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(Icons.timer, size: screenWidth / 13),
-                              Flexible(
-                                child: Text(widget.foodTruck.truckTime!,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    )),
+                              Text(
+                                "Timings: ",
+                                style: TextStyle(
+                                    fontSize: screenWidth / 19,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(top: 5),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: widget.foodTruck.truckTime != null
+                                      ? widget.foodTruck.truckTime!
+                                          .map((time) => Text(time))
+                                          .toList()
+                                      : [
+                                          const Text(
+                                            "Location and Times : Varies, so check our posts daily! on the given social-media",
+                                          ),
+                                        ],
+                                ),
                               ),
                             ],
                           ),
                           const SizedBox(height: 20),
 
-                           //Only display the social link column when there is one available
-                           if(widget.foodTruck.socialLink!.isNotEmpty) ...[
-                           Column(
-                            children: [
-                              InkWell(
-                                onTap: () async {
-
-                                  if (await canLaunchUrlString(widget.foodTruck.socialLink!)) {
-                                    await launchUrlString(widget.foodTruck.socialLink!);
-                                  } else {
-                                    throw 'Could not launch the link';
-                                  }
-                                },
-                                child: const Text("Link to Social Media", style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  color: Colors.lightBlue
-                                ),),
-                              ),
-                             const Divider(),
-                            ],
-                          ),
+                          //Only display the social link column when there is one available
+                          if (widget.foodTruck.socialLink!.isNotEmpty) ...[
+                            Column(
+                              children: [
+                                InkWell(
+                                  onTap: () async {
+                                    if (await canLaunchUrlString(
+                                        widget.foodTruck.socialLink!)) {
+                                      await launchUrlString(
+                                          widget.foodTruck.socialLink!);
+                                    } else {
+                                      throw 'Could not launch the link';
+                                    }
+                                  },
+                                  child: const Text(
+                                    "Link to Social Media",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                        color: Colors.lightBlue),
+                                  ),
+                                ),
+                                const Divider(),
+                              ],
+                            ),
                           ],
                           const SizedBox(height: 60),
                           Center(
                             child: Text(
                               widget.foodTruck.isAvailable
-                                  ? "Available"
+                                  ? "Available to serve (check updated timings above)"
                                   : "Not Available",
                               style: TextStyle(
                                 color: widget.foodTruck.isAvailable
                                     ? Colors.green.shade700
                                     : Colors.red,
                                 fontWeight: FontWeight.bold,
-                                fontSize: screenWidth /
-                                    14, // Adjust fontSize relative to screenWidth
+                                fontSize:
+                                    16, // Adjust fontSize relative to screenWidth
                               ),
                             ),
                           ),
@@ -165,31 +177,28 @@ class FoodTruckDetailDisplayUIState extends State<FoodTruckDetailDisplayUI> {
   }
 
   Widget buildImageWidget(String imagePath) {
-    if(imagePath.isNotEmpty) {
+    if (imagePath.isNotEmpty) {
       return FittedBox(
         fit: BoxFit.contain,
         child: Image.network(
           imagePath,
         ),
       );
-    }
-    else {
+    } else {
       return Container(
         color: Colors.grey,
       );
     }
   }
 
-  Widget circleIndicator()
-  {
+  Widget circleIndicator() {
     return CirclePageIndicator(
       selectedDotColor: Colors.black,
       dotColor: Colors.black,
-      size: screenWidth/30,
-      selectedSize: screenWidth/26,
+      size: screenWidth / 30,
+      selectedSize: screenWidth / 26,
       itemCount: widget.foodTruck.truckImages!.length,
       currentPageNotifier: _currentPageNotifier,
     );
   }
-
 }

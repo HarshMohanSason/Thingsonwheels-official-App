@@ -7,7 +7,7 @@ class FoodTruck {
   String truckName;
   String? truckAddress;
   String? truckPhoneNo;
-  String? truckTime;
+  List<String>? truckTime;
   String? socialLink;
   bool isAvailable;
 
@@ -27,7 +27,7 @@ class FoodTruck {
         for (var snapshot in allDocSnapshot.docs) {
           FoodTruck truck = FoodTruck(
             truckImages: List<String>.from(snapshot['truckImages']),
-            truckTime: snapshot['truckTime'],
+            truckTime: List<String>.from(snapshot['truckTime']),
             truckPhoneNo: snapshot['truckPhoneNo'],
             truckAddress: snapshot['truckAddress'],
             truckName: snapshot['truckName'],
@@ -41,7 +41,7 @@ class FoodTruck {
       return trucks;
     } catch (e) {
 
-     // print('Error fetching data: $e');
+      print('Error fetching data: $e');
       return []; // Return an empty list in case of error
     }
   }

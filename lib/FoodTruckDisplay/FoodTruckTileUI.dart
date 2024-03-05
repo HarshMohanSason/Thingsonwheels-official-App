@@ -131,7 +131,7 @@ class FoodTruckTileUIState extends State<FoodTruckTileUI> {
                   children: <Widget>[
                     SizedBox(width: screenWidth / 72),
                     // Adjust width relative to screenWidth
-                    Text(
+                    /*(Text(
                       foodTruck.isAvailable ? "Available" : "Not Available",
                       style: TextStyle(
                         color: foodTruck.isAvailable ? Colors.green : Colors
@@ -140,6 +140,8 @@ class FoodTruckTileUIState extends State<FoodTruckTileUI> {
                         fontSize: screenWidth / 30, // Adjust fontSize relative to screenWidth
                       ),
                     ),
+
+                     */
                   ],
                 ),
               ],
