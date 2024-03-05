@@ -3,15 +3,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FoodTruck {
 
-  List<String> truckImages;
+  List<String>? truckImages;
   String truckName;
-  String truckAddress;
-  String truckPhoneNo;
-  String truckTime;
+  String? truckAddress;
+  String? truckPhoneNo;
+  String? truckTime;
+  String? socialLink;
   bool isAvailable;
 
+
   FoodTruck({required this.truckImages, required this.truckName, required this.truckAddress,
-  required this.truckPhoneNo, required this.truckTime, required this.isAvailable});
+  required this.truckPhoneNo, required this.truckTime, required this.isAvailable, required this.socialLink});
 
 
   // Static function returning list of FoodTruck objects
@@ -19,7 +21,7 @@ class FoodTruck {
     try {
       var allDocSnapshot = await FirebaseFirestore.instance.collection('FoodTrucks').get();
 
-      List<FoodTruck> trucks = [];
+      List<FoodTruck> trucks = [];  //list to hold the foodTruck objects
 
       if (allDocSnapshot.docs.isNotEmpty) {
         for (var snapshot in allDocSnapshot.docs) {
@@ -30,6 +32,7 @@ class FoodTruck {
             truckAddress: snapshot['truckAddress'],
             truckName: snapshot['truckName'],
             isAvailable: snapshot['isAvailable'],
+            socialLink:  snapshot['socialMedia'],
           );
           trucks.add(truck); // add the objects to the list
         }
@@ -37,8 +40,8 @@ class FoodTruck {
 
       return trucks;
     } catch (e) {
-      // Handle exceptions gracefully
-      //print('Error fetching data: $e');
+
+     // print('Error fetching data: $e');
       return []; // Return an empty list in case of error
     }
   }

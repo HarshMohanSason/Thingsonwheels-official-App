@@ -23,14 +23,14 @@ class FoodTruckTileUIState extends State<FoodTruckTileUI> {
                 child: Text(
               "Loading..",
               style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
             ));
           }
           if (snapshot.hasError) {
             return const Center(
                 child:  Text(
               "Error fetching data",
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.black),
             ));
           } else {
             List<FoodTruck> truckList = snapshot.data!;
@@ -79,16 +79,31 @@ class FoodTruckTileUIState extends State<FoodTruckTileUI> {
                           .black), // Adjust border width relative to screenWidth
                 ),
               ),
-              child: CircleAvatar(
-                backgroundImage: NetworkImage(
-                  foodTruck.truckImages.isNotEmpty
-                      ? foodTruck.truckImages[0]
-                      : '',
+
+              child: Builder(
+                builder: (BuildContext context)
+                {
+                  if(foodTruck.truckImages != null && foodTruck.truckImages!.first.isNotEmpty) {
+                return CircleAvatar(
+                backgroundImage: NetworkImage(foodTruck.truckImages!.first),
+                radius: screenWidth / 16,
+                );
+                } else {
+                // Return an error widget with an icon of the same size
+                return CircleAvatar(
+                backgroundColor: Colors.black, // Background color for the error avatar
+                radius: screenWidth / 16,
+                child: Icon(
+                Icons.fastfood, // You can change this icon as per your preference
+                color: Colors.white, // Icon color
+                size: screenWidth / 16, // Same size as the CircleAvatar
                 ),
-                radius: screenWidth /
-                    16, // Adjust the radius of CircleAvatar relative to screenWidth for smaller height
-              ),
+                );
+                }
+                },
+              )
             ),
+
             title: Text(
               foodTruck.truckName,
               style: TextStyle(
@@ -102,7 +117,8 @@ class FoodTruckTileUIState extends State<FoodTruckTileUI> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  foodTruck.truckAddress,
+                  foodTruck.truckAddress!.length < 25 ?
+                  foodTruck.truckAddress! : foodTruck.truckAddress!.substring(0, 15) + "...",
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: screenWidth / 30, // Adjust fontSize relative to screenWidth

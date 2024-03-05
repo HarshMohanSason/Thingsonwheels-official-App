@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: colorTheme),
           useMaterial3: true,
         ),
-         home: const CheckIfLoggedIn()),
+         home:  const CheckIfLoggedIn()),
     );
   }
 }

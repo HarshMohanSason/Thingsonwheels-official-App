@@ -175,6 +175,7 @@ class LoginScreenState extends State<LoginScreen>
 
   Future<void> handlePhoneLogin(BuildContext context) async
   {
+
     final ip = context.read<InternetProvider>();
 
     await ip.checkInternetConnection(); // Check internet connection

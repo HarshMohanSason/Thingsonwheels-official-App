@@ -1,5 +1,7 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import '../main.dart';
 import 'FoodTruck.dart';
 import 'package:page_view_indicators/circle_page_indicator.dart';
@@ -25,96 +27,125 @@ class FoodTruckDetailDisplayUIState extends State<FoodTruckDetailDisplayUI> {
           backgroundColor: Colors.white,
           body: SingleChildScrollView(
               scrollDirection: Axis.vertical,
-              child: SizedBox(
-                  height: screenHeight,
-                  child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Stack(children: [
-                          _buildDetailedFoodTruckUI(widget.foodTruck),
+              child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Stack(children: [
+                      _buildDetailedFoodTruckUI(widget.foodTruck),
 
-                          Padding(
-                            padding: const EdgeInsets.only(top: 60, left: 10),
-                            child: Align(
-                                alignment: Alignment.topLeft,
-                                child: InkWell(
-                                    onTap: () => Navigator.pop(context),
-                                    child: Icon(Icons.arrow_back,
-                                        size: screenWidth / 12,
-                                        color: Colors.white))),
-                          ),
-                        ]),
-                        Padding(
-                          padding: EdgeInsets.only(left: 15),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 60, left: 10),
+                        child: Align(
+                            alignment: Alignment.topLeft,
+                            child: InkWell(
+                                onTap: () => Navigator.pop(context),
+                                child: Icon(Icons.arrow_back,
+                                    size: screenWidth / 12,
+                                    color: Colors.black))),
+                      ),
+                    ]),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 10),
+                           Center(child: circleIndicator()),
+                          const SizedBox(height: 20),
+                          Text(widget.foodTruck.truckName,
+                              style: TextStyle(
+                                fontSize: screenWidth / 16.5,
+                                fontWeight: FontWeight.bold,
+                              )),
+                          const SizedBox(height: 20),
+                          Row(
                             children: [
-                              const SizedBox(height: 10),
-                               Center(child: circleIndicator()),
-                              const SizedBox(height: 20),
-                              Text(widget.foodTruck.truckName,
-                                  style: TextStyle(
-                                    fontSize: screenWidth / 10,
-                                    fontWeight: FontWeight.bold,
-                                  )),
-                              const SizedBox(height: 20),
-                              Row(
-                                children: [
-                                  Icon(Icons.phone, size: screenWidth / 13),
-                                  Text(widget.foodTruck.truckPhoneNo,
-                                      style: TextStyle(
-                                        fontSize: screenWidth / 15,
-                                      )),
-                                ],
-                              ),
-                              const SizedBox(height: 20),
-                              Row(
-                                children: [
-                                  Icon(Icons.location_on, size: screenWidth / 13),
-                                  Text(widget.foodTruck.truckAddress,
-                                      style: TextStyle(
-                                        fontSize: screenWidth / 15,
-                                      )),
-                                ],
-                              ),
-                              const SizedBox(height: 20),
-                              Row(
-                                children: [
-                                  Icon(Icons.timer, size: screenWidth / 13),
-                                  Text(widget.foodTruck.truckTime,
-                                      style: TextStyle(
-                                        fontSize: screenWidth / 15,
-                                        fontWeight: FontWeight.bold,
-                                      )),
-                                ],
-                              ),
-                              const SizedBox(height: 100),
-                              Center(
-                                child: Text(
-                                  widget.foodTruck.isAvailable
-                                      ? "Available"
-                                      : "Not Available",
-                                  style: TextStyle(
-                                    color: widget.foodTruck.isAvailable
-                                        ? Colors.green.shade700
-                                        : Colors.red,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: screenWidth /
-                                        14, // Adjust fontSize relative to screenWidth
-                                  ),
-                                ),
+                              Icon(Icons.phone, size: screenWidth / 13),
+                              Flexible(
+                                child: Text(widget.foodTruck.truckPhoneNo!,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                    )),
                               ),
                             ],
                           ),
-                        ),
-                      ])))),
+                          const SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Icon(Icons.location_on, size: screenWidth / 13),
+                              Flexible(
+                                child: Text(widget.foodTruck.truckAddress!,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                    )),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Icon(Icons.timer, size: screenWidth / 13),
+                              Flexible(
+                                child: Text(widget.foodTruck.truckTime!,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    )),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+
+                           //Only display the social link column when there is one available
+                           if(widget.foodTruck.socialLink!.isNotEmpty) ...[
+                           Column(
+                            children: [
+                              InkWell(
+                                onTap: () async {
+
+                                  if (await canLaunchUrlString(widget.foodTruck.socialLink!)) {
+                                    await launchUrlString(widget.foodTruck.socialLink!);
+                                  } else {
+                                    throw 'Could not launch the link';
+                                  }
+                                },
+                                child: const Text("Link to Social Media", style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Colors.lightBlue
+                                ),),
+                              ),
+                             const Divider(),
+                            ],
+                          ),
+                          ],
+                          const SizedBox(height: 60),
+                          Center(
+                            child: Text(
+                              widget.foodTruck.isAvailable
+                                  ? "Available"
+                                  : "Not Available",
+                              style: TextStyle(
+                                color: widget.foodTruck.isAvailable
+                                    ? Colors.green.shade700
+                                    : Colors.red,
+                                fontWeight: FontWeight.bold,
+                                fontSize: screenWidth /
+                                    14, // Adjust fontSize relative to screenWidth
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ]))),
     );
   }
 
   Widget _buildDetailedFoodTruckUI(FoodTruck foodTruck) {
-    List<String> imageUrls = foodTruck.truckImages;
+    List<String> imageUrls = foodTruck.truckImages!;
     return Container(
         color: Colors.white,
         width: screenWidth,
@@ -134,12 +165,19 @@ class FoodTruckDetailDisplayUIState extends State<FoodTruckDetailDisplayUI> {
   }
 
   Widget buildImageWidget(String imagePath) {
-    return FittedBox(
-      fit: BoxFit.contain,
-      child: Image.network(
-        imagePath,
-      ),
-    );
+    if(imagePath.isNotEmpty) {
+      return FittedBox(
+        fit: BoxFit.contain,
+        child: Image.network(
+          imagePath,
+        ),
+      );
+    }
+    else {
+      return Container(
+        color: Colors.grey,
+      );
+    }
   }
 
   Widget circleIndicator()
@@ -149,7 +187,7 @@ class FoodTruckDetailDisplayUIState extends State<FoodTruckDetailDisplayUI> {
       dotColor: Colors.black,
       size: screenWidth/30,
       selectedSize: screenWidth/26,
-      itemCount: widget.foodTruck.truckImages.length,
+      itemCount: widget.foodTruck.truckImages!.length,
       currentPageNotifier: _currentPageNotifier,
     );
   }

@@ -2,10 +2,13 @@
 
 
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
 import 'package:thingsonwheels/HomeScreen.dart';
+import 'package:thingsonwheels/UserLogin/GoogleLogin/GoogleLoginAuth.dart';
 
 import 'IntroLoginScreenUI.dart';
 
@@ -69,6 +72,7 @@ class _CheckIfLoggedInState extends State<CheckIfLoggedIn> {
   {
     try {
       if ((await storage.containsKey(key: 'LoggedIn'))) {
+
         return true;
       }
     }

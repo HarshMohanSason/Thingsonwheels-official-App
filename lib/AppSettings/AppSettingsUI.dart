@@ -124,8 +124,7 @@ class AppSettingsState extends State<AppSettings>
           else
             {
               final sp = context.read<GoogleSignInProvider>();
-              if (sp.isSignedIn!) { // If the user is signed in with Google
-
+              if (sp.isSignedIn != null && sp.isSignedIn!) { // If the user is signed in with Google
                await sp.signOut(); // Sign out from Google
                if (mounted) {//Navigate to the homeScreen
                  Navigator.push(
