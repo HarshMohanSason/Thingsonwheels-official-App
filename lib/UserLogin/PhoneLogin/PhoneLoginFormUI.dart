@@ -1,4 +1,6 @@
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:thingsonwheels/ResuableWidgets/ThingsOnWheelsAnimation.dart';
 import 'package:thingsonwheels/UserLogin/PhoneLogin/OtpUI.dart';
 import 'package:thingsonwheels/UserLogin/PhoneLogin/PhoneLoginService.dart';
@@ -24,6 +26,9 @@ class PhoneLoginScreenState extends State<PhoneLoginFormUI> {
 
   @override
   Widget build(BuildContext context) {
+
+
+
     return PopScope(
       canPop: false,
       child: Scaffold(
@@ -59,6 +64,7 @@ class PhoneLoginScreenState extends State<PhoneLoginFormUI> {
 
   Widget phoneTextForm(BuildContext context) {
 
+    final phoneLoginLoading = context.watch<PhoneLoginProvider>();
     return SizedBox(
       width: screenWidth - 20,
       child: TextFormField(
@@ -75,26 +81,24 @@ class PhoneLoginScreenState extends State<PhoneLoginFormUI> {
               fontWeight: FontWeight.bold),
           // Set input text color to white
           decoration: InputDecoration(
-            suffixIcon: InkWell(
-                onTap: () async {
+            suffixIcon:  InkWell(
 
+                onTap: () async {
                   if (phoneController.text.isEmpty) {
                     return;
                   }
-
                   //If the form is validated when pressing the next arrow button
                   if (_formKey.currentState!.validate()) {
-                    String getOTPVerificationID = await sendOTP(phoneController.text); //send OTP verificationCode to that number
+                    String getOTPVerificationID = await phoneLoginLoading.sendOTP(phoneController.text); //send OTP verificationCode to that number
                     if (mounted) {
-
                       Navigator.push(context, MaterialPageRoute(
-                          builder: (context) =>
-                                  OtpUI(verificationID: getOTPVerificationID,
+                          builder: (context) => OtpUI(verificationID: getOTPVerificationID,
                                       phoneNo: phoneController.text)));
                     }
                   }
                 },
-                child: const Icon(Icons.arrow_forward)),
+                child: phoneLoginLoading.isLoading ? const CircularProgressIndicator(color: Colors.white,)
+                    : const Icon(Icons.arrow_forward)),
             helperText: 'Enter your US phone number',
             helperStyle: TextStyle(
               fontSize: screenWidth / 28,

@@ -3,14 +3,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:pinput/pinput.dart';
-
 import '../../main.dart';
 
 class GoogleSignInProvider extends ChangeNotifier {
 
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;//firebase auth instance
   final GoogleSignIn googleSignIn = GoogleSignIn(); //google Sign in instance
+
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
 
   String? _errorCode;
   String? get errorCode => _errorCode;
@@ -40,6 +41,8 @@ class GoogleSignInProvider extends ChangeNotifier {
   //Future function to signInWithGoogle
   Future signInWithGoogle() async {
 
+    _isLoading = true;
+    notifyListeners();
     final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn(); //Start the signIn process
 
     if (googleSignInAccount != null) {
@@ -68,6 +71,7 @@ class GoogleSignInProvider extends ChangeNotifier {
         {
           await saveDataToFirestore();
         }
+        _isLoading = false;
         //catch any errors when logging the user in
       } on FirebaseAuthException catch (e) {
 
@@ -76,12 +80,14 @@ class GoogleSignInProvider extends ChangeNotifier {
           case "account-exists-with-different-credential":
             _errorCode = "You already have an account with us. Use correct provider";
             _hasError = true;
+            _isLoading = false;
             notifyListeners();
             break;
 
           case "null":
             _errorCode = "Some unexpected error came while trying to sign in";
              _hasError = true;
+            _isLoading = false;
              //print("nothing");
              notifyListeners();
              break;
@@ -90,6 +96,7 @@ class GoogleSignInProvider extends ChangeNotifier {
             _errorCode = e.toString();
             //print("nothing");
             _hasError = true;
+            _isLoading = false;
             notifyListeners();
             }
      //
@@ -97,6 +104,7 @@ class GoogleSignInProvider extends ChangeNotifier {
     }
     else
       {
+        _isLoading = false;
        _hasError = true;
        notifyListeners();
       }
@@ -108,7 +116,9 @@ class GoogleSignInProvider extends ChangeNotifier {
     await googleSignIn.signOut();
     await firebaseAuth.signOut();
     _isSignedIn = false;
+    _isLoading = false;
     await storage.deleteAll();
+
     notifyListeners();
 
   }
@@ -155,6 +165,7 @@ class GoogleSignInProvider extends ChangeNotifier {
   //Function to save the Data to the firestore database
   Future saveDataToFirestore() async
   {
+    try{
     final docSnapshot = FirebaseFirestore.instance.collection('userInfo').doc(uid);
     await docSnapshot.set({
       "username": _username,
@@ -165,5 +176,10 @@ class GoogleSignInProvider extends ChangeNotifier {
     });
     notifyListeners();
   }
+  catch(e)
+    {
+      throw e.toString();
+    }
+    }
 
 }

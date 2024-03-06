@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
+import 'package:provider/provider.dart';
 import 'package:thingsonwheels/ResuableWidgets/ThingsOnWheelsAnimation.dart';
 import 'package:thingsonwheels/HomeScreen.dart';
 import 'package:thingsonwheels/UserLogin/PhoneLogin/PhoneLoginService.dart';
@@ -59,13 +60,15 @@ class OtpUIState extends State<OtpUI> {
 
   @override
   Widget build(BuildContext context) {
+
+    final phoneLoginLoading = context.watch<PhoneLoginProvider>();
     return Scaffold(
       backgroundColor: colorTheme,
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Padding(
           padding: EdgeInsets.only(top: screenWidth / 7),
-          child: Column(
+          child: phoneLoginLoading.isLoading ? const CircularProgressIndicator() : Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -95,8 +98,8 @@ class OtpUIState extends State<OtpUI> {
                       if(remainingTime < 1)
                       {
                           otpTextController.clear();
-                          String newOTPVerificationID = await sendOTP(widget.phoneNo); //send the OTP again.
-                          isResent = await checkOTP(newOTPVerificationID, widget.phoneNo);
+                          String newOTPVerificationID = await phoneLoginLoading.sendOTP(widget.phoneNo); //send the OTP again.
+                          isResent = await phoneLoginLoading.checkOTP(newOTPVerificationID, widget.phoneNo);
                       }
                       else
                       {
@@ -117,6 +120,7 @@ class OtpUIState extends State<OtpUI> {
 
   Widget _pinInputUI(BuildContext context) {
 
+    final phoneLoginLoading = context.watch<PhoneLoginProvider>();
     return SizedBox(
       width: screenWidth - 20,
       child: Pinput(
@@ -144,10 +148,10 @@ class OtpUIState extends State<OtpUI> {
 
           onCompleted: (value)
           async {
-            const CircularProgressIndicator();
+
             if (_formKey.currentState!.validate()) {
 
-              bool verifyOTP = await checkOTP(widget.verificationID, otpTextController.text); //check if the otp is verified
+              bool verifyOTP = await phoneLoginLoading.checkOTP(widget.verificationID, otpTextController.text); //check if the otp is verified
 
               if (verifyOTP && mounted) {
 

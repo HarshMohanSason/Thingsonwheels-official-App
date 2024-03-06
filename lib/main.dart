@@ -1,7 +1,11 @@
 
 import 'dart:ui';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:thingsonwheels/UserLogin/CheckIfLoggedIn.dart';
 import 'package:thingsonwheels/UserLogin/IntroLoginScreenUI.dart';
 import 'package:thingsonwheels/UserLogin/PhoneLogin/OtpUI.dart';
+import 'package:thingsonwheels/UserLogin/PhoneLogin/PhoneLoginFormUI.dart';
+import 'package:thingsonwheels/UserLogin/PhoneLogin/PhoneLoginService.dart';
 
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -11,7 +15,6 @@ import 'package:provider/provider.dart';
 import 'package:thingsonwheels/InternetProvider.dart';
 import 'package:flutter/services.dart';
 import 'package:thingsonwheels/UserLogin/GoogleLogin/GoogleLoginAuth.dart';
-import 'UserLogin/CheckIfLoggedIn.dart';
 
 Color colorTheme = Colors.orange; //Global color theme for the app
 
@@ -46,6 +49,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: ((context)=> GoogleSignInProvider())),
         ChangeNotifierProvider(create: ((context) => InternetProvider())),
+        ChangeNotifierProvider(create: ((context) => PhoneLoginProvider())),
     ],
       child: MaterialApp(
         title: 'Flutter Demo',
