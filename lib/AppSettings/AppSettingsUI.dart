@@ -136,8 +136,8 @@ class AppSettingsState extends State<AppSettings>
             }
           else if(title == "Submit a TOW")
             {
-              if (await canLaunchUrlString("https://www.linkedin.com/in/harsh-mohan-sason-50a72119b/")) {
-                await launchUrlString("https://www.linkedin.com/in/harsh-mohan-sason-50a72119b/");
+              if (await canLaunchUrlString("https://forms.gle/rASyS8igzxhFqfXt6")) {
+                await launchUrlString("https://forms.gle/rASyS8igzxhFqfXt6");
               } else {
                 throw 'Could not launch the link';
               }
