@@ -1,9 +1,11 @@
 
 
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:thingsonwheels/AppSettings/AboutUs.dart';
 import 'package:thingsonwheels/AppSettings/Privacy%20Policy.dart';
@@ -94,7 +96,7 @@ class AppSettingsState extends State<AppSettings>
               const  SizedBox(height: 10),
               _buildTile(context, "Submit a TOW"),
               const  SizedBox(height: 10),
-              _buildTile(context, "Sign Out"),
+              _buildTile(context, "Sign Out / Delete Account "),
               const  SizedBox(height: 120),
               const Align(
                 alignment: Alignment.bottomCenter,
@@ -145,28 +147,107 @@ class AppSettingsState extends State<AppSettings>
             }
           else
             {
-              final sp = context.read<GoogleSignInProvider>();
-              if (sp.isSignedIn != null && sp.isSignedIn!) { // If the user is signed in with Google
-               await sp.signOut(); // Sign out from Google
-               if (mounted) {//Navigate to the homeScreen
-                 Navigator.push(
-                   context,
-                   MaterialPageRoute(builder: (context) => const LoginScreen()),
-                 );
-               }
-             }
+              showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                   backgroundColor: Colors.white,
+                  title:  Center(child:  Text("Choose an Action", style: TextStyle(fontSize: screenWidth/18),)),
+                  content: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () async {
+                          // Sign out logic
+                          final sp = context.read<GoogleSignInProvider>();
+                          if (sp.isSignedIn != null && sp.isSignedIn!) {
+                            await sp.signOut();
+                          }
+                          await FirebaseAuth.instance.signOut();
+                          await storage.deleteAll();
+                          if (mounted) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const LoginScreen(),
+                              ),
+                            );
+                          }
+                        },
 
-            // Sign out from the Firebase Authentication
-            await FirebaseAuth.instance.signOut();
-            // Clear any local storage data
-            await storage.deleteAll();
-              if (mounted) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                        style: ButtonStyle(
+                          fixedSize: MaterialStateProperty.all<Size>(
+                            const Size(100, 50), // Adjust width and height as needed
+                          ),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0), // Circular radius of 12
+                            ),
+                          ),
+
+                        ),
+                        child: const Text("Sign out",style: TextStyle(color: Colors.black, fontSize: 12)),
+                      ),
+
+                      ElevatedButton(
+                        onPressed: () async {
+                          try {
+                            FirebaseFirestore.instance.collection('userInfo')
+                                .doc(FirebaseAuth.instance.currentUser!.uid)
+                                .delete();
+                            FirebaseAuth.instance.currentUser!.delete();
+
+                            if (mounted) {
+                              Fluttertoast.showToast(
+                                msg: 'Your account has been Deleted',
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                backgroundColor: Colors.white,
+                                textColor: Colors.black,
+                              );
+                              Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => const LoginScreen()));
+                            }
+                          }
+                          catch(e)
+                          {
+                            Fluttertoast.showToast(
+                              msg: 'Error deleting account, try again later',
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              backgroundColor: Colors.white,
+                              textColor: Colors.black,
+                            );
+                          }
+
+                        },
+                        style: ButtonStyle(
+                          fixedSize: MaterialStateProperty.all<Size>(
+                            const Size(100, 50), // Adjust width and height as needed
+                          ),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0), // Circular radius of 12
+                            ),
+                          ),
+                        ),
+                        child: const Text("Delete Account",style: TextStyle(color: Colors.black,fontSize: 12)),
+                      ),
+                    ],
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Close the dialog
+                      },
+                      child: const Text("Cancel", style: TextStyle(color: Colors.black)),
+                    ),
+                  ],
                 );
-              }
-          }
+              },
+            );
+
+            }
         },
       ),
     );

@@ -182,4 +182,17 @@ class GoogleSignInProvider extends ChangeNotifier {
     }
     }
 
+    Future deleteGoogleRelatedAccount() async {
+
+    try{
+      FirebaseFirestore.instance.collection('userInfo').doc(firebaseAuth.currentUser!.uid).delete();
+      firebaseAuth.currentUser!.delete();
+    }
+    catch(e)
+      {
+        throw e.toString();
+      }
+
+    }
+
 }

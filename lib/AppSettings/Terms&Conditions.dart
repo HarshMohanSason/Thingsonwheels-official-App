@@ -81,7 +81,7 @@ class TermsAndConditions extends StatelessWidget
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Text(
         text,
-        style: TextStyle(
+        style: const TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 18.0,
         ),

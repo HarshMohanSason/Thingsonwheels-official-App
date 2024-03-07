@@ -40,7 +40,7 @@ class AboutUs extends StatelessWidget
              padding: EdgeInsets.only(top: 20),
              child: Column(
                 children: [
-                  Text(
+                  const Text(
                     '''Welcome to Things On Wheels, your gateway to local businesses right in your town. We're thrilled to introduce our beta version, starting with the vibrant community of Fresno. Our mission is simple: to expand access to the wonderful array of small businesses and hidden gems that make our towns special.
 
 At Things On Wheels, we understand the struggle of finding the best food spots or exploring unique markets without a centralized platform. That's why we're here to bridge that gap. Whether you're craving delicious cuisine or seeking out charming local markets, our app is your one-stop solution.
