@@ -1,6 +1,7 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'package:thingsonwheels/ResuableWidgets/ThingsOnWheelsAnimation.dart';
@@ -24,12 +25,13 @@ class OtpUIState extends State<OtpUI> {
   late Timer timer;
   int remainingTime = 60; // Initial remaining time in seconds
   bool isResent = false;
+
+
   @override
   void initState() {
 
     super.initState();
     startTimer();
-
   }
 
   @override
@@ -68,7 +70,7 @@ class OtpUIState extends State<OtpUI> {
         scrollDirection: Axis.vertical,
         child: Padding(
           padding: EdgeInsets.only(top: screenWidth / 7),
-          child: phoneLoginLoading.isLoading ? const CircularProgressIndicator() : Column(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -106,11 +108,12 @@ class OtpUIState extends State<OtpUI> {
                         return;
                       }
                     },
-                    child: Text(
+                    child: phoneLoginLoading.isLoading ? const CircularProgressIndicator(color: Colors.white) : Text(
                                   "Resend OTP?  $remainingTime s",
                                   style: const TextStyle(fontSize: 14.5),
                              ),
                   )),
+
             ],
           ),
         ),
@@ -149,20 +152,42 @@ class OtpUIState extends State<OtpUI> {
           onCompleted: (value)
           async {
 
-            if (_formKey.currentState!.validate()) {
+            try {
+              if (_formKey.currentState!.validate()) {
+                bool verifyOTP = await phoneLoginLoading.checkOTP(
+                    widget.verificationID,
+                    otpTextController.text); //check if the otp is verified
 
-              bool verifyOTP = await phoneLoginLoading.checkOTP(widget.verificationID, otpTextController.text); //check if the otp is verified
-
-              if (verifyOTP && mounted) {
-
-                Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
-                await storage.write(key: 'LoggedIn', value: "true");
-              }
-              else if(isResent && mounted)
-                {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+                if (verifyOTP && mounted) {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const HomeScreen()));
                   await storage.write(key: 'LoggedIn', value: "true");
                 }
+                else if (isResent && mounted) {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const HomeScreen()));
+                  await storage.write(key: 'LoggedIn', value: "true");
+                }
+              }
+              else
+                {
+                  Fluttertoast.showToast(
+                    msg: 'OTP entered is invalid',
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                    backgroundColor: Colors.white,
+                    textColor: Colors.black,
+                  );
+                }
+            }catch(e)
+            {
+              Fluttertoast.showToast(
+                msg: 'Error occurred, please try again',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                backgroundColor: Colors.white,
+                textColor: Colors.black,
+              );
             }
 
           },

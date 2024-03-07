@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 
 class PhoneLoginProvider extends ChangeNotifier {
 
-  bool _isLoading = false;
+  bool _isLoading = false; //To display the circular progress indicator when completing a particular function
   bool get isLoading => _isLoading;
 
   Future<bool> checkIfUserExistsFirestore(String phoneNo) async
@@ -73,7 +73,6 @@ class PhoneLoginProvider extends ChangeNotifier {
 
       _isLoading = false;
       notifyListeners();
-
       return completer.future; //return the verification ID
     }
     catch (e) {
@@ -88,18 +87,15 @@ class PhoneLoginProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-          verificationId: verificationID,
-          smsCode: otpNo); //get the credentials from the verificationID of the sent text and the entered OTP
-      User? user = (await FirebaseAuth.instance.signInWithCredential(
-          credential)).user!; //sign in the user with credential
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationID, smsCode: otpNo); //get the credentials from the verificationID of the sent text and the entered OTP
+      User? user = (await FirebaseAuth.instance.signInWithCredential(credential)).user!; //sign in the user with credential
 
       if (!await checkIfUserExistsFirestore(user.phoneNumber!)) {
         writeUserInfo(user.phoneNumber!,
             user.uid); //write the userInfo if does not exist in firestore.
       }
 
-      _isLoading = false;
+      _isLoading = false; //Marking thew loading true because at this point the OTP number should be verified.
       notifyListeners();
       return true; //return true since the OTP matched
     }
