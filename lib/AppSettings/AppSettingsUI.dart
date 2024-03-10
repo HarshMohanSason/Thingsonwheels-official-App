@@ -113,6 +113,7 @@ class AppSettingsState extends State<AppSettings>
 
 
   Widget _buildTile(BuildContext context, String title) {
+    final sp = context.read<GoogleSignInProvider>();
     return Card(
       color: Colors.orange,
       elevation: 5,
@@ -159,7 +160,7 @@ class AppSettingsState extends State<AppSettings>
                       ElevatedButton(
                         onPressed: () async {
                           // Sign out logic
-                          final sp = context.read<GoogleSignInProvider>();
+
                           if (sp.isSignedIn != null && sp.isSignedIn!) {
                             await sp.signOut();
                           }
@@ -196,7 +197,9 @@ class AppSettingsState extends State<AppSettings>
                                 .doc(FirebaseAuth.instance.currentUser!.uid)
                                 .delete();
                             FirebaseAuth.instance.currentUser!.delete();
-
+                            if (sp.isSignedIn != null && sp.isSignedIn!) {
+                              await sp.signOut();
+                            }
                             if (mounted) {
                               Fluttertoast.showToast(
                                 msg: 'Your account has been Deleted',
@@ -208,11 +211,13 @@ class AppSettingsState extends State<AppSettings>
                               Navigator.push(context, MaterialPageRoute(
                                   builder: (context) => const LoginScreen()));
                             }
+                            await storage.deleteAll();
                           }
                           catch(e)
                           {
+
                             Fluttertoast.showToast(
-                              msg: 'Error deleting account, try again later',
+                              msg: 'Error deleting your Account',
                               toastLength: Toast.LENGTH_SHORT,
                               gravity: ToastGravity.CENTER,
                               backgroundColor: Colors.white,

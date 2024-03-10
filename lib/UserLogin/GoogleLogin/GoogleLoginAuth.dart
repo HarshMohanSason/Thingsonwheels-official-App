@@ -65,13 +65,14 @@ class GoogleSignInProvider extends ChangeNotifier {
         _uid = userDetails.uid;
         _provider = "GOOGLE";
         _isSignedIn = true;
+        _isLoading = false;
         notifyListeners();
 
         if (!await checkUserExists()) //check if the userExists in firestore or not, else logout
         {
           await saveDataToFirestore();
         }
-        _isLoading = false;
+
         //catch any errors when logging the user in
       } on FirebaseAuthException catch (e) {
 
