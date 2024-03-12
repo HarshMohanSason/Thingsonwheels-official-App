@@ -1,4 +1,4 @@
-# thingsonwheels
+# Thingsonwheels
 
 App to help you find nearby businesss on "wheels'. We are starting with food trucks and will soon move on to other businesses as well. Currently launched in fresno only
 
