@@ -1,6 +1,5 @@
 
 import 'package:flutter/material.dart';
-
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:thingsonwheels/HomeScreen.dart';
@@ -22,85 +21,67 @@ class LoginScreen extends StatefulWidget{
 }
 
 class LoginScreenState extends State<LoginScreen>
-{
-  @override
-  Widget build(BuildContext context) {
+{@override
+Widget build(BuildContext context) {
+  final googleLoginLoading = context.watch<GoogleSignInProvider>();
 
-    final googleLoginLoading = context.watch<GoogleSignInProvider>();
-
-    return PopScope(
-      canPop: false,
-      child: Scaffold(
-        backgroundColor: colorTheme,
-        body: Padding(
-          padding: const EdgeInsets.only(top: 80),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-
-              const Center(
-                child: TOWLogoAnimation(),
+  return Scaffold(
+    backgroundColor: colorTheme,
+    body: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Center(
+            child: TOWLogoAnimation(),
+          ),
+          const SizedBox(height: 20),
+          Center(
+            child: Image.asset(
+              "assets/images/Launch_Screen.png",
+              height: MediaQuery.of(context).size.height * 0.4,
+              fit: BoxFit.contain,
+            ),
+          ),
+          const Spacer(),
+          Column(
+            children:[
+              Align(
+                alignment: Alignment.center,
+                child: googleLoginLoading.isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : SignInButton(
+                  Buttons.Google,
+                  onPressed: () async {
+                    try {
+                      await handleGoogleLogin();
+                    } catch(e) {
+                     e.toString();
+                    }
+                    if (googleLoginLoading.isSignedIn == true &&mounted) {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => const HomeScreen(),
+                      ));
+                    }
+                  },
+                ),
               ),
-              Column(
-                children: [
-
-                  Center(child: Image.asset("assets/images/Launch_Screen.png")),
-
-                  Padding(
-                    padding: EdgeInsets.only(top: screenWidth/4),
-                    child: Column(
-                      children: [
-                        Align(
-                          alignment: Alignment.center,
-                          child: googleLoginLoading.isLoading ? const CircularProgressIndicator(
-                            color: Colors.white,
-                          ) :
-                          SignInButton(
-                            Buttons.Google,
-                            onPressed: () async {
-
-                              try {
-                                await handleGoogleLogin();
-
-                              }
-                              catch(e)
-                              {
-                                //print(e);
-                              }
-                             // Check if the user is signed in with Google and then navigate to HomeScreen
-                             if (mounted && context.read<GoogleSignInProvider>().isSignedIn == true) {
-
-                                   Navigator.push(context, MaterialPageRoute(
-                                     builder: (context) => const HomeScreen(),
-                                   ));
-                             } else {
-                              return;
-                             }
-                            },
-                          ),
-                        ),
-                        SizedBox(height: screenHeight/23),
-                        Align(
-                          alignment: Alignment.center,
-                          child: phoneLoginButton(),
-                        )
-                      ],
-                    ),
-                  ),
-
-                ],
+              const SizedBox(height: 20),
+              Align(
+                alignment: Alignment.center,
+                child: phoneLoginButton(),
               ),
-
             ],
           ),
-        )
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
 
 
-  //Button for phone Login()
+//Button for phone Login()
   Widget phoneLoginButton() {
 
     return Container(

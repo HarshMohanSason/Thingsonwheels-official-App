@@ -33,30 +33,33 @@ class PhoneLoginScreenState extends State<PhoneLoginFormUI> {
       canPop: false,
       child: Scaffold(
           backgroundColor: colorTheme,
-          body: Padding(
-            padding: EdgeInsets.only(top: screenWidth / 7),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                InkWell(
-                    onTap: () {
-                      if (mounted) {
-                        Navigator.pop(context);
-                      }
-                    },
-                    child: Icon(
-                      Icons.arrow_back,
-                      size: screenWidth / 12,
-                    )),
-                const Padding(
-                  padding: EdgeInsets.only(top: 40.0),
-                  child: Center(child: TOWLogoAnimation()),
-                ),
-                SizedBox(height: screenWidth/2.3),
-                Center(
-                    child: Form(key: _formKey, child: phoneTextForm(context))),
-              ],
+          body: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 30),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  InkWell(
+                      onTap: () {
+                        if (mounted) {
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: Icon(
+                        Icons.arrow_back,
+                        size: screenWidth / 12,
+                      )),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 30.0),
+                    child: Center(child: TOWLogoAnimation()),
+                  ),
+                  SizedBox(height: screenWidth/2.3),
+                  Center(
+                      child: Form(key: _formKey, child: phoneTextForm(context))),
+                ],
+              ),
             ),
           )),
     );

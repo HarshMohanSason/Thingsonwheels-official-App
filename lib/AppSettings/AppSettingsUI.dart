@@ -3,7 +3,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
@@ -12,9 +11,9 @@ import 'package:thingsonwheels/AppSettings/Privacy%20Policy.dart';
 import 'package:thingsonwheels/AppSettings/Terms&Conditions.dart';
 import 'package:thingsonwheels/ResuableWidgets/ThingsOnWheelsAnimation.dart';
 import 'package:thingsonwheels/UserLogin/GoogleLogin/GoogleLoginAuth.dart';
-import 'package:thingsonwheels/UserLogin/IntroLoginScreenUI.dart';
 import 'package:thingsonwheels/main.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import '../UserLogin/IntroLoginScreenUI.dart';
 
 class AppSettings extends StatefulWidget
 {
@@ -61,7 +60,7 @@ class AppSettingsState extends State<AppSettings>
                  Navigator.pop(context);
               },
 
-              child: Icon(Icons.arrow_back, size: screenWidth/13)),
+              child: Icon(Icons.arrow_back, size: screenWidth/14)),
 
               Center(
                 child: CircleAvatar(
@@ -85,7 +84,7 @@ class AppSettingsState extends State<AppSettings>
               Text(
                 phoneNumber ?? '',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 20),
               _buildTile(context, "About Us",),
@@ -152,8 +151,15 @@ class AppSettingsState extends State<AppSettings>
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                   backgroundColor: Colors.white,
-                  title:  Center(child:  Text("Choose an Action", style: TextStyle(fontSize: screenWidth/18),)),
+                  backgroundColor: Colors.white,
+                  title: Center(
+                    child: Text(
+                      "Choose an Action",
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width / 18,
+                      ),
+                    ),
+                  ),
                   content: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -175,21 +181,27 @@ class AppSettingsState extends State<AppSettings>
                             );
                           }
                         },
-
                         style: ButtonStyle(
-                          fixedSize: MaterialStateProperty.all<Size>(
-                            const Size(100, 50), // Adjust width and height as needed
+                          minimumSize: MaterialStateProperty.all<Size>(
+                            Size(
+                              MediaQuery.of(context).size.width / 4,
+                              MediaQuery.of(context).size.height / 15,
+                            ),
                           ),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.0), // Circular radius of 12
+                              borderRadius: BorderRadius.circular(12.0),
                             ),
                           ),
-
                         ),
-                        child: const Text("Sign out",style: TextStyle(color: Colors.black, fontSize: 12)),
+                        child: Text(
+                          "Sign out",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: MediaQuery.of(context).size.width / 30, // Adjusted font size
+                          ),
+                        ),
                       ),
-
                       ElevatedButton(
                         onPressed: () async {
                           try {
@@ -224,19 +236,27 @@ class AppSettingsState extends State<AppSettings>
                               textColor: Colors.black,
                             );
                           }
-
                         },
                         style: ButtonStyle(
-                          fixedSize: MaterialStateProperty.all<Size>(
-                            const Size(100, 50), // Adjust width and height as needed
+                          minimumSize: MaterialStateProperty.all<Size>(
+                            Size(
+                              MediaQuery.of(context).size.width / 4,
+                              MediaQuery.of(context).size.height / 15,
+                            ),
                           ),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.0), // Circular radius of 12
+                              borderRadius: BorderRadius.circular(12.0),
                             ),
                           ),
                         ),
-                        child: const Text("Delete Account",style: TextStyle(color: Colors.black,fontSize: 12)),
+                        child: Text(
+                          "Delete Account",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: MediaQuery.of(context).size.width / 30, // Adjusted font size
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -245,10 +265,17 @@ class AppSettingsState extends State<AppSettings>
                       onPressed: () {
                         Navigator.of(context).pop(); // Close the dialog
                       },
-                      child: const Text("Cancel", style: TextStyle(color: Colors.black)),
+                      child: Text(
+                        "Cancel",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: MediaQuery.of(context).size.width / 30, // Adjusted font size
+                        ),
+                      ),
                     ),
                   ],
                 );
+
               },
             );
 

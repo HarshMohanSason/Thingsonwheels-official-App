@@ -59,89 +59,74 @@ class FoodTruckTileUIState extends State<FoodTruckTileUI> {
       },
       child: Card(
         elevation: screenWidth / 30,
-        // Adjust the elevation relative to screenWidth
         margin: EdgeInsets.symmetric(
-            horizontal: screenWidth / 36, vertical: screenHeight / 120),
-        // Adjust margin relative to screenWidth and screenHeight
+          horizontal: screenWidth / 36,
+          vertical: screenHeight / 120,
+        ),
         child: Container(
           decoration: const BoxDecoration(color: Colors.orange),
-          // White background
           child: ListTile(
             contentPadding: EdgeInsets.symmetric(
-                horizontal: screenWidth / 18, vertical: screenHeight / 120),
-            // Adjust content padding relative to screenWidth and screenHeight
+              horizontal: screenWidth / 18,
+              vertical: screenHeight / 120,
+            ),
             leading: Container(
               padding: EdgeInsets.only(right: screenWidth / 30),
               decoration: BoxDecoration(
                 border: Border(
-                  right: BorderSide(width: screenWidth / 750,
-                      color: Colors
-                          .black), // Adjust border width relative to screenWidth
+                  right: BorderSide(
+                    width: screenWidth / 750,
+                    color: Colors.black,
+                  ),
                 ),
               ),
-
               child: Builder(
-                builder: (BuildContext context)
-                {
-                  if(foodTruck.truckImages != null && foodTruck.truckImages!.first.isNotEmpty) {
-                return CircleAvatar(
-                backgroundImage: NetworkImage(foodTruck.truckImages!.first),
-                radius: screenWidth / 16,
-                );
-                } else {
-                // Return an error widget with an icon of the same size
-                return CircleAvatar(
-                backgroundColor: Colors.black, // Background color for the error avatar
-                radius: screenWidth / 16,
-                child: Icon(
-                Icons.fastfood, // You can change this icon as per your preference
-                color: Colors.white, // Icon color
-                size: screenWidth / 16, // Same size as the CircleAvatar
-                ),
-                );
-                }
+                builder: (BuildContext context) {
+                  if (foodTruck.truckImages != null &&
+                      foodTruck.truckImages!.first.isNotEmpty) {
+                    return CircleAvatar(
+                      backgroundImage:
+                      NetworkImage(foodTruck.truckImages!.first),
+                      radius: screenWidth / 12, // Adjust image size
+                    );
+                  } else {
+                    return CircleAvatar(
+                      backgroundColor: Colors.black,
+                      radius: screenWidth / 12,
+                      child: Icon(
+                        Icons.fastfood,
+                        color: Colors.white,
+                        size: screenWidth / 12,
+                      ),
+                    );
+                  }
                 },
-              )
+              ),
             ),
-
             title: Text(
               foodTruck.truckName,
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
-                fontSize: screenWidth /
-                    24, // Adjust fontSize relative to screenWidth
+                fontSize: screenWidth / 24,
               ),
             ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  foodTruck.truckAddress!.length < 25 ?
-                  foodTruck.truckAddress! : foodTruck.truckAddress!.substring(0, 15) + "...",
+                  foodTruck.truckAddress!.length < 25
+                      ? foodTruck.truckAddress!
+                      : "${foodTruck.truckAddress!.substring(0, 15)}...",
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: screenWidth / 30, // Adjust fontSize relative to screenWidth
+                    fontSize: screenWidth / 28,
                   ),
                 ),
                 SizedBox(height: screenHeight / 120),
-                // Adjust height relative to screenHeight
-                // Add spacing between address and availability indicator
                 Row(
                   children: <Widget>[
                     SizedBox(width: screenWidth / 72),
-                    // Adjust width relative to screenWidth
-                    /*(Text(
-                      foodTruck.isAvailable ? "Available" : "Not Available",
-                      style: TextStyle(
-                        color: foodTruck.isAvailable ? Colors.green : Colors
-                            .red,
-                        fontWeight: FontWeight.bold,
-                        fontSize: screenWidth / 30, // Adjust fontSize relative to screenWidth
-                      ),
-                    ),
-
-                     */
                   ],
                 ),
               ],
@@ -149,7 +134,7 @@ class FoodTruckTileUIState extends State<FoodTruckTileUI> {
             trailing: Icon(
               Icons.keyboard_arrow_right,
               color: Colors.white,
-              size: screenWidth / 10, // Adjust icon size relative to screenWidth
+              size: screenWidth/14.5,
             ),
           ),
         ),

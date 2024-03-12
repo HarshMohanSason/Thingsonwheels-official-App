@@ -1,12 +1,8 @@
 
 import 'dart:ui';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:thingsonwheels/UserLogin/CheckIfLoggedIn.dart';
 import 'package:thingsonwheels/UserLogin/IntroLoginScreenUI.dart';
-import 'package:thingsonwheels/UserLogin/PhoneLogin/OtpUI.dart';
-import 'package:thingsonwheels/UserLogin/PhoneLogin/PhoneLoginFormUI.dart';
 import 'package:thingsonwheels/UserLogin/PhoneLogin/PhoneLoginService.dart';
-
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -52,12 +48,13 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: ((context) => PhoneLoginProvider())),
     ],
       child: MaterialApp(
+       debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: colorTheme),
           useMaterial3: true,
         ),
-         home:  const CheckIfLoggedIn()),
+         home:  const LoginScreen()),
     );
   }
 }

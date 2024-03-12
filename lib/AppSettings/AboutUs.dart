@@ -20,12 +20,12 @@ class AboutUs extends StatelessWidget
         appBar: AppBar(
           title: Text("About Us", style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: screenWidth/16,
+            fontSize: screenWidth/19,
           )),
           leading: Padding(
             padding: EdgeInsets.only(right: 22),
             child: InkWell(
-                child: Icon(Icons.arrow_back, size: screenWidth/14,),
+                child: Icon(Icons.arrow_back, size: screenWidth/20,),
             onTap: ()
             {
               Navigator.pop(context);
@@ -40,7 +40,7 @@ class AboutUs extends StatelessWidget
              padding: EdgeInsets.only(top: 20),
              child: Column(
                 children: [
-                  const Text(
+                   Text(
                     '''Welcome to Things On Wheels, your gateway to local businesses right in your town. We're thrilled to introduce our beta version, starting with the vibrant community of Fresno. Our mission is simple: to expand access to the wonderful array of small businesses and hidden gems that make our towns special.
 
 At Things On Wheels, we understand the struggle of finding the best food spots or exploring unique markets without a centralized platform. That's why we're here to bridge that gap. Whether you're craving delicious cuisine or seeking out charming local markets, our app is your one-stop solution.
@@ -52,31 +52,14 @@ Your feedback is invaluable to us. Please don't hesitate to share your thoughts 
 Thank you for joining us on this journey. Together, let's unlock the essence of our towns, one discovery at a time.
                   ''',
                     style: TextStyle(
+                      fontSize: screenWidth/30,
                     ),
                   ),
-                  const Text("Developers:",
+                   Text("Developers:",
                   style: TextStyle(
 
-                    fontSize: 14,
+                    fontSize: screenWidth/30,
                   ),),
-             Padding(
-               padding: const EdgeInsets.only(top: 5),
-                 child: InkWell(
-                    onTap: () async {
-
-                      if (await canLaunchUrlString("https://www.linkedin.com/in/harsh-mohan-sason-50a72119b/")) {
-                        await launchUrlString("https://www.linkedin.com/in/harsh-mohan-sason-50a72119b/");
-                      } else {
-                        throw 'Could not launch the link';
-                      }
-                    },
-                    child: const Text("Harsh's Linkedin", style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                        color: Colors.lightBlue
-                    ),),
-                  ),
-             ),
                   Padding(
                     padding: const EdgeInsets.only(top: 5),
                     child: InkWell(
@@ -88,13 +71,32 @@ Thank you for joining us on this journey. Together, let's unlock the essence of 
                           throw 'Could not launch the link';
                         }
                       },
-                      child: const Text("Satyam's Linkedin", style: TextStyle(
+                      child:  Text("Satyam's Linkedin", style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 12,
+                          fontSize: screenWidth/34,
                           color: Colors.lightBlue
                       ),),
                     ),
                   ),
+             Padding(
+               padding: const EdgeInsets.only(top: 5),
+                 child: InkWell(
+                    onTap: () async {
+
+                      if (await canLaunchUrlString("https://www.linkedin.com/in/harsh-mohan-sason-50a72119b/")) {
+                        await launchUrlString("https://www.linkedin.com/in/harsh-mohan-sason-50a72119b/");
+                      } else {
+                        throw 'Could not launch the link';
+                      }
+                    },
+                    child:  Text("Harsh's Linkedin", style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: screenWidth/34,
+                        color: Colors.lightBlue
+                    ),),
+                  ),
+             ),
+
 
              ],
               ),

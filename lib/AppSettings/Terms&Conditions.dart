@@ -20,12 +20,12 @@ class TermsAndConditions extends StatelessWidget
         appBar: AppBar(
           title: Text("Terms and Conditions", style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: screenWidth/16,
+            fontSize: screenWidth/19,
           )),
           leading: Padding(
-            padding: const EdgeInsets.only(right: 22),
+            padding: EdgeInsets.only(right: 22),
             child: InkWell(
-              child: Icon(Icons.arrow_back, size: screenWidth/14,),
+              child: Icon(Icons.arrow_back, size: screenWidth/20,),
               onTap: ()
               {
                 Navigator.pop(context);
@@ -81,9 +81,9 @@ class TermsAndConditions extends StatelessWidget
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Text(
         text,
-        style: const TextStyle(
+        style:  TextStyle(
           fontWeight: FontWeight.bold,
-          fontSize: 18.0,
+          fontSize: screenWidth/22,
         ),
       ),
     );
@@ -95,6 +95,9 @@ class TermsAndConditions extends StatelessWidget
       child: Text(
         text,
         textAlign: TextAlign.justify,
+        style:  TextStyle(
+          fontSize: screenWidth/30,
+        ),
       ),
     );
   }
