@@ -113,23 +113,18 @@ class GoogleSignInProvider extends ChangeNotifier {
 
   //Function to sign the userOUT
   Future signOut() async {
-
     await googleSignIn.signOut();
     await firebaseAuth.signOut();
     _isSignedIn = false;
     _isLoading = false;
-    await storage.deleteAll();
-
+    await storage.delete(key: 'LoggedIn');
     notifyListeners();
-
   }
 
   //check if the userExists already
   Future<bool> checkUserExists() async {
     try {
-      var snapshot = await FirebaseFirestore.instance.collection('userInfo')
-          .doc(uid)
-          .get();
+      var snapshot = await FirebaseFirestore.instance.collection('userInfo').doc(uid).get();
 
       if (snapshot.exists) {
         return true;
@@ -184,16 +179,16 @@ class GoogleSignInProvider extends ChangeNotifier {
     }
 
     Future deleteGoogleRelatedAccount() async {
-
     try{
       FirebaseFirestore.instance.collection('userInfo').doc(firebaseAuth.currentUser!.uid).delete();
-      firebaseAuth.currentUser!.delete();
+      googleSignIn.signOut();
+      FirebaseAuth.instance.currentUser!.delete();
+      await storage.delete(key: 'LoggedIn');
     }
     catch(e)
       {
         throw e.toString();
       }
-
     }
 
 }

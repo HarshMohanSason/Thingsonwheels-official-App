@@ -16,23 +16,28 @@ class PrivacyPolicy extends StatelessWidget
     return PopScope(
       canPop: false,
       child: Scaffold(
-
-        appBar: AppBar(
-          title: Text("Privacy Policy",  style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: screenWidth/19,
-          )),
-          leading: Padding(
-            padding: EdgeInsets.only(right: 22),
-            child: InkWell(
-              child: Icon(Icons.arrow_back, size: screenWidth/20,),
-              onTap: ()
-              {
-                Navigator.pop(context);
-              },
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(screenHeight / 12), // Adjust the height as needed
+          child: AppBar(
+            backgroundColor: colorTheme,
+            title: Text(
+              "Privacy Policy",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: screenWidth / 16,
+              ),
+            ),
+            leading: Padding(
+              padding: const EdgeInsets.only(right: 22),
+              child: InkWell(
+                child: Icon(Icons.arrow_back, size: screenWidth / 14),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
             ),
           ),
-          backgroundColor: colorTheme,),
+        ),
         backgroundColor: Colors.white,
         body: SafeArea(
           child: Column(
@@ -43,7 +48,7 @@ class PrivacyPolicy extends StatelessWidget
                     children: [
                       const SizedBox(height: 20),
                        Padding(
-                          padding: EdgeInsets.only(left: 6),
+                          padding: const EdgeInsets.only(left: 6),
                          child: Text(''' Last updated: March 07, 2024 
                         
  This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You. We use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy. This Privacy Policy has been created with the help of the Free Privacy Policy Generator. ''',

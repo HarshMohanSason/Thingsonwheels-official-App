@@ -1,6 +1,4 @@
 
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +8,7 @@ import 'package:thingsonwheels/AppSettings/AboutUs.dart';
 import 'package:thingsonwheels/AppSettings/Privacy%20Policy.dart';
 import 'package:thingsonwheels/AppSettings/Terms&Conditions.dart';
 import 'package:thingsonwheels/ResuableWidgets/ThingsOnWheelsAnimation.dart';
+import 'package:thingsonwheels/UserLogin/AppleLogin/AppleLoginService.dart';
 import 'package:thingsonwheels/UserLogin/GoogleLogin/GoogleLoginAuth.dart';
 import 'package:thingsonwheels/main.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -113,6 +112,8 @@ class AppSettingsState extends State<AppSettings>
 
   Widget _buildTile(BuildContext context, String title) {
     final sp = context.read<GoogleSignInProvider>();
+    final ap = context.read<AppleLoginService>();
+
     return Card(
       color: Colors.orange,
       elevation: 5,
@@ -157,104 +158,124 @@ class AppSettingsState extends State<AppSettings>
                       "Choose an Action",
                       style: TextStyle(
                         fontSize: MediaQuery.of(context).size.width / 18,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                   content: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      ElevatedButton(
-                        onPressed: () async {
-                          // Sign out logic
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () async {
 
-                          if (sp.isSignedIn != null && sp.isSignedIn!) {
-                            await sp.signOut();
-                          }
-                          await FirebaseAuth.instance.signOut();
-                          await storage.deleteAll();
-                          if (mounted) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const LoginScreen(),
-                              ),
-                            );
-                          }
-                        },
-                        style: ButtonStyle(
-                          minimumSize: MaterialStateProperty.all<Size>(
-                            Size(
-                              MediaQuery.of(context).size.width / 4,
-                              MediaQuery.of(context).size.height / 15,
-                            ),
-                          ),
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.0),
-                            ),
-                          ),
-                        ),
-                        child: Text(
-                          "Sign out",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: MediaQuery.of(context).size.width / 30, // Adjusted font size
-                          ),
-                        ),
-                      ),
-                      ElevatedButton(
-                        onPressed: () async {
-                          try {
-                            FirebaseFirestore.instance.collection('userInfo')
-                                .doc(FirebaseAuth.instance.currentUser!.uid)
-                                .delete();
-                            FirebaseAuth.instance.currentUser!.delete();
                             if (sp.isSignedIn != null && sp.isSignedIn!) {
                               await sp.signOut();
                             }
+                            else if(ap.isSignedIn != null && ap.isSignedIn!)
+                              {
+                                await ap.signOut();
+                              }
+                            else {
+                              await FirebaseAuth.instance.signOut();
+                              await storage.delete(key: 'LoggedIn');
+                            }
                             if (mounted) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const LoginScreen(),
+                                ),
+                              );
+                            }
+                          },
+                          style: ButtonStyle(
+                            minimumSize: MaterialStateProperty.all<Size>(
+                              Size(
+                                MediaQuery.of(context).size.width / 4,
+                                MediaQuery.of(context).size.height / 15,
+                              ),
+                            ),
+                            backgroundColor: MaterialStateProperty.all<Color>(Color(0xFFFF9800)),
+                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            "Sign out",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: MediaQuery.of(context).size.width / 30, // Adjusted font size
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 20), // Add space between buttons
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            try {
+                              if (sp.isSignedIn != null && sp.isSignedIn!) {
+                                await sp.deleteGoogleRelatedAccount();
+                              }
+                              else if(ap.isSignedIn != null && ap.isSignedIn!)
+                                {
+                                  await ap.deleteAppleRelatedAccount();
+                                }
+                              else
+                                {
+                                  FirebaseFirestore.instance.collection('userInfo').doc(FirebaseAuth.instance.currentUser!.uid).delete();
+                                  FirebaseAuth.instance.currentUser!.delete();
+                                  await storage.delete(key: 'LoggedIn');
+                                }
+                              if (mounted) {
+                                Fluttertoast.showToast(
+                                  msg: 'Your account has been Deleted',
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.CENTER,
+                                  backgroundColor: Colors.white,
+                                  textColor: Colors.black,
+                                );
+                                Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) => const LoginScreen()));
+                              }
+                              await storage.delete(key: 'LoggedIn');
+                            }
+                            catch(e)
+                            {
+
                               Fluttertoast.showToast(
-                                msg: 'Your account has been Deleted',
+                                msg: 'Error deleting your Account',
                                 toastLength: Toast.LENGTH_SHORT,
                                 gravity: ToastGravity.CENTER,
                                 backgroundColor: Colors.white,
                                 textColor: Colors.black,
                               );
-                              Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => const LoginScreen()));
                             }
-                            await storage.deleteAll();
-                          }
-                          catch(e)
-                          {
-
-                            Fluttertoast.showToast(
-                              msg: 'Error deleting your Account',
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
-                              backgroundColor: Colors.white,
-                              textColor: Colors.black,
-                            );
-                          }
-                        },
-                        style: ButtonStyle(
-                          minimumSize: MaterialStateProperty.all<Size>(
-                            Size(
-                              MediaQuery.of(context).size.width / 4,
-                              MediaQuery.of(context).size.height / 15,
+                          },
+                          style: ButtonStyle(
+                            minimumSize: MaterialStateProperty.all<Size>(
+                              Size(
+                                MediaQuery.of(context).size.width / 4,
+                                MediaQuery.of(context).size.height / 15,
+                              ),
+                            ),
+                            backgroundColor: MaterialStateProperty.all<Color>(Color(0xFFFF9800)),
+                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
                             ),
                           ),
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.0),
+                          child: Text(
+                            "Delete Account",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: MediaQuery.of(context).size.width / 30, // Adjusted font size
                             ),
-                          ),
-                        ),
-                        child: Text(
-                          "Delete Account",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: MediaQuery.of(context).size.width / 30, // Adjusted font size
                           ),
                         ),
                       ),
@@ -275,6 +296,8 @@ class AppSettingsState extends State<AppSettings>
                     ),
                   ],
                 );
+
+
 
               },
             );

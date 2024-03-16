@@ -17,22 +17,28 @@ class AboutUs extends StatelessWidget
       canPop: false,
       child: Scaffold(
 
-        appBar: AppBar(
-          title: Text("About Us", style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: screenWidth/19,
-          )),
-          leading: Padding(
-            padding: EdgeInsets.only(right: 22),
-            child: InkWell(
-                child: Icon(Icons.arrow_back, size: screenWidth/20,),
-            onTap: ()
-            {
-              Navigator.pop(context);
-            },
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(screenHeight / 12), // Adjust the height as needed
+          child: AppBar(
+            backgroundColor: colorTheme,
+            title: Text(
+              "About Us",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: screenWidth / 16,
+              ),
+            ),
+            leading: Padding(
+              padding: const EdgeInsets.only(right: 22),
+              child: InkWell(
+                child: Icon(Icons.arrow_back, size: screenWidth / 14),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
             ),
           ),
-        backgroundColor: colorTheme,),
+        ),
         backgroundColor: Colors.white,
         body:  SingleChildScrollView(
           child:  SafeArea(

@@ -60,7 +60,7 @@ class HomeScreenState extends State<HomeScreen>
                         const Spacer(),
                         Row(
                           children: [
-                            Icon(Icons.location_on, size: screenWidth / 13),
+                            Icon(Icons.location_on, size: screenWidth / 14),
                             Text(
                               "Fresno",
                               style: TextStyle(
@@ -74,7 +74,7 @@ class HomeScreenState extends State<HomeScreen>
                           onTap: () {
                             Navigator.push(context, MaterialPageRoute(builder: (context) => const AppSettings()));
                           },
-                          child: Icon(Icons.settings, size: screenWidth / 12),
+                          child: Icon(Icons.settings, size: screenWidth / 14),
                         ),
                       ],
                     ),

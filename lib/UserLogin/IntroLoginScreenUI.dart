@@ -1,10 +1,13 @@
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:thingsonwheels/HomeScreen.dart';
 import 'package:thingsonwheels/InternetProvider.dart';
 import 'package:thingsonwheels/ResuableWidgets/ThingsOnWheelsAnimation.dart';
+import 'package:thingsonwheels/UserLogin/AppleLogin/AppleLoginService.dart';
 import 'package:thingsonwheels/UserLogin/GoogleLogin/GoogleLoginAuth.dart';
 import 'package:thingsonwheels/UserLogin/PhoneLogin/PhoneLoginFormUI.dart';
 import 'package:thingsonwheels/main.dart';
@@ -24,57 +27,83 @@ class LoginScreenState extends State<LoginScreen>
 {@override
 Widget build(BuildContext context) {
   final googleLoginLoading = context.watch<GoogleSignInProvider>();
+  final appleLoginLoading = context.watch<AppleLoginService>();
 
-  return Scaffold(
-    backgroundColor: colorTheme,
-    body: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Center(
-            child: TOWLogoAnimation(),
-          ),
-          const SizedBox(height: 20),
-          Center(
-            child: Image.asset(
-              "assets/images/Launch_Screen.png",
-              height: MediaQuery.of(context).size.height * 0.4,
-              fit: BoxFit.contain,
+  return PopScope(
+    canPop: false,
+    child: Scaffold(
+      backgroundColor: colorTheme,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Center(
+              child: TOWLogoAnimation(),
             ),
-          ),
-          const Spacer(),
-          Column(
-            children:[
-              Align(
-                alignment: Alignment.center,
-                child: googleLoginLoading.isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : SignInButton(
-                  Buttons.Google,
-                  onPressed: () async {
-                    try {
-                      await handleGoogleLogin();
-                    } catch(e) {
-                     e.toString();
-                    }
-                    if (googleLoginLoading.isSignedIn == true &&mounted) {
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => const HomeScreen(),
-                      ));
-                    }
-                  },
+            const SizedBox(height: 20),
+            Center(
+              child: Image.asset(
+                "assets/images/Launch_Screen.png",
+                height: MediaQuery.of(context).size.height * 0.4,
+                fit: BoxFit.contain,
+              ),
+            ),
+            const Spacer(),
+
+            Column(
+              children:[
+                if (Platform.isIOS) ...[// Check if the platform is iOS
+                  Align(
+                      alignment: Alignment.center,
+                      child: appleLoginLoading.isLoading
+                          ? const CircularProgressIndicator(color: Colors.white) : SignInButton(
+                          Buttons.Apple,
+                          onPressed: () async {
+                            try {
+                              await handleAppleLogin(context);
+                            } catch(e) {
+                              e.toString();
+                            }
+                            if (appleLoginLoading.isSignedIn == true && mounted) {
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => const HomeScreen(),
+                              ));
+                            }
+
+                          }
+                      )),
+                  const SizedBox(height: 20),  ],
+                Align(
+                  alignment: Alignment.center,
+                  child: googleLoginLoading.isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : SignInButton(
+                    Buttons.Google,
+                    onPressed: () async {
+                      try {
+                        await handleGoogleLogin();
+                      } catch(e) {
+                        e.toString();
+                      }
+                      if (googleLoginLoading.isSignedIn == true && mounted) {
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => const HomeScreen(),
+                        ));
+                      }
+                    },
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              Align(
-                alignment: Alignment.center,
-                child: phoneLoginButton(),
-              ),
-            ],
-          ),
-        ],
+                const SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.center,
+                  child: phoneLoginButton(),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     ),
   );
@@ -190,5 +219,34 @@ Widget build(BuildContext context) {
       }
     }
   }
+
+Future<void> handleAppleLogin(BuildContext context) async
+{
+  final ip = context.read<InternetProvider>();
+  final ap = context.read<AppleLoginService>();
+
+  await ip.checkInternetConnection(); // Check internet connection
+
+  if (!ip.hasInternet) {
+    // Display a toast message if there is no internet connection
+    Fluttertoast.showToast(
+      msg: 'Check your Internet Connection',
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      backgroundColor: Colors.white,
+      textColor: Colors.black,
+    );
+  }
+
+  else {
+    try {
+      // Attempt sign in with Google
+      await ap.appleLogin();
+      await storage.write(key: 'LoggedIn', value: "true");
+    } catch (e) {
+      rethrow;
+    }
+  }
+}
 
 }

@@ -105,15 +105,4 @@ class PhoneLoginProvider extends ChangeNotifier {
     }
   }
 
-  Future deletePhoneRelatedAccount() async
-  {
-    try{
-      FirebaseFirestore.instance.collection('userInfo').doc(FirebaseAuth.instance.currentUser!.uid).delete();
-      FirebaseAuth.instance.currentUser!.delete();
-    }
-    catch(e)
-    {
-      e.toString();
-    }
-  }
 }
