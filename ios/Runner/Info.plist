@@ -22,6 +22,22 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
     <false/>
+    <key>NSContactsUsageDescription</key>
+    <string>Thingsonwheels needs access to the phone to make calls.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Thingsonwheels needs your location to display you the business location</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Thingsonwheels needs your location to display you the business location</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Thingsonwheels needs your location to display you the business location</string>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>maps</string>
+    </array>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>comgooglemaps</string>
+    </array>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>

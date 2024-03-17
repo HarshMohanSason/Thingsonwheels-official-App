@@ -1,6 +1,5 @@
 
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
@@ -39,8 +38,8 @@ Widget build(BuildContext context) {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Center(
-              child: TOWLogoAnimation(),
+             Center(
+              child: TOWLogoAnimation(fontSize: screenWidth/8,),
             ),
             const SizedBox(height: 20),
             Center(

@@ -61,7 +61,7 @@ class AppSettingsState extends State<AppSettings>
 
               child: Icon(Icons.arrow_back, size: screenWidth/14)),
 
-              Center(
+             /*   Center(
                 child: CircleAvatar(
                   radius: screenWidth/8,
                   backgroundColor: Colors.black,
@@ -71,7 +71,9 @@ class AppSettingsState extends State<AppSettings>
                       : null,
                 ),
               ),
-              SizedBox(height: screenWidth/34),
+              */
+              SizedBox(height: screenWidth/30),
+
               Center(
                 child: Text(
                   user!.displayName ?? user!.phoneNumber!,
@@ -95,12 +97,12 @@ class AppSettingsState extends State<AppSettings>
               _buildTile(context, "Submit a TOW"),
               const  SizedBox(height: 10),
               _buildTile(context, "Sign Out / Delete Account "),
-              const  SizedBox(height: 120),
-              const Align(
+              const  SizedBox(height: 50),
+               Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
-                    padding: EdgeInsets.only(bottom: 20),
-                    child: Center(child: TOWLogoAnimation())),
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: Center(child: TOWLogoAnimation(fontSize: screenWidth/8,))),
               )
             ],
           )),

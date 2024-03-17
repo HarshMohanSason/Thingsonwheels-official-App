@@ -51,9 +51,9 @@ class PhoneLoginScreenState extends State<PhoneLoginFormUI> {
                         Icons.arrow_back,
                         size: screenWidth / 12,
                       )),
-                  const Padding(
+                   Padding(
                     padding: EdgeInsets.only(top: 30.0),
-                    child: Center(child: TOWLogoAnimation()),
+                    child: Center(child: TOWLogoAnimation(fontSize: screenWidth/8,)),
                   ),
                   SizedBox(height: screenWidth/2.3),
                   Center(

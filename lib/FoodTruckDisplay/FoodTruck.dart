@@ -7,10 +7,9 @@ class FoodTruck {
   String truckName;
   String? truckAddress;
   String? truckPhoneNo;
-  List<String>? truckTime;
+  Map<String, dynamic>? truckTime;
   String? socialLink;
   bool isAvailable;
-
 
   FoodTruck({required this.truckImages, required this.truckName, required this.truckAddress,
   required this.truckPhoneNo, required this.truckTime, required this.isAvailable, required this.socialLink});
@@ -27,7 +26,7 @@ class FoodTruck {
         for (var snapshot in allDocSnapshot.docs) {
           FoodTruck truck = FoodTruck(
             truckImages: List<String>.from(snapshot['truckImages']),
-            truckTime: List<String>.from(snapshot['truckTime']),
+            truckTime: Map<String, dynamic>.from(snapshot['truckTime']),
             truckPhoneNo: snapshot['truckPhoneNo'],
             truckAddress: snapshot['truckAddress'],
             truckName: snapshot['truckName'],

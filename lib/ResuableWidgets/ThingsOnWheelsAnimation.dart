@@ -1,14 +1,12 @@
 
-
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/cupertino.dart';
-
-import '../main.dart';
 
 class TOWLogoAnimation extends StatefulWidget
 {
 
-  const TOWLogoAnimation({super.key});
+  final double fontSize;
+  const TOWLogoAnimation({super.key, required this.fontSize});
 
   @override
   TOWLogoAnimationState createState()=> TOWLogoAnimationState();
@@ -23,7 +21,7 @@ class  TOWLogoAnimationState extends State<TOWLogoAnimation>
         TypewriterAnimatedText(
           'Things on wheels',
           textStyle:  TextStyle(
-              fontSize: screenWidth/8,
+              fontSize: widget.fontSize,
               fontWeight: FontWeight.bold,
               fontFamily: 'WinterSong'
           ),

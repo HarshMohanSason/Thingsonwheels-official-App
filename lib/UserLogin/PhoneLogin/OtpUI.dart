@@ -84,9 +84,9 @@ class OtpUIState extends State<OtpUI> {
                     Icons.arrow_back,
                     size: screenWidth / 12,
                   )),
-              const Padding(
+               Padding(
                 padding: EdgeInsets.only(top: 40.0),
-                child: Center(child: TOWLogoAnimation()),
+                child: Center(child: TOWLogoAnimation(fontSize: screenWidth/8,)),
               ),
               SizedBox(height: screenWidth/2.5),
               Center(child: Form(
