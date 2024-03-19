@@ -137,7 +137,7 @@ Widget build(BuildContext context) {
           borderRadius: BorderRadius.circular(2.0),
           onTap: () async{
 
-            await handlePhoneLogin(context, const  PhoneLoginFormUI() as Function());
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const PhoneLoginFormUI()));
           },
           child: const Center(
             child: Row(
@@ -273,9 +273,10 @@ Future<void> handleAppleLogin(BuildContext context) async
       child: Material(
         child: InkWell(
           borderRadius: BorderRadius.circular(2.0),
-          onTap: () async{
+          onTap: () {
 
-            await handlePhoneLogin(context, const OnboardingFormUI() as Function());
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const OnboardingFormUI()));
+
           },
           child: const Center(
             child: Row(
@@ -283,14 +284,14 @@ Future<void> handleAppleLogin(BuildContext context) async
                 Padding(
                   padding: EdgeInsets.only(left: 10),
                   child: Icon(
-                    Icons.phone,
+                    Icons.two_wheeler,
                     size: 18,
                     color: Colors.black,
                   ),
                 ),
                 SizedBox(width: 18),
                 Text(
-                  'Sign in with Phone',
+                  'Sign up as TOW',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 14,
