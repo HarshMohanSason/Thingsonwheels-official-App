@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:thingsonwheels/HomeScreen.dart';
 import 'package:thingsonwheels/InternetProvider.dart';
+import 'package:thingsonwheels/OnboardingOnTow/OnboardingFormUI.dart';
 import 'package:thingsonwheels/ResuableWidgets/ThingsOnWheelsAnimation.dart';
 import 'package:thingsonwheels/UserLogin/AppleLogin/AppleLoginService.dart';
 import 'package:thingsonwheels/UserLogin/GoogleLogin/GoogleLoginAuth.dart';
@@ -22,8 +23,8 @@ class LoginScreen extends StatefulWidget{
 
 }
 
-class LoginScreenState extends State<LoginScreen>
-{@override
+class LoginScreenState extends State<LoginScreen> {
+  @override
 Widget build(BuildContext context) {
   final googleLoginLoading = context.watch<GoogleSignInProvider>();
   final appleLoginLoading = context.watch<AppleLoginService>();
@@ -99,6 +100,11 @@ Widget build(BuildContext context) {
                   alignment: Alignment.center,
                   child: phoneLoginButton(),
                 ),
+                const SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.center,
+                  child: onboardingOnTowButton(),
+                ),
               ],
             ),
           ],
@@ -131,7 +137,7 @@ Widget build(BuildContext context) {
           borderRadius: BorderRadius.circular(2.0),
           onTap: () async{
 
-            await handlePhoneLogin(context);
+            await handlePhoneLogin(context, const  PhoneLoginFormUI() as Function());
           },
           child: const Center(
             child: Row(
@@ -191,10 +197,9 @@ Widget build(BuildContext context) {
     }
   }
 
-  Future<void> handlePhoneLogin(BuildContext context) async
+  Future<void> handlePhoneLogin(BuildContext context, Function()  callback) async
   {
     final ip = context.read<InternetProvider>();
-
     await ip.checkInternetConnection(); // Check internet connection
 
     if (!ip.hasInternet) {
@@ -211,7 +216,7 @@ Widget build(BuildContext context) {
       try {
         if(mounted) {
           Navigator.push(context, MaterialPageRoute(
-              builder: (context) => const PhoneLoginFormUI()));
+              builder: (context) => callback()));
         }
       } catch (e) {
         rethrow;
@@ -248,4 +253,55 @@ Future<void> handleAppleLogin(BuildContext context) async
   }
 }
 
+  /// Below method is designed to create button on login-screen and provide option to on-baord the merchant
+  Widget onboardingOnTowButton() {
+
+    return Container(
+      width: 218,
+      height: 37,
+      decoration:  BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        color: Colors.white,
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x40000000),
+            blurRadius: 5.0,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Material(
+        child: InkWell(
+          borderRadius: BorderRadius.circular(2.0),
+          onTap: () async{
+
+            await handlePhoneLogin(context, const OnboardingFormUI() as Function());
+          },
+          child: const Center(
+            child: Row(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(left: 10),
+                  child: Icon(
+                    Icons.phone,
+                    size: 18,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(width: 18),
+                Text(
+                  'Sign in with Phone',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
