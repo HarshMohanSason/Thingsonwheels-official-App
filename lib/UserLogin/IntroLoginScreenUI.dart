@@ -137,7 +137,9 @@ Widget build(BuildContext context) {
           borderRadius: BorderRadius.circular(2.0),
           onTap: () async{
 
-            await handlePhoneLogin(context, const  PhoneLoginFormUI() as Function());
+            await handlePhoneLogin(context, () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const PhoneLoginFormUI()));
+            });
           },
           child: const Center(
             child: Row(
@@ -215,8 +217,7 @@ Widget build(BuildContext context) {
     else {
       try {
         if(mounted) {
-          Navigator.push(context, MaterialPageRoute(
-              builder: (context) => callback()));
+          callback(); // Execute the callback function
         }
       } catch (e) {
         rethrow;
@@ -275,22 +276,17 @@ Future<void> handleAppleLogin(BuildContext context) async
           borderRadius: BorderRadius.circular(2.0),
           onTap: () async{
 
-            await handlePhoneLogin(context, const OnboardingFormUI() as Function());
+            await handlePhoneLogin(context, () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const OnboardingFormUI()));
+            });
+
           },
           child: const Center(
             child: Row(
               children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(left: 10),
-                  child: Icon(
-                    Icons.phone,
-                    size: 18,
-                    color: Colors.black,
-                  ),
-                ),
                 SizedBox(width: 18),
                 Text(
-                  'Sign in with Phone',
+                  'Register Your Business',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 14,
