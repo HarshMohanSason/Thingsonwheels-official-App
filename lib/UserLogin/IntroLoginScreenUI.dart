@@ -136,7 +136,6 @@ Widget build(BuildContext context) {
         child: InkWell(
           borderRadius: BorderRadius.circular(2.0),
           onTap: () async{
-
             await handlePhoneLogin(context, () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => const PhoneLoginFormUI()));
             });
@@ -274,12 +273,11 @@ Future<void> handleAppleLogin(BuildContext context) async
       child: Material(
         child: InkWell(
           borderRadius: BorderRadius.circular(2.0),
-          onTap: () async{
+          onTap: () async {
 
             await handlePhoneLogin(context, () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => const OnboardingFormUI()));
             });
-
           },
           child: const Center(
             child: Row(
