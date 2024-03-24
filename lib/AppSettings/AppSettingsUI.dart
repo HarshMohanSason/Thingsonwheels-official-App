@@ -148,6 +148,7 @@ class AppSettingsState extends State<AppSettings>
 
             }
           else if(title=="Register your business"){
+            await userSignOut(sp, ap);
             Navigator.push(context, MaterialPageRoute(builder: (context)=> const OnboardingFormUI()));
           }
           else
@@ -174,17 +175,7 @@ class AppSettingsState extends State<AppSettings>
                         child: ElevatedButton(
                           onPressed: () async {
 
-                            if (sp.isSignedIn != null && sp.isSignedIn!) {
-                              await sp.signOut();
-                            }
-                            else if(ap.isSignedIn != null && ap.isSignedIn!)
-                              {
-                                await ap.signOut();
-                              }
-                            else {
-                              await FirebaseAuth.instance.signOut();
-                              await storage.delete(key: 'LoggedIn');
-                            }
+                            await userSignOut(sp, ap);
                             if (mounted) {
                               Navigator.push(
                                 context,
@@ -310,5 +301,20 @@ class AppSettingsState extends State<AppSettings>
         },
       ),
     );
+  }
+
+  Future<void> userSignOut(GoogleSignInProvider sp, AppleLoginService ap) async {
+
+    if (sp.isSignedIn != null && sp.isSignedIn!) {
+      await sp.signOut();
+    }
+    else if(ap.isSignedIn != null && ap.isSignedIn!)
+      {
+        await ap.signOut();
+      }
+    else {
+      await FirebaseAuth.instance.signOut();
+      await storage.delete(key: 'LoggedIn');
+    }
   }
 }
