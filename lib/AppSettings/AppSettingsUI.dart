@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:thingsonwheels/AppSettings/AboutUs.dart';
 import 'package:thingsonwheels/AppSettings/Privacy%20Policy.dart';
 import 'package:thingsonwheels/AppSettings/Terms&Conditions.dart';
+import 'package:thingsonwheels/MerchantsOnTow/OnboardingFormUI.dart';
 import 'package:thingsonwheels/ResuableWidgets/ThingsOnWheelsAnimation.dart';
 import 'package:thingsonwheels/UserLogin/AppleLogin/AppleLoginService.dart';
 import 'package:thingsonwheels/UserLogin/GoogleLogin/GoogleLoginAuth.dart';
@@ -94,9 +95,11 @@ class AppSettingsState extends State<AppSettings>
               const  SizedBox(height: 10),
               _buildTile(context, "Terms and Conditions"),
               const  SizedBox(height: 10),
-              _buildTile(context, "Submit a TOW"),
+              _buildTile(context, "Submit your recommended FoodTruck"),
               const  SizedBox(height: 10),
-              _buildTile(context, "Sign Out / Delete Account "),
+              _buildTile(context, "Sign Out / Delete Account"),
+              const  SizedBox(height: 10),
+              _buildTile(context, "Register your business"),
               const  SizedBox(height: 50),
                Align(
                 alignment: Alignment.bottomCenter,
@@ -128,19 +131,15 @@ class AppSettingsState extends State<AppSettings>
         onTap: () async {
 
           if (title == "About Us") {
-
             Navigator.push(context, MaterialPageRoute(builder: (context)=> const AboutUs()));
           }
           else if(title == "Privacy Policy"){
-
             Navigator.push(context, MaterialPageRoute(builder: (context)=> const PrivacyPolicy()));
           }
-          else if (title == "Terms and Conditions")
-            {
+          else if (title == "Terms and Conditions") {
               Navigator.push(context, MaterialPageRoute(builder: (context)=> const TermsAndConditions()));
             }
-          else if(title == "Submit a TOW")
-            {
+          else if(title == "Submit your recommended FoodTruck") {
               if (await canLaunchUrlString("https://forms.gle/rASyS8igzxhFqfXt6")) {
                 await launchUrlString("https://forms.gle/rASyS8igzxhFqfXt6");
               } else {
@@ -148,6 +147,9 @@ class AppSettingsState extends State<AppSettings>
               }
 
             }
+          else if(title=="Register your business"){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=> const OnboardingFormUI()));
+          }
           else
             {
               showDialog(

@@ -90,6 +90,12 @@ class _MerchantProfileScreenState extends State<MerchantProfileScreen> {
               },
               child: const Text('Save Changes'),
             ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Go Live'),
+            ),
           ],
         ),
       ),
