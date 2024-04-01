@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:thingsonwheels/HomeScreen.dart';
 import 'package:thingsonwheels/InternetProvider.dart';
+import 'package:thingsonwheels/MerchantsOnTow/ImageUploadSection.dart';
 import 'package:thingsonwheels/ResuableWidgets/ThingsOnWheelsAnimation.dart';
 import 'package:thingsonwheels/UserLogin/AppleLogin/AppleLoginService.dart';
 import 'package:thingsonwheels/UserLogin/GoogleLogin/GoogleLoginAuth.dart';
@@ -43,7 +44,6 @@ Widget build(BuildContext context) {
              Center(
               child: TOWLogoAnimation(fontSize: screenWidth/8,),
             ),
-            const SizedBox(height: 20),
             Center(
               child: Image.asset(
                 "assets/images/Launch_Screen.png",
@@ -52,61 +52,64 @@ Widget build(BuildContext context) {
               ),
             ),
             const Spacer(),
+            Padding(
+              padding: EdgeInsets.only(bottom: 5),
+              child: Column(
+                children:[
+                  if (Platform.isIOS) ...[// Check if the platform is iOS
+                    Align(
+                        alignment: Alignment.center,
+                        child: appleLoginLoading.isLoading
+                            ? const CircularProgressIndicator(color: Colors.white) : SignInButton(
+                            Buttons.Apple,
+                            onPressed: () async {
+                              try {
+                                await handleAppleLogin(context);
+                              } catch(e) {
+                                e.toString();
+                              }
+                              if (appleLoginLoading.isSignedIn == true && mounted) {
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => const HomeScreen(),
+                                ));
+                              }
 
-            Column(
-              children:[
-                if (Platform.isIOS) ...[// Check if the platform is iOS
+                            }
+                        )),
+                    SizedBox(height: 15)
+                  ],
                   Align(
-                      alignment: Alignment.center,
-                      child: appleLoginLoading.isLoading
-                          ? const CircularProgressIndicator(color: Colors.white) : SignInButton(
-                          Buttons.Apple,
-                          onPressed: () async {
-                            try {
-                              await handleAppleLogin(context);
-                            } catch(e) {
-                              e.toString();
-                            }
-                            if (appleLoginLoading.isSignedIn == true && mounted) {
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => const HomeScreen(),
-                              ));
-                            }
-
-                          }
-                      )),
-                  const SizedBox(height: 20),  ],
-                Align(
-                  alignment: Alignment.center,
-                  child: googleLoginLoading.isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : SignInButton(
-                    Buttons.Google,
-                    onPressed: () async {
-                      try {
-                        await handleGoogleLogin();
-                      } catch(e) {
-                        e.toString();
-                      }
-                      if (googleLoginLoading.isSignedIn == true && mounted) {
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => const HomeScreen(),
-                        ));
-                      }
-                    },
+                    alignment: Alignment.center,
+                    child: googleLoginLoading.isLoading
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : SignInButton(
+                      Buttons.Google,
+                      onPressed: () async {
+                        try {
+                          await handleGoogleLogin();
+                        } catch(e) {
+                          e.toString();
+                        }
+                        if (googleLoginLoading.isSignedIn == true && mounted) {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) => const HomeScreen(),
+                          ));
+                        }
+                      },
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                Align(
-                  alignment: Alignment.center,
-                  child: phoneLoginButton(),
-                ),
-                const SizedBox(height: 20),
-                Align(
-                  alignment: Alignment.center,
-                  child: onboardingOnTowButton(),
-                ),
-              ],
+                  const SizedBox(height: 20),
+                  Align(
+                    alignment: Alignment.center,
+                    child: phoneLoginButton(),
+                  ),
+                  const SizedBox(height: 25),
+                  Align(
+                    alignment: Alignment.center,
+                    child: onboardingOnTowButton(),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -134,8 +137,9 @@ Widget build(BuildContext context) {
         ],
       ),
       child: Material(
+        borderRadius: BorderRadius.circular(2), // Increased border radius
         child: InkWell(
-          borderRadius: BorderRadius.circular(2.0),
+          borderRadius: BorderRadius.circular(12.0),
           onTap: () async{
             await handlePhoneLogin(context, () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => const PhoneLoginFormUI()));
@@ -272,13 +276,12 @@ Future<void> handleAppleLogin(BuildContext context) async
         ],
       ),
       child: Material(
+        borderRadius: BorderRadius.circular(2), // Increased border radius
         child: InkWell(
           borderRadius: BorderRadius.circular(2.0),
           onTap: () async {
 
-            await handlePhoneLogin(context, () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const OnboardingFormUI()));
-            });
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const OnboardingFormUI()));
           },
           child: const Center(
             child: Row(

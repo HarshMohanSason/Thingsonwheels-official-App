@@ -1,9 +1,9 @@
 
 import 'dart:ui';
 import 'package:thingsonwheels/UserLogin/AppleLogin/AppleLoginService.dart';
-import 'package:thingsonwheels/UserLogin/CheckIfLoggedIn.dart';
-import 'package:thingsonwheels/UserLogin/IntroLoginScreenUI.dart';
 import 'package:thingsonwheels/UserLogin/PhoneLogin/PhoneLoginService.dart';
+import 'MerchantsOnTow/MerchantOnTowService.dart';
+import 'UserLogin/IntroLoginScreenUI.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +48,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: ((context) => InternetProvider())),
         ChangeNotifierProvider(create: ((context) => PhoneLoginProvider())),
         ChangeNotifierProvider(create: ((context) => AppleLoginService())),
+        ChangeNotifierProvider(create: ((context) => MerchantsOnTOWService())),
     ],
       child: MaterialApp(
        debugShowCheckedModeBanner: false,
@@ -56,7 +57,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: colorTheme),
           useMaterial3: true,
         ),
-         home:  const CheckIfLoggedIn()),
+         home:  const LoginScreen()),
     );
   }
 }

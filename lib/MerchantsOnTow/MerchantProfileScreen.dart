@@ -1,64 +1,46 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
-import 'ImageUploadSection.dart';
+import 'MerchantOnTowService.dart';
+
 
 class MerchantProfileScreen extends StatefulWidget{
-  final String merchantName;
-  final String merchantMobileNum;
-  final String merchantEmail;
-  final String merchantBusinessName;
-  final String merchantBusinessAddr;
-  final String merchantBusinessMobileNum;
 
 
-  const MerchantProfileScreen({
-    Key? key,
-    required this.merchantName,
-    required this.merchantMobileNum,
-    required this.merchantEmail,
-    required this.merchantBusinessName,
-    required this.merchantBusinessAddr,
-    required this.merchantBusinessMobileNum,
-  }) : super(key: key);
+  const MerchantProfileScreen({Key? key,}) : super(key: key);
 
   @override
   _MerchantProfileScreenState createState() => _MerchantProfileScreenState();
 }
 class _MerchantProfileScreenState extends State<MerchantProfileScreen> {
-  late TextEditingController _merchantContactController;
-  late TextEditingController _businessAddressController;
-  late TextEditingController _businessContactController;
 
   @override
   void initState() {
     super.initState();
-    _merchantContactController = TextEditingController(text: widget.merchantMobileNum);
-    _businessAddressController = TextEditingController(text: widget.merchantBusinessAddr);
-    _businessContactController = TextEditingController(text: widget.merchantBusinessMobileNum);
+
   }
   @override
   void dispose() {
-    _merchantContactController.dispose();
-    _businessAddressController.dispose();
-    _businessContactController.dispose();
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final merchantProvider = context.read<MerchantsOnTOWService>();
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.merchantName}\'s Profile'),
+        leading: Icon(Icons.arrow_back),
+        title: Text('${merchantProvider.merchantName}\'s Profile'),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            ListTile(
+            const ListTile(
               title: const Text('Merchant Contact Number'),
               subtitle: TextField(
-                controller: _merchantContactController,
                 decoration: const InputDecoration(
                   hintText: 'Merchant Contact',
                 ),
@@ -67,7 +49,6 @@ class _MerchantProfileScreenState extends State<MerchantProfileScreen> {
             ListTile(
               title: const Text('Merchant Business Address'),
               subtitle: TextField(
-                controller: _businessAddressController,
                 decoration: const InputDecoration(
                   hintText: 'Business Address',
                 ),
@@ -76,30 +57,57 @@ class _MerchantProfileScreenState extends State<MerchantProfileScreen> {
             ListTile(
               title: const Text('Merchant Business Contact'),
               subtitle: TextField(
-                controller: _businessContactController,
                 decoration: const InputDecoration(
                   hintText: 'Business Contact',
                 ),
               ),
             ),
-            ImageUploadSection(title: 'Business Images', key: UniqueKey()),
-            ImageUploadSection(title: 'Menu Images', key: UniqueKey()),
             ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.orange),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                ),
+              ),
               onPressed: () {
+
                 // Save the updated information to Firebase or local state
               },
-              child: const Text('Save Changes'),
+              child: const Text('Save Changes',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold
+              ),),
             ),
             ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.orange),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                ),
+              ),
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('Go Live'),
+              child: const Text('Go Live',
+                  style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold
+              ),),
             ),
           ],
         ),
       ),
     );
   }
+
+
   
 }
+
+
+

@@ -17,11 +17,13 @@ class TermsAndConditions extends StatelessWidget
           preferredSize: Size.fromHeight(screenHeight / 12), // Adjust the height as needed
           child: AppBar(
             backgroundColor: colorTheme,
-            title: Text(
-              "Terms and Conditions",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: screenWidth / 16,
+            title: Center(
+              child: Text(
+                "Terms and Conditions",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: screenWidth / 16,
+                ),
               ),
             ),
             leading: Padding(

@@ -1,3 +1,5 @@
+
+/*
 import 'package:location/location.dart';
 
 class LocationService {
@@ -27,3 +29,5 @@ class LocationService {
     return await location.getLocation();
   }
 }
+
+ */

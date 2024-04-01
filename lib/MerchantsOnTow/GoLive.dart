@@ -1,3 +1,5 @@
+
+/*
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:thingsonwheels/MerchantsOnTow/MerchantProfileScreen.dart';
@@ -10,7 +12,7 @@ class GoLiveScreen extends StatefulWidget {
 }
 
 class _GoLiveScreenState extends State<GoLiveScreen> {
-  LocationData? _currentLocation;
+  //LocationData? _currentLocation;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,3 +58,5 @@ class _GoLiveScreenState extends State<GoLiveScreen> {
     });
   }
 }
+
+ */

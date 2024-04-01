@@ -21,11 +21,13 @@ class AboutUs extends StatelessWidget
           preferredSize: Size.fromHeight(screenHeight / 12), // Adjust the height as needed
           child: AppBar(
             backgroundColor: colorTheme,
-            title: Text(
-              "About Us",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: screenWidth / 16,
+            title: Center(
+              child: Text(
+                "About Us",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: screenWidth / 16,
+                ),
               ),
             ),
             leading: Padding(

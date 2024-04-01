@@ -20,11 +20,13 @@ class PrivacyPolicy extends StatelessWidget
           preferredSize: Size.fromHeight(screenHeight / 12), // Adjust the height as needed
           child: AppBar(
             backgroundColor: colorTheme,
-            title: Text(
-              "Privacy Policy",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: screenWidth / 16,
+            title: Center(
+              child: Text(
+                "Privacy Policy",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: screenWidth / 16,
+                ),
               ),
             ),
             leading: Padding(

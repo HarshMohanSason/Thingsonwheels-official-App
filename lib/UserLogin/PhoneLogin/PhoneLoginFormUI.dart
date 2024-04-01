@@ -26,9 +26,7 @@ class PhoneLoginScreenState extends State<PhoneLoginFormUI> {
 
   @override
   Widget build(BuildContext context) {
-
-
-
+    final phoneLoginLoading = context.watch<PhoneLoginProvider>();
     return PopScope(
       canPop: false,
       child: Scaffold(
@@ -37,10 +35,10 @@ class PhoneLoginScreenState extends State<PhoneLoginFormUI> {
             scrollDirection: Axis.vertical,
             child: Padding(
               padding: const EdgeInsets.only(top: 50),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Stack(
+
                 children: [
+
                   InkWell(
                       onTap: () {
                         if (mounted) {
@@ -58,6 +56,18 @@ class PhoneLoginScreenState extends State<PhoneLoginFormUI> {
                   SizedBox(height: screenWidth/2.3),
                   Center(
                       child: Form(key: _formKey, child: phoneTextForm(context))),
+
+                  if (phoneLoginLoading.isLoading)
+                    Container(
+                      width: screenWidth,
+                      height: screenHeight,
+                      color: Colors.black.withOpacity(0.5), // Semi-transparent background
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
