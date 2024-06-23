@@ -30,8 +30,10 @@
     <string>Thingsonwheels needs your location to display you the business location</string>
     <key>NSLocationAlwaysUsageDescription</key>
     <string>Thingsonwheels needs your location to display you the business location</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Thingsonwheels needs to access your microphone for uploading audio</string>
     <key>NSCameraUsageDescription</key>
-    <string>Thingsonwheels needs to access your camera to upload images</string>
+    <string>Thingsonwheels needs to access your camera for uploading images</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Thingsonwheels needs to access your photo library to upload images</string>
     <key>LSApplicationQueriesSchemes</key>

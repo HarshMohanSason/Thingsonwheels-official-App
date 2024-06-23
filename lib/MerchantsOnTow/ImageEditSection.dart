@@ -1,41 +1,90 @@
 
 import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:camera/camera.dart';
-import 'package:provider/provider.dart';
-import 'package:thingsonwheels/MerchantsOnTow/OnboardingFormUI.dart';
+import 'package:thingsonwheels/MerchantsOnTow/MerchantProfileScreen.dart';
 import '../CameraUI/CameraUI..dart';
 import '../main.dart';
 import 'package:dotted_border/dotted_border.dart';
-import 'MerchantOnTowService.dart';
-import 'MerchantProfileScreen.dart';
 
-class ImageUploadSection extends StatefulWidget {
-  const ImageUploadSection({Key? key}) : super(key: key);
+class ImageEditSection extends StatefulWidget {
+
+  final List<String?> originalImageUrls;
+  const ImageEditSection({Key? key, required List<String?> imageUrls}) : originalImageUrls = imageUrls, super(key: key);
 
   @override
-  ImageUploadSectionState createState() => ImageUploadSectionState();
+  ImageEditSectionState createState() => ImageEditSectionState();
 }
 
-class ImageUploadSectionState extends State<ImageUploadSection> {
+class ImageEditSectionState extends State<ImageEditSection> {
+  late List<String?> newSavedImageUrls;
 
-  bool isUploaded = false;
+  @override
+  void initState()
+  {
+    super.initState();
+    newSavedImageUrls = List.from(widget.originalImageUrls);
+  }
 
-  Future<void> addImageFromGallery(BuildContext context) async {
-    final imageListProvider = Provider.of<MerchantsOnTOWService>(context, listen: false);
+  void addImage(String imagePath) {
+    int index = newSavedImageUrls.indexWhere((element) => element == null);
+    if (index != -1) {
+      newSavedImageUrls[index] = imagePath;
+    }
+    else
+      {
+        newSavedImageUrls.add(imagePath);
+      }
+  }
+  bool areListsEqual(List<String?> list1, List<String?> list2) {
+    if (list1.length != list2.length) {
+      return false;
+    }
+
+    for (int i = 0; i < list1.length; i++) {
+      if (list1[i] != list2[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+
+   saveImageChanges() {
+    try{
+
+      Navigator.push(context, MaterialPageRoute(builder: (context)=> MerchantProfileScreen(updatedImages: newSavedImageUrls,)));
+    }
+    catch(e)
+    {
+      Fluttertoast.showToast(
+        msg: 'Error saving the images, try again',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
+    }
+  }
+
+  Future<void> addImageFromGallery() async {
+
     final ImagePicker picker = ImagePicker();
     try {
       var pickedImages = await picker.pickMultiImage();
       if (pickedImages.isNotEmpty) {
         // Update only non-null elements in the images list
-        for (int i = 0; i < pickedImages.length && i< imageListProvider.businessImages.length; i++) {
-          imageListProvider.addImage(pickedImages[i].path);
+        for (int i = 0; i < pickedImages.length && i< widget.originalImageUrls.length; i++) {
+          setState(() {
+            addImage(pickedImages[i].path);
+          });
         }
       }
     } catch (e) {
-      //print(e);
       Fluttertoast.showToast(
         msg: 'Error adding images',
         toastLength: Toast.LENGTH_SHORT,
@@ -48,7 +97,7 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
 
   @override
   Widget build(BuildContext context) {
-    final merchantProvider = context.watch<MerchantsOnTOWService>();
+
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -64,13 +113,13 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
                 ),
               ),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=> OnboardingFormUI()));
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> MerchantProfileScreen()));
               }),
           Padding(
             padding: const EdgeInsets.only(top: 20,left: 15),
             child: RichText(
                 text: TextSpan(
-                    text: 'Add images of your business ',
+                    text: 'Edit your current images ',
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold, // Default text color
@@ -81,21 +130,33 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
             padding: const EdgeInsets.only(top: 40, left: 40, right: 40),
             child: Row(
               children: [
-                if (merchantProvider.businessImages.isNotEmpty)
-                  imageContainer(merchantProvider.businessImages.elementAt(0), 0),
+                if (newSavedImageUrls.isNotEmpty)
+                  imageContainer(
+                      newSavedImageUrls.length > 0 ? newSavedImageUrls.elementAt(0) : null,
+                      0
+                  ),
                 const Spacer(),
-                  imageContainer(merchantProvider.businessImages.elementAt(1), 1),
+                imageContainer(
+                    newSavedImageUrls.length > 1 ? newSavedImageUrls.elementAt(1) : null,
+                    1
+                ),
               ],
             ),
           ),
-         const  SizedBox(height: 40),
+          const SizedBox(height: 40),
           Padding(
             padding: const EdgeInsets.only(left: 40, right: 40),
             child: Row(
               children: [
-                imageContainer(merchantProvider.businessImages.elementAt(2), 2),
+                imageContainer(
+                    newSavedImageUrls.length > 2 ? newSavedImageUrls.elementAt(2) : null,
+                    2
+                ),
                 const Spacer(),
-                imageContainer(merchantProvider.businessImages.elementAt(3), 3)
+                imageContainer(
+                    newSavedImageUrls.length > 3 ? newSavedImageUrls.elementAt(3) : null,
+                    3
+                ),
               ],
             ),
           ),
@@ -115,78 +176,33 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
                 ),
               ),
               onPressed: () async {
-                if (merchantProvider.businessImages.isEmpty ||
-                    merchantProvider.businessImages.elementAt(0) == null) {
-                  Fluttertoast.showToast(
-                    msg: 'You need at least one image to register',
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.CENTER,
-                    backgroundColor: Colors.white,
-                    textColor: Colors.black,
-                  );
-                }
-                else{
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (BuildContext context) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 6,
-                          ),
-                          DefaultTextStyle(
-                            style: TextStyle(fontSize: screenWidth / 28),
-                            child: const Text('Uploading...' ,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold
-                            ),),
-                          )
-                        ],
-                      ),
-                    );
-              });
-                isUploaded = await merchantProvider.uploadMerchantInfoToDB();
-                if(isUploaded)
-                  {
-                    Fluttertoast.showToast(
-                      msg: 'Your Info was submitted',
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.CENTER,
-                      backgroundColor: Colors.green,
-                      textColor: Colors.white,
-                    );
-                    if(mounted) {
-                      Navigator.push(context, MaterialPageRoute(
-                          builder: (context) =>  MerchantProfileScreen()));
-                    }
+               if(areListsEqual(widget.originalImageUrls, newSavedImageUrls))
+               {
+                 Fluttertoast.showToast(
+                   msg: 'Make some changes first in order to save them',
+                   toastLength: Toast.LENGTH_SHORT,
+                   gravity: ToastGravity.CENTER,
+                   backgroundColor: Colors.red,
+                   textColor: Colors.white,
+                 );
+               }
+               if(newSavedImageUrls.elementAt(0) == null )
+                 {
+                   Fluttertoast.showToast(
+                     msg: 'You need at least one image',
+                     toastLength: Toast.LENGTH_SHORT,
+                     gravity: ToastGravity.CENTER,
+                     backgroundColor: Colors.red,
+                     textColor: Colors.white,
+                   );
                  }
-                else
-                  {
-                    Fluttertoast.showToast(
-                      msg: 'Error uploading the info, please try again',
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.CENTER,
-                      backgroundColor: Colors.red,
-                      textColor: Colors.white,
-                    );
-                    if(mounted)
-                      {
-                        Navigator.pop(context);
-                      }
-
-                   setState(() {
-                     isUploaded = false;
-                   });
-                  }
-                  }
+               else
+                 {
+                    saveImageChanges();
+                 }
               },
               child: const Text(
-                'Register',
+                'Save Changes',
                 style: TextStyle(
                     fontSize: 18,
                     color: Colors.white,
@@ -201,7 +217,6 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
 
   Future uploadOrTakeImage(BuildContext context) //Widget to display the option to display and upload image
   {
-    var parentContext = context;
     var boxHeight = screenHeight / 5; //Adjust the size
     var cameraIconSize = boxHeight / 2.9; //Adjust the size of the Icons
     var textSize = cameraIconSize / 2.9; //Size for the text
@@ -223,9 +238,9 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
                         await availableCameras().then((value) => Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => CameraUI(cameras: value))));
+                                builder: (_) => CameraUI(cameras: value, imagesToUpdate: newSavedImageUrls,))));
                       } catch (e) //Handle the case when no camera can be loaded
-                      {
+                          {
                         Fluttertoast.showToast(
                           msg: 'Unable to load camera from the device',
                           toastLength: Toast.LENGTH_SHORT,
@@ -261,7 +276,7 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
                   Divider(thickness: 2, indent: screenWidth / 30),
                   InkWell(
                     onTap: () async {
-                      addImageFromGallery(parentContext);
+                      addImageFromGallery();
                     },
                     child: Row(children: [
                       IconButton(
@@ -289,81 +304,90 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
   Widget imageContainer(String? imageFile, int index) {
     return imageFile == null
         ? DottedBorder(
-            color: Colors.grey,
-            strokeWidth: 2,
-            dashPattern: const [18, 18],
-            child: Stack(
-              children: [
-                Container(
-                  width: screenWidth / 3,
-                  height: screenHeight / 5,
-                  color: Colors.grey[200],
-                  child: FittedBox(
-                    fit: BoxFit.contain,
-                    child: imageFile != null
-                        ? FittedBox(
-                            fit: BoxFit.contain,
-                            child: Image.file(File(imageFile)),
-                          )
-                        : const SizedBox(), // Display nothing if no image is selected
-                  ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: InkWell(
-                    onTap: () async {
-                      try {
-                        uploadOrTakeImage(context);
-                      } catch (e) {
-                        Fluttertoast.showToast(
-                          msg: 'Error occurred, try again',
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.CENTER,
-                          backgroundColor: Colors.white,
-                          textColor: Colors.black,
-                        );
-                      }
-                    },
-                    child: Icon(
-                      Icons.add_circle,
-                      color: Colors.orange,
-                      size: screenWidth / 14,
-                    ),
-                  ),
-                ),
-              ],
+      color: Colors.grey,
+      strokeWidth: 2,
+      dashPattern: const [18, 18],
+      child: Stack(
+        children: [
+          Container(
+            width: screenWidth / 3,
+            height: screenHeight / 5,
+            color: Colors.grey[200],
+            child: FittedBox(
+              fit: BoxFit.contain,
+              child: imageFile != null
+                  ? FittedBox(
+                fit: BoxFit.contain,
+                child: _buildImageWidget(imageFile),
+              )
+                  : const SizedBox(), // Display nothing if no image is selected
             ),
-          )
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: InkWell(
+              onTap: () async {
+                try {
+                  uploadOrTakeImage(context);
+                } catch (e) {
+                  Fluttertoast.showToast(
+                    msg: 'Error occurred, try again',
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                    backgroundColor: Colors.white,
+                    textColor: Colors.black,
+                  );
+                }
+              },
+              child: Icon(
+                Icons.add_circle,
+                color: Colors.orange,
+                size: screenWidth / 14,
+              ),
+            ),
+          ),
+        ],
+      ),
+    )
         : Stack(
-            children: [
-              Container(
-                width: screenWidth / 3,
-                height: screenHeight / 5,
-                color: Colors.grey[200],
-                child: FittedBox(fit: BoxFit.contain, child: Image.file(File(imageFile))),
-              ),
-              Positioned(
-                top: 0,
-                right: 0,
-                child: InkWell(
-                  onTap: () async {
-                    deleteOrCancel(context, index);
-                  },
-                  child: Icon(
-                    Icons.edit,
-                    color: Colors.orange,
-                    size: screenWidth / 14,
-                  ),
-                ),
-              ),
-            ],
-          );
+      children: [
+        Container(
+          width: screenWidth / 3,
+          height: screenHeight / 5,
+          color: Colors.grey[200],
+          child: FittedBox(fit: BoxFit.contain, child: _buildImageWidget(imageFile)),
+        ),
+        Positioned(
+          top: 0,
+          right: 0,
+          child: InkWell(
+            onTap: () async {
+              deleteOrCancel(context, index);
+            },
+            child: Icon(
+              Icons.edit,
+              color: Colors.orange,
+              size: screenWidth / 14,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
+  Widget _buildImageWidget(String? imageFile) {
+    if (imageFile != null && imageFile.startsWith("https://")) {
+      // It's a network image
+      return CachedNetworkImage(imageUrl: imageFile);
+    } else {
+      // It's a local file
+      return Image.file(File(imageFile!));
+    }
+  }
   /* Widget to make the delete or cancel popup */
   Future deleteOrCancel(BuildContext context, int index) {
-    final merchantTowProvider = Provider.of<MerchantsOnTOWService>(context, listen: false);
+
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -407,13 +431,13 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
                                       side: const BorderSide(
                                         color: Colors.red, // Red border color
                                         width:
-                                            1.0, // Adjust the border width as needed
+                                        1.0, // Adjust the border width as needed
                                       ),
                                     ),
                                   ),
                                   backgroundColor:
                                   WidgetStateProperty.all<Color>(
-                                          Colors.white),
+                                      Colors.white),
                                   // White background color
                                   fixedSize: WidgetStateProperty.all<Size>(
                                     Size(screenWidth / 3.5, screenWidth / 43.2),
@@ -431,16 +455,16 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
                             ElevatedButton(
                                 onPressed: () {
                                   setState(() {
-                                    merchantTowProvider.businessImages[index] = null;
+                                    newSavedImageUrls[index] = null;
                                     Navigator.pop(context);
                                   });
                                 },
                                 style: ButtonStyle(
                                   shape: WidgetStateProperty.all<
-                                          RoundedRectangleBorder>(
+                                      RoundedRectangleBorder>(
                                       RoundedRectangleBorder(
                                           borderRadius:
-                                              BorderRadius.circular(10.0))),
+                                          BorderRadius.circular(10.0))),
                                   backgroundColor:
                                   WidgetStateProperty.all(Colors.red),
                                   fixedSize: WidgetStateProperty.all(Size(

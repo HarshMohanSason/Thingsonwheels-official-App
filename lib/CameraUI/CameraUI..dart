@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:camera/camera.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:thingsonwheels/MerchantsOnTow/ImageEditSection.dart';
 import 'package:thingsonwheels/MerchantsOnTow/ImageUploadSection.dart';
 import 'dart:io';
 import 'dart:ui';
@@ -13,10 +14,11 @@ import '../main.dart';
 import 'package:path_provider/path_provider.dart';
 
 class CameraUI extends StatefulWidget {
+  final List<String?>? imagesToUpdate;
   final List<CameraDescription>?
       cameras; //list to get the available cameras when the camera icon is pressed
 
-  const CameraUI({Key? key, required this.cameras}) : super(key: key);
+  const CameraUI({Key? key, required this.cameras, this.imagesToUpdate}) : super(key: key);
 
   @override
   State<CameraUI> createState() => _CameraUIState();
@@ -177,10 +179,27 @@ class _CameraUIState extends State<CameraUI> {
                         XFile? finalImage = await croppedImage.then((value) => croppedImageToXFile(value));
 
                         if (finalImage != null && mounted) {
+                          if( widget.imagesToUpdate == null)
                           {
-                              imageListProvider.businessImages.add(finalImage.path);
+                              imageListProvider.addImage(finalImage.path);
                               Navigator.push(context, MaterialPageRoute(builder: (context)=> ImageUploadSection()));
                           }
+                          else
+                            {
+                              setState(() {
+                                int index = widget.imagesToUpdate!.indexWhere((element) => element == null);
+                                if (index != -1) {
+                                  widget.imagesToUpdate![index] = finalImage.path;
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => ImageEditSection(imageUrls: widget.imagesToUpdate!)));
+                                }
+                                else
+                                  {
+                                    widget.imagesToUpdate!.add(finalImage.path);
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => ImageEditSection(imageUrls: widget.imagesToUpdate!)));
+                                  }
+                              });
+                            }
+
                         } else {
                           Fluttertoast.showToast(
                             msg: 'No image found',

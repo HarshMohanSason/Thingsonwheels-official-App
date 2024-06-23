@@ -3,12 +3,29 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 
-class PhoneLoginProvider extends ChangeNotifier {
+class PhoneLoginService extends ChangeNotifier {
 
   bool _isLoading = false; //To display the circular progress indicator when completing a particular function
   bool get isLoading => _isLoading;
+  set setIsLoading(bool val) {
+    _isLoading = val;
+    notifyListeners();
+  }
+
+  String? _errorMessage;
+  String? get errorMessage => _errorMessage;
+
+  bool _loggedInWithPhone = false;
+  bool get loggedInWithPhone => _loggedInWithPhone;
+  set setLoggedInWithPhone(bool val)
+  {
+    _loggedInWithPhone = true;
+    notifyListeners();
+  }
 
   Future<bool> checkIfUserExistsFirestore(String phoneNo) async
   {
@@ -61,6 +78,27 @@ class PhoneLoginProvider extends ChangeNotifier {
           },
 
           verificationFailed: (FirebaseAuthException e) async {
+            if (e.code == 'too-many-requests') {
+              Fluttertoast.showToast(
+                msg: 'Too many requests. Please try again later.',
+                toastLength: Toast.LENGTH_LONG,
+                gravity: ToastGravity.CENTER,
+                backgroundColor: Colors.red,
+                textColor: Colors.white,
+                fontSize: 16.0,
+              );
+            } else {
+              Fluttertoast.showToast(
+                msg: e.message ?? 'An error occurred',
+                toastLength: Toast.LENGTH_LONG,
+                gravity: ToastGravity.CENTER,
+                backgroundColor: Colors.red,
+                textColor: Colors.white,
+                fontSize: 16.0,
+              );
+            }
+            _isLoading = false;
+            notifyListeners();
             throw Exception(e.message);
           },
 
@@ -76,7 +114,9 @@ class PhoneLoginProvider extends ChangeNotifier {
       return completer.future; //return the verification ID
     }
     catch (e) {
-      rethrow;
+     _isLoading = false;
+     notifyListeners();
+     rethrow;
     }
   }
 

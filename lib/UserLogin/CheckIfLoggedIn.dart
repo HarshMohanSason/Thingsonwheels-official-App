@@ -60,7 +60,7 @@ class _CheckIfLoggedInState extends State<CheckIfLoggedIn> {
             }
             else
             {
-              return const LoginScreen();
+              return const IntroLoginScreenUI();
             }
           }
       ),
@@ -72,7 +72,6 @@ class _CheckIfLoggedInState extends State<CheckIfLoggedIn> {
   {
     try {
       if ((await storage.containsKey(key: 'LoggedIn'))) {
-
         return true;
       }
     }
