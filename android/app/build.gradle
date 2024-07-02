@@ -59,10 +59,10 @@ android {
     }
     signingConfigs {
         release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-            storePassword keystoreProperties['storePassword']
+            keyAlias 'my-key-alias'
+            keyPassword 'android'
+            storeFile file('/Users/harshmohansason/my-release-key.jks')
+            storePassword 'android'
         }
     }
     buildTypes {
