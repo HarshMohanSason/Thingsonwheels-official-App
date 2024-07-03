@@ -113,7 +113,7 @@ class OtpUIState extends State<OtpUI> {
                   ),
                 ),
               ),
-              SizedBox(height: screenWidth/2.5),
+              SizedBox(height: screenWidth/3.8),
               Center(child: Form(
                   key: _formKey,
                   child: _pinInputUI(context))),
