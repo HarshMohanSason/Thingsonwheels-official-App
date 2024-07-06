@@ -4,7 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:thingsonwheels/ResuableWidgets/language_state.dart';
 import 'package:thingsonwheels/UserLogin/AppleLogin/apple_login_service.dart';
-import 'package:thingsonwheels/ResuableWidgets/check_if_logged_in.dart';
+import 'package:thingsonwheels/UserLogin/check_if_logged_in.dart';
 import 'package:thingsonwheels/UserLogin/PhoneLogin/phone_login_service.dart';
 import 'Location/location_service.dart';
 import 'MerchantsOnTow/merchant_service.dart';

@@ -30,23 +30,13 @@ class _LanguageSwitcherWidgetState extends State<LanguageSwitcherWidget> {
           context.setLocale(Locale(langStateProvider.currLang, langStateProvider.currLangCode));
         });
       },
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            langStateProvider.currLang == "en" ? "ES" : "EN",
-            style:  TextStyle(
-              color: widget.color,
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
-          ),
-           Icon(
-            Icons.language, // Choose your preferred icon
-            color: widget.color,
-            size: 24,
-          ),
-        ],
+      child: Text(
+        langStateProvider.currLang == "en" ? "Español?" : "English?",
+        style:  TextStyle(
+          color: widget.color,
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+        ),
       ),
     );
   }

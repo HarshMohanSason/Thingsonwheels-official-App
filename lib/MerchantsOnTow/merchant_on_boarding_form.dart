@@ -16,12 +16,25 @@ class OnboardingFormUI extends StatefulWidget {
 }
 
 class OnboardingFormUIState extends State<OnboardingFormUI> {
+
   final _formKey = GlobalKey<FormState>();
   final List<String> _cities = ['Fresno', 'Santa Maria'];
 
+  String? _validateURL(String? value) {
+    final urlRegExp = RegExp(r'^(https?|ftp)://[^\s/$.?#].[^\s]*$', // RegExp to match a URL
+      caseSensitive: false,
+    );
+
+    if (value != null && value.isNotEmpty && !urlRegExp.hasMatch(value)) {
+      return 'Please enter a valid URL'.tr();
+    }
+    return null; // Return null if the value is empty or valid
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    final merchantTowDetails = Provider.of<MerchantsOnTOWService>(context, listen: false);
+    final merchantTowDetails = Provider.of<MerchantsOnTOWService>(context, listen: true);
     return PopScope(
       canPop: false,
       child: Scaffold(
@@ -52,7 +65,7 @@ class OnboardingFormUIState extends State<OnboardingFormUI> {
                             ),
                             content: SafeArea(
                               child: SizedBox(
-                                height: screenHeight / 4,
+                                height: screenHeight / 3.5,
                                 child: Column(
                                   children: [
                                     Icon(Icons.error_outline,
@@ -280,22 +293,25 @@ class OnboardingFormUIState extends State<OnboardingFormUI> {
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
-                        decoration:  InputDecoration(
-                          labelText: 'Social Media'.tr(),
+                        decoration: const InputDecoration(
+                          labelText: 'Instagram?'
                         ),
-                        validator: (value) {
-                          final urlRegExp = RegExp(
-                            r'^(https?|ftp)://[^\s/$.?#].\S*$', // RegExp to match a URL
-                            caseSensitive: false,
-                          );
-
-                          if (value != null && value.isNotEmpty && !urlRegExp.hasMatch(value)) {
-                            return 'Please enter a valid URL'.tr();
-                          }
-
-                          return null; // Return null if the value is empty or valid
-                        },
-                        onSaved: (value) => merchantTowDetails.setSocialLink(value ?? ''),
+                        validator: _validateURL,
+                        onSaved: (value) => merchantTowDetails.setSocialLink('instagram', value!)
+                      ),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          labelText: 'Tiktok?',
+                        ),
+                        validator: _validateURL,
+                        onSaved: (value) => merchantTowDetails.setSocialLink('tiktok', value!)
+                      ),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          labelText: 'Facebook?',
+                        ),
+                        validator: _validateURL,
+                        onSaved: (value) => merchantTowDetails.setSocialLink('facebook', value!)
                       ),
                     ],
                   ),
@@ -306,8 +322,7 @@ class OnboardingFormUIState extends State<OnboardingFormUI> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                       // _formKey.currentState!.save();
-
+                       _formKey.currentState!.save();
                         Navigator.push(context, MaterialPageRoute(
                             builder: (context) => const ImageUploadSection()));
                       }

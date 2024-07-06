@@ -1,15 +1,14 @@
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:thingsonwheels/AppSettings/app_settings_ui.dart';
-import 'package:thingsonwheels/FoodTruckDisplay/tow_tile_ui.dart';
+import 'package:thingsonwheels/TowDisplay/tow_tile_ui.dart';
 import 'package:thingsonwheels/Location/location_selector.dart';
 import 'package:thingsonwheels/ResuableWidgets/under_maintenance_ui.dart';
 import 'package:thingsonwheels/ResuableWidgets/internet_provider.dart';
 import 'package:thingsonwheels/main.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   HomeScreenState createState() => HomeScreenState();
@@ -27,8 +26,7 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  void dispose()
-  {
+  void dispose() {
     internetProvider.dispose();
     super.dispose();
   }
@@ -54,16 +52,16 @@ class HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                     Text(
+                    Text(
                       'No internet connection'.tr(),
                       style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     InkWell(
-                        onTap: ()
-                        {
+                      onTap: () {
                         internetProvider.retryInternetConnection();
-                        },
-                        child: Icon(Icons.refresh, color: colorTheme,size: 30,)),
+                      },
+                      child: Icon(Icons.refresh, color: colorTheme, size: 30),
+                    ),
                     const SizedBox(width: 8),
                   ],
                 ),
@@ -90,35 +88,48 @@ class HomeScreenState extends State<HomeScreen> {
                   return Scaffold(
                     backgroundColor: Colors.white,
                     body: SafeArea(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Column(
-                          children: [
-                            Row(
+                      child: Stack( // Use a Stack for layering
+                        children: [
+                          Positioned.fill(
+                            child: Opacity(
+                              opacity: 0.08, // Adjust opacity as needed
+                              child: Image.asset(
+                                'assets/images/launch_screen.png', // Replace with your image path
+                                fit: BoxFit.contain
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Column(
                               children: [
-                                const Spacer(),
-                                const LocationSelector(),
-                                const Spacer(),
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const AppSettings(),
+                                Row(
+                                  children: [
+                                    const Spacer(),
+                                    const LocationSelector(),
+                                    const Spacer(),
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => const AppSettings(),
+                                          ),
+                                        );
+                                      },
+                                      child: Icon(
+                                        Icons.settings,
+                                        size: MediaQuery.of(context).size.width / 14,
                                       ),
-                                    );
-                                  },
-                                  child: Icon(
-                                    Icons.settings,
-                                    size: MediaQuery.of(context).size.width / 14,
-                                  ),
+                                    ),
+                                  ],
                                 ),
+                                const SizedBox(height: 20),
+                                const Expanded(child: TowTileUI()),
                               ],
                             ),
-                            const SizedBox(height: 20),
-                            const Expanded(child: TowTileUI()),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   );

@@ -2,14 +2,14 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sign_button/sign_button.dart';
 import 'package:thingsonwheels/ResuableWidgets/language_change_button.dart';
 import 'package:thingsonwheels/ResuableWidgets/tow_text_animation.dart';
+import 'package:thingsonwheels/ResuableWidgets/wheel_animation.dart';
 import 'package:thingsonwheels/UserLogin/AppleLogin/apple_login_service.dart';
 import 'package:thingsonwheels/UserLogin/GoogleLogin/google_login_service.dart';
 import 'package:thingsonwheels/UserLogin/PhoneLogin/phone_login_ui.dart';
 import 'package:thingsonwheels/main.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
-
 import '../MerchantsOnTow/merchant_service.dart';
 import '../home_screen.dart';
 
@@ -26,45 +26,43 @@ class IntroLoginScreenUIState extends State<IntroLoginScreenUI> {
     final googleLoginLoading = context.watch<GoogleSignInProvider>();
     final appleLoginLoading = context.watch<AppleLoginService>();
 
-    return Scaffold(
-      backgroundColor: colorTheme,
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.orange[300]!, Colors.orange[700]!],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        backgroundColor: colorTheme,
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.orange[300]!, Colors.orange[700]!],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
           ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.2,
-                child: Center(
+          child: Padding(
+            padding:  EdgeInsets.symmetric(horizontal: 20.0, vertical: screenHeight/17),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
                   child: TOWLogoAnimation(
                     fontSize: screenWidth / 8,
                   ),
                 ),
-              ),
-              Center(
-                child: Image.asset(
-                  "assets/images/launch_screen.png",
-                  height: MediaQuery.of(context).size.height * 0.4,
-                  fit: BoxFit.contain,
+                SizedBox(height: screenHeight/20),
+                const WheelAnimation(),
+                 SizedBox(height:  screenHeight/20),
+                Center(
+                  child: LanguageSwitcherWidget(
+                    color: Colors.white,
+                    buttonContext: context,
+                  ),
                 ),
-              ),
-              LanguageSwitcherWidget(
-                color: Colors.white,
-                buttonContext: context,
-              ),
-              const SizedBox(height: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
+                const Spacer(),
+                Padding(
+                  padding: EdgeInsets.only(bottom: screenHeight/200),
+                  child: Column(
+                    children: [
                   if (Platform.isIOS) ...[
                     Align(
                       alignment: Alignment.center,
@@ -73,39 +71,10 @@ class IntroLoginScreenUIState extends State<IntroLoginScreenUI> {
                         color: Colors.white,
                       )
                           : SignInButton(
-                        Buttons.Apple,
+                        buttonType: ButtonType.apple,
                         onPressed: () async {
-                          try {
-                            await handleAppleLogin(context);
-                            if (appleLoginLoading.isSignedIn == true &&
-                                context.mounted) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const HomeScreen(),
-                                ),
-                              );
-                            }
-                          } catch (e) {
-                           // print(e.toString());
-                          }
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-                  ],
-                  Align(
-                    alignment: Alignment.center,
-                    child: googleLoginLoading.isLoading
-                        ? const CircularProgressIndicator(
-                      color: Colors.white,
-                    )
-                        : SignInButton(
-                      Buttons.Google,
-                      onPressed: () async {
-                        try {
-                          await handleGoogleLogin();
-                          if (googleLoginLoading.isSignedIn == true &&
+                          await handleAppleLogin(context);
+                          if (appleLoginLoading.isSignedIn == true &&
                               context.mounted) {
                             Navigator.push(
                               context,
@@ -114,34 +83,55 @@ class IntroLoginScreenUIState extends State<IntroLoginScreenUI> {
                               ),
                             );
                           }
-                        } catch (e) {
-                          //print(e.toString());
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                  Align(
+                    alignment: Alignment.center,
+                    child: googleLoginLoading.isLoading
+                        ? const CircularProgressIndicator(
+                      color: Colors.white,
+                    )
+                        : SignInButton(
+                      buttonType: ButtonType.google,
+                      onPressed: () async {
+                        await handleGoogleLogin();
+                        if (googleLoginLoading.isSignedIn == true &&
+                            context.mounted) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const HomeScreen(),
+                            ),
+                          );
                         }
                       },
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 15),
                   Align(
                     alignment: Alignment.center,
                     child: phoneLoginButton(),
                   ),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 30),
                   Align(
                     alignment: Alignment.center,
                     child: onboardingOnTowButton(context),
                   ),
-                ],
-              ),
-            ],
-          ),
+                                ],
+                              ),
+                ),
+         ] ),
         ),
       ),
-    );
+      )  );
   }
 
   Widget phoneLoginButton() {
     return Container(
-      width: 218,
+      width: 230,
       height: 37,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18),
@@ -155,9 +145,8 @@ class IntroLoginScreenUIState extends State<IntroLoginScreenUI> {
         ],
       ),
       child: Material(
-        borderRadius: BorderRadius.circular(2),
+        borderRadius: BorderRadius.circular(20),
         child: InkWell(
-          borderRadius: BorderRadius.circular(12.0),
           onTap: () async {
             await handlePhoneLogin(context, () {
               Navigator.push(
@@ -170,21 +159,19 @@ class IntroLoginScreenUIState extends State<IntroLoginScreenUI> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(left: 10, right: 15),
-                  child: Icon(
-                    Icons.phone,
-                    size: 18,
-                    color: Colors.black,
-                  ),
+                Icon(
+                  Icons.phone,
+                  size: 24,
+                  color: Colors.black,
                 ),
+                SizedBox(width: 10),
                 Padding(
-                  padding: EdgeInsets.only(right: 38),
+                  padding: EdgeInsets.only(right: 11),
                   child: Text(
                     'Sign in with Phone',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 14,
+                      fontSize: 15,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -234,6 +221,7 @@ class IntroLoginScreenUIState extends State<IntroLoginScreenUI> {
     return GestureDetector(
       onTap: () {
         provider.setIsMerchantSignup(true);
+
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const PhoneLoginUi()),
@@ -246,12 +234,12 @@ class IntroLoginScreenUIState extends State<IntroLoginScreenUI> {
             text: 'Business owner?'.tr(),
             style: TextStyle(
               color: Colors.black,
-              fontSize: screenHeight / 50,
+              fontSize: screenWidth/23,
               fontWeight: FontWeight.bold,
             ),
             children: <TextSpan>[
               TextSpan(
-                text: ' Register here'.tr(),
+                text: 'Register here'.tr(),
                 style: const TextStyle(
                   fontStyle: FontStyle.italic,
                   decoration: TextDecoration.underline,

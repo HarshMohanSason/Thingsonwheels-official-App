@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:thingsonwheels/FoodTruckDisplay/live_indicator_button_ui.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:thingsonwheels/TowDisplay/live_indicator_button_ui.dart';
+import 'package:thingsonwheels/TowDisplay/zoomed_in_image_display.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import '../main.dart';
 import 'tow_service.dart';
@@ -50,19 +52,18 @@ class TowDetailedDisplayUIState extends State<TowDetailedDisplayUI> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-     canPop: Platform.isIOS ? false: true,
+      canPop: Platform.isAndroid ? true: false,
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.only(left: 16.0, right: 16, bottom: 16, top: 40),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-
                 Padding(
-                  padding: const EdgeInsets.only(top: 40),
+                  padding: const EdgeInsets.only(top: 10),
                   child: InkWell(
                     onTap: () => Navigator.pop(context),
                     child: Icon(
@@ -91,7 +92,8 @@ class TowDetailedDisplayUIState extends State<TowDetailedDisplayUI> {
                       stream: TowService.getLiveStatusStream(),
                       builder: (BuildContext context,
                           AsyncSnapshot<Map<String, bool>> snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting ||
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting ||
                             snapshot.connectionState == ConnectionState.none) {
                           return const LiveIndicator(isLive: false, size: 22);
                         } else {
@@ -107,8 +109,22 @@ class TowDetailedDisplayUIState extends State<TowDetailedDisplayUI> {
                 const SizedBox(height: 60),
                 _buildContactRow(),
                 const SizedBox(height: 60),
-                if (widget.foodTruck.socialLink!.isNotEmpty)
-                  _buildSocialMediaLink(),
+                if (widget.foodTruck.socialLink.isNotEmpty)
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildSocialMediaLink(
+                          'facebook', widget.foodTruck.socialLink['facebook']),
+                      const SizedBox(width: 10),
+                      _buildSocialMediaLink('instagram',
+                          widget.foodTruck.socialLink['instagram']),
+                      const SizedBox(width: 10),
+                      _buildSocialMediaLink(
+                          'tiktok', widget.foodTruck.socialLink['tiktok'])
+                    ],
+                  ),
+
               ],
             ),
           ),
@@ -146,7 +162,9 @@ class TowDetailedDisplayUIState extends State<TowDetailedDisplayUI> {
             itemCount: imageUrls.length,
             itemBuilder: (context, index) {
               String imageUrl = imageUrls[index];
-              return buildImageWidget(imageUrl);
+              return InkWell
+                (onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FullImageView(imageUrls: foodTruck.truckImages!, currImageIndex: index,))),
+                  child: buildImageWidget(imageUrl));
             },
           ),
         ),
@@ -184,22 +202,26 @@ class TowDetailedDisplayUIState extends State<TowDetailedDisplayUI> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildIconButton(Icons.phone, "No phone number available, check social media".tr(), () {
-          if (widget.foodTruck.truckPhoneNo!.isNotEmpty) {
-            launchUrlString('tel:+1${widget.foodTruck.truckPhoneNo.toString()}');
-          }
-        }),
+        _buildIconButton(Icons.phone,
+            "No phone number available, check social media".tr(), () {
+              if (widget.foodTruck.truckPhoneNo!.isNotEmpty) {
+                launchUrlString(
+                    'tel:+1${widget.foodTruck.truckPhoneNo.toString()}');
+              }
+            }),
         const SizedBox(width: 20),
-        _buildIconButton(Icons.location_on, "Location varies, check social media for daily updates".tr(), () {
-          if (widget.foodTruck.truckAddress!.isNotEmpty) {
-            launchMap(widget.foodTruck.truckAddress!);
-          }
-        }),
+        _buildIconButton(Icons.location_on,
+            "Location varies, check social media for daily updates".tr(), () {
+              if (widget.foodTruck.truckAddress!.isNotEmpty) {
+                launchMap(widget.foodTruck.truckAddress!);
+              }
+            }),
       ],
     );
   }
 
-  Widget _buildIconButton(IconData icon, String toastMessage, VoidCallback onTap) {
+  Widget _buildIconButton(IconData icon, String toastMessage,
+      VoidCallback onTap) {
     return InkWell(
       onTap: () {
         onTap();
@@ -231,67 +253,49 @@ class TowDetailedDisplayUIState extends State<TowDetailedDisplayUI> {
     );
   }
 
-  Widget _buildSocialMediaLink() {
-    return Column(
-      children: [
-        InkWell(
-          onTap: () async {
-            if (await canLaunchUrlString(widget.foodTruck.socialLink!)) {
-              await launchUrlString(widget.foodTruck.socialLink!);
-           //   print(widget.foodTruck.socialLink!);
-            } else {
-              Fluttertoast.showToast(
-                msg: 'Could not launch the link'.tr(),
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.CENTER,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-                fontSize: screenWidth / 25, // Adjust text size as needed
-              );
-            }
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-            decoration: BoxDecoration(
-              color: Colors.lightBlue.shade100,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  spreadRadius: 1,
-                  blurRadius: 3,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.link,
-                  color: Colors.lightBlue.shade900,
-                  size: screenHeight / 40,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  "Social Media".tr(),
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: screenWidth / 30,
-                    color: Colors.lightBlue.shade900,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Divider(
-          color: Colors.grey.shade300,
-          thickness: 1,
-        ),
-      ],
-    );
-  }
+  Widget _buildSocialMediaLink(String socialMediaType, String? socialLink) {
+    IconData icon;
+    Color color = Colors.black;
 
+    // Determine icon based on social media type
+    switch (socialMediaType) {
+      case 'facebook':
+        icon = FontAwesomeIcons.facebook;
+        color = Colors.blue;
+        break;
+      case 'instagram':
+        icon = FontAwesomeIcons.instagram;
+        color = Colors.pink;
+        break;
+      case 'tiktok':
+        icon = FontAwesomeIcons.tiktok;
+        color = Colors.black;
+        break;
+      default:
+        icon = Icons.link; // Default icon if social media type is unknown
+    }
+
+    return socialLink != null && socialLink.isNotEmpty
+        ? InkWell(
+      onTap: () async {
+        if (await canLaunchUrlString(socialLink)) {
+          await launchUrlString(socialLink);
+        } else {
+          Fluttertoast.showToast(
+            msg: 'Could not launch the link'.tr(),
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+          );
+        }
+      },
+      child: Icon(
+        icon,
+        size: screenWidth / 12,
+        color: color,
+      ),
+    )
+        : Container();
+  }
 }

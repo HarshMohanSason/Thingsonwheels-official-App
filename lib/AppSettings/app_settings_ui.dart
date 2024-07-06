@@ -88,14 +88,18 @@ class AppSettingsState extends State<AppSettings> {
                       child: Icon(Icons.home, size: screenWidth / 14)),
                   const Spacer(),
                   isAlsoMerchant ?
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) =>  const MerchantProfileScreen()));
-                    },
-                    child: Icon(
-                      size: screenWidth / 12,
-                      Icons.change_circle,
-                      color: colorTheme,
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) =>  const MerchantProfileScreen()));
+                      },
+                      child: Text(
+                        "Switch to merchant".tr(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
                     ),
                   ) : Container(),
                 ],
@@ -230,6 +234,7 @@ class AppSettingsState extends State<AppSettings> {
                     MaterialPageRoute(
                         builder: (context) => const TermsAndConditions()));
               } else if (title.tr() == "Register your business".tr()) {
+
                 bool doesExists = await phoneProvider.checkMerchantExistsWithSameNumber();
                  if(doesExists == true)
                   {
@@ -241,6 +246,9 @@ class AppSettingsState extends State<AppSettings> {
                       textColor: Colors.white,
                       fontSize: 16.0,
                     );
+                    setState(() {
+                      doesExists = false;
+                    });
                   }
                 else {
                   await userSignOut(sp, ap);

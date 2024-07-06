@@ -180,13 +180,28 @@ class OtpUIState extends State<OtpUI> {
             try {
               if (_formKey.currentState!.validate()) {
                 bool verifyOTP = await phoneLoginLoading.checkOTP(widget.verificationID, otpTextController.text); //check if the otp is verified
+                bool isMerchant = await phoneLoginLoading.checkMerchantExistsWithSameNumber();
                 phoneLoginLoading.setIsLoading = false; // Set loading to false
-                if (verifyOTP && context.mounted && !merchantProvider.isMerchantSignUp) {
+                if(verifyOTP && context.mounted && isMerchant)
+                  {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+                    await storage.write(key: 'LoggedIn', value: "true");
+                    Fluttertoast.showToast(
+                      msg: 'You already have an account registered with this number. Sign out login with a different number'.tr(),
+                      toastLength: Toast.LENGTH_LONG,
+                      gravity: ToastGravity.CENTER,
+                      backgroundColor: Colors.lightBlue,
+                      textColor: Colors.white,
+                      fontSize: 16.0,
+                    );
+                  }
+               else if (verifyOTP && context.mounted && !merchantProvider.isMerchantSignUp) {
                   phoneLoginLoading.setLoggedInWithPhone(true);
                   Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
                   await storage.write(key: 'LoggedIn', value: "true");
                   await storage.write(key: 'LoggedInWithPhone', value: "true");
                 }
+
                 else if(verifyOTP && merchantProvider.isMerchantSignUp && context.mounted)
                   {
                     Navigator.push(context, MaterialPageRoute(builder: (context)=> const OnboardingFormUI()));

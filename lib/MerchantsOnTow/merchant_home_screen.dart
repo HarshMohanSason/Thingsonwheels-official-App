@@ -1,9 +1,9 @@
-
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:page_view_indicators/circle_page_indicator.dart';
 import 'package:thingsonwheels/AppSettings/app_settings_ui.dart';
 import 'package:thingsonwheels/MerchantsOnTow/merchant_home_screen_full_image_display.dart';
@@ -13,7 +13,7 @@ import 'live_indicator_button_ui.dart';
 import 'merchant_service.dart';
 
 class MerchantProfileScreen extends StatefulWidget {
-   final List<String?>? updatedImages;
+  final List<String?>? updatedImages;
 
   const MerchantProfileScreen({Key? key, this.updatedImages}) : super(key: key);
 
@@ -30,11 +30,13 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
   TextEditingController businessContactEditor = TextEditingController();
   TextEditingController emailEditor = TextEditingController();
   TextEditingController addressEditor = TextEditingController();
-  TextEditingController socialLinkEditor = TextEditingController();
+  TextEditingController facebookLinkEditor = TextEditingController();
+  TextEditingController tiktokLinkEditor = TextEditingController();
+  TextEditingController instagramLinkEditor = TextEditingController();
   final _formKey = GlobalKey<FormState>(); // GlobalKey for the Form
   final MerchantsOnTOWService merchantsOnTOWService = MerchantsOnTOWService();
   bool goLiveButtonPressed = false;
-  String merchantCity ='';
+  String merchantCity = '';
   final List<String> _cities = ['Fresno', 'Santa Maria'];
 
   @override
@@ -45,13 +47,14 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
 
   @override
   void dispose() {
-
     merchantsOnTOWService.dispose();
     _currentPageNotifier.dispose();
     _scrollController.dispose();
     businessContactEditor.dispose();
     emailEditor.dispose();
-    socialLinkEditor.dispose();
+    facebookLinkEditor.dispose();
+    tiktokLinkEditor.dispose();
+    instagramLinkEditor.dispose();
     super.dispose();
   }
 
@@ -70,14 +73,14 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: Platform.isIOS ? false: true,
+      canPop: Platform.isIOS ? false : true,
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
           leading: InkWell(
-            onTap: ()
-            {
-              Navigator.push(context, MaterialPageRoute(builder: (context)=> const AppSettings()));
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const AppSettings()));
             },
             child: Icon(
               size: screenWidth / 12,
@@ -90,14 +93,14 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
           future: merchantInfoFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator(
+              return const Center(
+                  child: CircularProgressIndicator(
                 color: Colors.black,
                 strokeWidth: 7,
               ));
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else {
-
               var merchantInfo = snapshot.data!;
               return RefreshIndicator(
                 color: Colors.white,
@@ -119,35 +122,39 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
                     key: _formKey,
                     child: Column(
                       children: [
-                         RichText(
-                              text: TextSpan(
-                                text:
-                                    '${merchantInfo['merchantName']}\'s${' '}${'Profile'.tr()}',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize:
-                                      MediaQuery.of(context).size.height / 37,
-                                ),
-                              ),
+                        RichText(
+                          text: TextSpan(
+                            text:
+                                '${merchantInfo['merchantName']}\'s${' '}${'Profile'.tr()}',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: MediaQuery.of(context).size.height / 37,
                             ),
+                          ),
+                        ),
                         const SizedBox(height: 20),
                         StreamBuilder(
                             stream: merchantsOnTOWService.getIsLiveStream(),
                             builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                return const Center(child: CircularProgressIndicator(color: Colors.black87,));
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                    child: CircularProgressIndicator(
+                                  color: Colors.black87,
+                                ));
                               }
                               if (snapshot.hasError) {
                                 return const Center(
-                                    child: Text("Error fetching live information"));
-                              } else if (snapshot.hasData ) {
-                                return  LiveIndicatorButtonProfile(
-                                  isLive: snapshot.data!,
+                                    child: Text(
+                                        "Error fetching live information"));
+                              } else if (snapshot.hasData) {
+                                return LiveIndicatorButtonProfile(
+                                    isLive: snapshot.data!,
                                     onTap: () async {
-
                                       setState(() {
-                                        goLiveButtonPressed = !goLiveButtonPressed;
+                                        goLiveButtonPressed =
+                                            !goLiveButtonPressed;
                                       });
 
                                       if (goLiveButtonPressed) {
@@ -155,8 +162,7 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
                                       } else {
                                         await merchantsOnTOWService.goOffLive();
                                       }
-                                    }
-                                    );
+                                    });
                               } else {
                                 return const SizedBox.shrink();
                               }
@@ -179,7 +185,8 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
                             maxLength: 10,
                             controller: businessContactEditor,
                             decoration: InputDecoration(
-                              hintText: merchantInfo['merchantBusinessMobileNum'],
+                              hintText:
+                                  merchantInfo['merchantBusinessMobileNum'],
                               prefixIcon: const Icon(Icons.phone),
                               border: const OutlineInputBorder(),
                             ),
@@ -191,12 +198,14 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
                                   r'^[0-9]+$'); //RegExp to match the phone number
                               //check if the number isWithin 0-9.
                               if (!nonNumericRegExp.hasMatch(value)) {
-                                return 'Phone number must contain only digits'.tr(); //
+                                return 'Phone number must contain only digits'
+                                    .tr(); //
                               }
                               if (value.length <
                                   10) //Make sure the number is a total of 10 digits.
                               {
-                                return 'Number should be a ten digit number'.tr();
+                                return 'Number should be a ten digit number'
+                                    .tr();
                               }
                               return null;
                             },
@@ -225,14 +234,15 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
                               final emailRegExp = RegExp(
                                   r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
                               if (!emailRegExp.hasMatch(value)) {
-                                return "Please enter a valid email address".tr();
+                                return "Please enter a valid email address"
+                                    .tr();
                               }
                               return null; // Return null if validation passes
                             },
                           ),
                         ),
                         ListTile(
-                          title:  Text(
+                          title: Text(
                             'Business Address'.tr(),
                             style: const TextStyle(
                               fontSize: 16,
@@ -249,18 +259,21 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
                           ),
                         ),
                         ListTile(
-                          title:  Text(
-                            'Social Media'.tr(),
-                            style: const TextStyle(
+                          title: const Text(
+                            'Facebook',
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           subtitle: TextFormField(
-                            controller: socialLinkEditor,
+                            controller: facebookLinkEditor,
                             decoration: InputDecoration(
-                              hintText: merchantInfo['socialLink'] ?? 'Enter social link',
-                              prefixIcon: const Icon(Icons.link),
+                              hintText: merchantInfo['socialLink']
+                                      ['facebook'].toString().isEmpty ?
+                                  'Enter facebook link': merchantInfo['socialLink']
+                              ['facebook'],
+                              prefixIcon: const Icon(Icons.facebook),
                               border: const OutlineInputBorder(),
                             ),
                             validator: (value) {
@@ -269,25 +282,90 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
                               }
                               // Optionally, you can add more specific validation rules for social links
                               // Example: Check if it starts with http:// or https://
-                              if (!value.startsWith('http://') && !value.startsWith('https://')) {
+                              if (!value.startsWith('http://') &&
+                                  !value.startsWith('https://')) {
                                 return 'Please enter a valid URL'.tr();
                               }
                               return null; // Return null if validation passes
                             },
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 25, left: 17, right: 23),
-                          child: DropdownButtonFormField<String>(
+                        ListTile(
+                          title: const Text(
+                            'Instagram',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          subtitle: TextFormField(
+                            controller: instagramLinkEditor,
+                            decoration: InputDecoration(
+                              hintText: merchantInfo['socialLink']
+                              ['instagram'].toString().isEmpty ?
+                              'Enter instagram link': merchantInfo['socialLink']
+                              ['instagram'],
+                              prefixIcon: const Icon(FontAwesomeIcons.instagram),
+                              border: const OutlineInputBorder(),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return null; // No validation error if field is empty
+                              }
+                              // Optionally, you can add more specific validation rules for social links
+                              // Example: Check if it starts with http:// or https://
+                              if (!value.startsWith('http://') &&
+                                  !value.startsWith('https://')) {
+                                return 'Please enter a valid URL'.tr();
+                              }
+                              return null; // Return null if validation passes
+                            },
+                          ),
+                        ),
+                        ListTile(
+                          title: const Text(
+                            'Tiktok',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          subtitle: TextFormField(
+                            controller: tiktokLinkEditor,
+                            decoration: InputDecoration(
+                              hintText: merchantInfo['socialLink']
+                                      ['tiktok'].toString().isEmpty ?
+                                  'Enter tiktok link' :  merchantInfo['socialLink']
+                              ['tiktok'],
+                              prefixIcon: const Icon(Icons.tiktok),
+                              border: const OutlineInputBorder(),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return null; // No validation error if field is empty
+                              }
+                              // Optionally, you can add more specific validation rules for social links
+                              // Example: Check if it starts with http:// or https://
+                              if (!value.startsWith('http://') &&
+                                  !value.startsWith('https://')) {
+                                return 'Please enter a valid URL'.tr();
+                              }
+                              return null; // Return null if validation passes
+                            },
+                          ),
+                        ),
 
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 25, left: 17, right: 23),
+                          child: DropdownButtonFormField<String>(
                             decoration: InputDecoration(
                               labelText: 'Your City'.tr(),
                               labelStyle: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold
-                              ),
-                              border:  const OutlineInputBorder(),
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold),
+                              border: const OutlineInputBorder(),
                             ),
                             items: _cities.map((String city) {
                               return DropdownMenuItem<String>(
@@ -303,57 +381,81 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
                                 merchantCity = value!;
                               });
                             },
-
                           ),
                         ),
                         const SizedBox(height: 20),
                         ElevatedButton(
                           style: ButtonStyle(
-                            backgroundColor: WidgetStateProperty.all(Colors.orange),
-                            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                            backgroundColor:
+                                WidgetStateProperty.all(Colors.orange),
+                            shape:
+                                WidgetStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12.0),
                               ),
                             ),
                           ),
                           onPressed: () async {
+                            String? contactNum =
+                                businessContactEditor.text.isNotEmpty
+                                    ? businessContactEditor.text
+                                    : null;
+                            String? merchantEmail = emailEditor.text.isNotEmpty
+                                ? emailEditor.text
+                                : null;
+                            String? facebookLink = facebookLinkEditor.text.isNotEmpty ? facebookLinkEditor.text : null;
+                            String? tiktokLink = tiktokLinkEditor.text.isNotEmpty ? tiktokLinkEditor.text : null;
+                            String? instagramLink = instagramLinkEditor.text.isNotEmpty ? instagramLinkEditor.text : null;
 
-                            String? contactNum = businessContactEditor.text.isNotEmpty ? businessContactEditor.text : null;
-                            String? merchantEmail = emailEditor.text.isNotEmpty ? emailEditor.text : null;
-                            String? socialLink = socialLinkEditor.text.isNotEmpty ? socialLinkEditor.text : null;
-                            String? address = addressEditor.text.isNotEmpty ? addressEditor.text : null;
+                            String? address = addressEditor.text.isNotEmpty
+                                ? addressEditor.text
+                                : null;
 
                             String? currentAddress = merchantInfo['merchantBusinessAddr'];
                             String? currentContactNum = merchantInfo['merchantBusinessMobileNum'];
                             String? currentMerchantEmail = merchantInfo['merchantEmail'];
-                            String? currentSocialLink = merchantInfo['socialLink'];
+                            String? currentInstagramLink = merchantInfo['socialLink']['instagram'];
+                            String? currentFacebookLink = merchantInfo['socialLink']['facebook'];
+                            String? currentTikTokLink = merchantInfo['socialLink']['tiktok'];
                             List<String?> currentImageUrls = merchantInfo['merchantBusinessImages'].cast<String?>();
 
                             List<String?> newImageUrls = currentImageUrls;
                             if (widget.updatedImages != null) {
-                              newImageUrls = await merchantsOnTOWService.newImageUpload(widget.updatedImages!);
+                              newImageUrls = await merchantsOnTOWService
+                                  .newImageUpload(widget.updatedImages!);
                             }
 
                             bool imagesChanged = !areListsEqual(currentImageUrls, newImageUrls);
 
                             Map<String, dynamic> updates = {};
 
-                            if (contactNum != null && contactNum != currentContactNum) {
+                            if (contactNum != null &&
+                                contactNum != currentContactNum) {
                               updates['merchantBusinessMobileNum'] = contactNum;
                             }
-                            if (merchantEmail != null && merchantEmail != currentMerchantEmail) {
+                            if (merchantEmail != null &&
+                                merchantEmail != currentMerchantEmail) {
                               updates['merchantEmail'] = merchantEmail;
                             }
-                            if (merchantCity.isNotEmpty && merchantCity != merchantInfo['merchantCity']) {
+                            if (merchantCity.isNotEmpty &&
+                                merchantCity != merchantInfo['merchantCity']) {
                               updates['merchantCity'] = merchantCity;
                             }
-                            if (socialLink != null && socialLink != currentSocialLink) {
-                              updates['socialLink'] = socialLink;
+
+
+                            if (facebookLink != null && facebookLink != currentFacebookLink) {
+                              updates['facebook'] = facebookLink;
                             }
-                            if(address != null && address != currentAddress)
-                              {
-                                updates['merchantBusinessAddr'] = address;
-                              }
+                            if (instagramLink != null && instagramLink != currentInstagramLink) {
+                              updates['instagram'] = instagramLink;
+                            }
+                            if (tiktokLink != null && tiktokLink != currentTikTokLink) {
+                              updates['tiktok'] = tiktokLink;
+                            }
+
+                            if (address != null && address != currentAddress) {
+                              updates['merchantBusinessAddr'] = address;
+                            }
                             if (imagesChanged) {
                               updates['merchantBusinessImages'] = newImageUrls;
                             }
@@ -361,13 +463,13 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
                             if (updates.isEmpty) {
                               // No changes detected
                               Fluttertoast.showToast(
-                                msg: 'Make some changes in order ot save them.'.tr(),
+                                msg: 'Make some changes in order ot save them.'
+                                    .tr(),
                                 toastLength: Toast.LENGTH_SHORT,
                                 gravity: ToastGravity.CENTER,
                                 backgroundColor: Colors.lightBlue,
                                 textColor: Colors.white,
                               );
-
                             } else {
                               // Changes detected, proceed with update
                               if (context.mounted) {
@@ -377,18 +479,22 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
                                   builder: (BuildContext dialogContext) {
                                     return Center(
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
                                           const CircularProgressIndicator(
                                             color: Colors.white,
                                             strokeWidth: 6,
                                           ),
                                           DefaultTextStyle(
-                                            style: TextStyle(fontSize: screenWidth / 28),
+                                            style: TextStyle(
+                                                fontSize: screenWidth / 28),
                                             child: const Text(
                                               'Saving changes...',
-                                              style: TextStyle(fontWeight: FontWeight.bold),
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
                                             ),
                                           ),
                                         ],
@@ -400,8 +506,7 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
 
                               // Validate form fields
                               if (_formKey.currentState!.validate()) {
-                                bool isUploaded = await merchantsOnTOWService
-                                    .updateMerchantInfo(updates);
+                                bool isUploaded = await merchantsOnTOWService.updateMerchantInfo(updates);
 
                                 if (isUploaded) {
                                   Fluttertoast.showToast(
@@ -413,7 +518,8 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
                                   );
                                 } else {
                                   Fluttertoast.showToast(
-                                    msg: 'Failed to update your info. Please try again.',
+                                    msg:
+                                        'Failed to update your info. Please try again',
                                     toastLength: Toast.LENGTH_SHORT,
                                     gravity: ToastGravity.CENTER,
                                     backgroundColor: Colors.red,
@@ -422,21 +528,23 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
                                 }
                                 setState(() {
                                   isUploaded = false;
+                                  updates = <String, dynamic>{};
                                   Navigator.of(context).pop();
                                 });
                               }
-                              else
-                                {
-                                  setState(() {
-                                    Navigator.of(context).pop();
-                                  });
-                                }
+                              else {
+                                setState(() {
+                                  updates = {};
+                                  Navigator.of(context).pop();
+                                });
+                              }
                             }
                           },
-                          child:  Text(
+                          child: Text(
                             'Save Changes'.tr(),
                             style: const TextStyle(
-                                color: Colors.white, fontWeight: FontWeight.bold),
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                         const SizedBox(height: 30),
@@ -453,7 +561,10 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
   }
 
   Widget _buildMerchantBusinessImages(Map<String, dynamic> merchantImages) {
-    List<String?> imageUrls = (merchantImages['merchantBusinessImages'] as List<dynamic>).map((e) => e as String?).toList();
+    List<String?> imageUrls =
+        (merchantImages['merchantBusinessImages'] as List<dynamic>)
+            .map((e) => e as String?)
+            .toList();
 
     return Column(
       children: [
@@ -488,7 +599,7 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
               },
               itemCount: imageUrls.length,
               itemBuilder: (context, index) {
-                  String? imageUrl = imageUrls[index];
+                String? imageUrl = imageUrls[index];
                 return GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -510,8 +621,7 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
       return FittedBox(
           fit: BoxFit.contain,
           child: CachedNetworkImage(
-            imageUrl:
-            imagePath,
+            imageUrl: imagePath,
           ));
     } else {
       return Container(

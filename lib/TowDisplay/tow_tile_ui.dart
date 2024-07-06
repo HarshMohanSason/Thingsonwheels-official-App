@@ -2,9 +2,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:thingsonwheels/FoodTruckDisplay/tow_service.dart';
-import 'package:thingsonwheels/FoodTruckDisplay/tow_detailed_display_ui.dart';
+import 'package:thingsonwheels/TowDisplay/tow_detailed_display_ui.dart';
 import 'package:thingsonwheels/Location/location_service.dart';
+import 'package:thingsonwheels/TowDisplay/tow_service.dart';
 import 'package:thingsonwheels/main.dart';
 import 'live_indicator_button_ui.dart';
 

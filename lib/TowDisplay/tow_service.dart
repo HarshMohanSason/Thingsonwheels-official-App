@@ -11,8 +11,7 @@ class TowService {
   String truckName;
   String? truckAddress;
   String? truckPhoneNo;
-  //Map<String, dynamic>? truckTime;
-  String? socialLink;
+  Map<String, dynamic> socialLink;
   bool isLive;
   String docID;
 

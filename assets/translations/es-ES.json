@@ -119,5 +119,6 @@
   "Too many requests. Please try again later": "Demasiadas solicitudes. Por favor, inténtelo de nuevo más tarde.",
   "Your account will be deleted within 30 days of inactivity. You can still login": "Su cuenta se eliminará dentro de los 30 días posteriores a la inactividad. Aún puede iniciar sesión",
   "You already have an account registered with this number. Sign out login with a different number": "Ya tienes una cuenta registrada con este número. Cerrar sesión iniciar sesión con un número diferente",
-  "You already have an account with us, please exit and login from main screen": "Ya tienes una cuenta con nosotros, sal e inicia sesión desde la pantalla principal"
+  "You already have an account with us, please exit and login from main screen": "Ya tienes una cuenta con nosotros, sal e inicia sesión desde la pantalla principal",
+  "Switch to merchant": "Cambiar a comerciante"
 }

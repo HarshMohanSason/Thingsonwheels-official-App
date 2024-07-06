@@ -59,7 +59,6 @@ class PhoneLoginService extends ChangeNotifier {
             .get();
 
         if (snapshot.docs.isNotEmpty) {
-          FirebaseAuth.instance.signOut();
           return true;
         }
       }

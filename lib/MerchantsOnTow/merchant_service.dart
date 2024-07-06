@@ -52,18 +52,16 @@ class MerchantsOnTOWService extends ChangeNotifier {
     notifyListeners();
   }
 
-  String _socialLink ="";
-  String get socialLink => _socialLink;
+ final Map<String, String> _socialLink = {'instagram': '', 'tiktok': '', 'facebook': ''};
+  Map<String, String>  get socialLink => _socialLink;
 
-  void setSocialLink(String socialLink) {
-    _socialLink = socialLink;
+  void setSocialLink(String platform, String val) {
+    _socialLink[platform] = val;
     notifyListeners();
   }
 
 
-
   String _merchantBusinessAddress = "";
-
   String get merchantBusinessAddress => _merchantBusinessAddress;
 
   void setMerchantAddress(String address) {
@@ -320,16 +318,38 @@ class MerchantsOnTOWService extends ChangeNotifier {
 
  Future<bool> updateMerchantInfo(Map<String, dynamic> updates) async {
     try {
-      var snapshot = await FirebaseFirestore.instance
-          .collection('Merchants')
+      var snapshot = await FirebaseFirestore.instance.collection('Merchants')
           .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
           .get();
 
       if (snapshot.docs.isNotEmpty) {
         var documentID = snapshot.docs.first.id;
-        var docRef =
-            FirebaseFirestore.instance.collection('Merchants').doc(documentID);
-        await docRef.update(updates);
+        var docRef = FirebaseFirestore.instance.collection('Merchants').doc(documentID);
+
+        if (updates.containsKey('facebook')) {
+          await docRef.update({
+            'socialLink.facebook': updates['facebook'],
+          });
+          updates.remove('facebook');
+        }
+
+        if (updates.containsKey('tiktok')) {
+          await docRef.update({
+            'socialLink.tiktok': updates['tiktok'],
+          });
+          updates.remove('tiktok');
+        }
+
+        if (updates.containsKey('instagram')) {
+          await docRef.update({
+            'socialLink.instagram': updates['instagram'],
+          });
+          updates.remove('instagram');
+        }
+
+        if (updates.isNotEmpty) {
+          await docRef.update(updates);
+        }
       }
     return true;
     } on SocketException {
