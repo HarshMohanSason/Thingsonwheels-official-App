@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -63,11 +62,10 @@ class AppSettingsState extends State<AppSettings> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: Platform.isIOS ? false: true,
+      canPop: Platform.isIOS ? false : true,
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
@@ -87,67 +85,72 @@ class AppSettingsState extends State<AppSettings> {
                       },
                       child: Icon(Icons.home, size: screenWidth / 14)),
                   const Spacer(),
-                  isAlsoMerchant ?
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) =>  const MerchantProfileScreen()));
-                      },
-                      child: Text(
-                        "Switch to merchant".tr(),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold
-                        ),
-                      ),
-                    ),
-                  ) : Container(),
+                  isAlsoMerchant
+                      ? Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const MerchantProfileScreen()));
+                            },
+                            child: Text(
+                              "Switch to merchant".tr(),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        )
+                      : Container(),
                 ],
               ),
-
               Center(
                 child: Container(
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [Colors.black, Colors.black87],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [Colors.black, Colors.black87],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 10,
+                          spreadRadius: 2,
+                          offset: Offset(0, 5),
+                        ),
+                      ],
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 10,
-                        spreadRadius: 2,
-                        offset: Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  child: CircleAvatar(
-                    radius: screenWidth / 8,
-                    backgroundColor: Colors.transparent, // Set transparent to show gradient
-                    child: user!.photoURL != null
-                        ? ClipOval(
-                      child: Image.network(
-                        user!.photoURL!,
-                        fit: BoxFit.cover,
-                        width: screenWidth / 4,
-                        height: screenWidth / 4,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Icon(Icons.person, size: screenWidth / 10, color: Colors.white);
-                        },
-                      ),
-                    )
-                        : Icon(Icons.person, size: screenWidth / 10, color: Colors.white),
-                  )
-
-
-                ),
+                    child: CircleAvatar(
+                      radius: screenWidth / 8,
+                      backgroundColor: Colors.transparent,
+                      // Set transparent to show gradient
+                      child: user!.photoURL != null
+                          ? ClipOval(
+                              child: Image.network(
+                                user!.photoURL!,
+                                fit: BoxFit.cover,
+                                width: screenWidth / 4,
+                                height: screenWidth / 4,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Icon(Icons.person,
+                                      size: screenWidth / 10,
+                                      color: Colors.white);
+                                },
+                              ),
+                            )
+                          : Icon(Icons.person,
+                              size: screenWidth / 10, color: Colors.white),
+                    )),
               ),
               SizedBox(height: screenWidth / 30),
               Center(
                 child: Text(
-                  user!.displayName ?? user!.phoneNumber ?? '', // Use empty string if both are null
+                  user!.displayName ?? user!.phoneNumber ?? '',
+                  // Use empty string if both are null
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: screenWidth / 20,
@@ -156,7 +159,9 @@ class AppSettingsState extends State<AppSettings> {
                 ),
               ),
               const SizedBox(height: 20),
-              Center(child: LanguageSwitcherWidget(color: Colors.black,buttonContext: context)),
+              Center(
+                  child: LanguageSwitcherWidget(
+                      color: Colors.black, buttonContext: context)),
               const SizedBox(height: 5),
               Text(
                 phoneNumber ?? '',
@@ -234,48 +239,57 @@ class AppSettingsState extends State<AppSettings> {
                     MaterialPageRoute(
                         builder: (context) => const TermsAndConditions()));
               } else if (title.tr() == "Register your business".tr()) {
-
                 bool doesExists = await phoneProvider.checkMerchantExistsWithSameNumber();
-                 if(doesExists == true)
-                  {
-                    Fluttertoast.showToast(
-                      msg: 'You already have an account registered with this number. Sign out login with a different number'.tr(),
-                      toastLength: Toast.LENGTH_LONG,
-                      gravity: ToastGravity.CENTER,
-                      backgroundColor: Colors.lightBlue,
-                      textColor: Colors.white,
-                      fontSize: 16.0,
-                    );
-                    setState(() {
-                      doesExists = false;
-                    });
-                  }
-                else {
+                if (doesExists == true) {
+                  Fluttertoast.showToast(
+                    msg:
+                        'You already have an account registered with this number. Sign out login with a different number'
+                            .tr(),
+                    toastLength: Toast.LENGTH_LONG,
+                    gravity: ToastGravity.CENTER,
+                    backgroundColor: Colors.lightBlue,
+                    textColor: Colors.white,
+                    fontSize: 16.0,
+                  );
+                  setState(() {
+                    doesExists = false;
+                  });
+                } else if (phoneProvider.loggedInWithPhone == true && doesExists == false &&
+                    originalContext.mounted) {
+                  Navigator.push(
+                      originalContext,
+                      MaterialPageRoute(
+                          builder: (context) => const MerchantProfileScreen()));
+                } else {
                   await userSignOut(sp, ap);
 
-                  if(originalContext.mounted) {
-                    Navigator.push(originalContext,
+                  if (originalContext.mounted) {
+                    Navigator.push(
+                        originalContext,
                         MaterialPageRoute(
                             builder: (context) => const IntroLoginScreenUI()));
                   }
                   merchantProvider.setIsMerchantSignup(true);
                   await Future.delayed(const Duration(seconds: 1));
-                  if(originalContext.mounted) {
+                  if (originalContext.mounted) {
                     Navigator.push(
                         originalContext,
                         MaterialPageRoute(
                             builder: (context) => const PhoneLoginUi()));
                   }
                 }
-              } else {
+              }
+              else {
                 showDialog(
-                  context: originalContext, // Use the context where showDialog is called
-                  builder: (BuildContext dialogContext) { // Use dialogContext for the dialog
+                  context: originalContext,
+                  // Use the context where showDialog is called
+                  builder: (BuildContext dialogContext) {
+                    // Use dialogContext for the dialog
                     return AlertDialog(
                       backgroundColor: Colors.white,
                       title: Center(
                         child: Text(
-                           "Are you sure you want to sign out?".tr(),
+                          "Are you sure you want to sign out?".tr(),
                           style: TextStyle(
                             fontSize: screenHeight / 40,
                             color: Colors.black,
@@ -291,30 +305,41 @@ class AppSettingsState extends State<AppSettings> {
                               child: ElevatedButton(
                                 onPressed: () async {
                                   await userSignOut(sp, ap);
-                                  if(dialogContext.mounted) {
-                                    if (dialogContext.findRenderObject()!
+                                  if (dialogContext.mounted) {
+                                    if (dialogContext
+                                        .findRenderObject()!
                                         .attached) {
                                       Navigator.push(
                                         dialogContext,
                                         MaterialPageRoute(
-                                          builder: (
-                                              context) => const IntroLoginScreenUI(),
+                                          builder: (context) =>
+                                              const IntroLoginScreenUI(),
                                         ),
                                       );
                                     }
                                   }
                                 },
                                 style: ButtonStyle(
-                                  backgroundColor: WidgetStateProperty.all<Color>(const Color(0xFFFF9800)),
-                                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                                  backgroundColor:
+                                      WidgetStateProperty.all<Color>(
+                                          const Color(0xFFFF9800)),
+                                  shape: WidgetStateProperty.all<
+                                      RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12.0),
                                     ),
                                   ),
-                                  padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+                                  padding: WidgetStateProperty.all<
+                                      EdgeInsetsGeometry>(
                                     EdgeInsets.symmetric(
-                                      vertical: MediaQuery.of(dialogContext).size.height / 75,
-                                      horizontal: MediaQuery.of(dialogContext).size.width / 58,
+                                      vertical: MediaQuery.of(dialogContext)
+                                              .size
+                                              .height /
+                                          75,
+                                      horizontal: MediaQuery.of(dialogContext)
+                                              .size
+                                              .width /
+                                          58,
                                     ),
                                   ),
                                 ),
@@ -335,13 +360,15 @@ class AppSettingsState extends State<AppSettings> {
                       actions: [
                         TextButton(
                           onPressed: () {
-                            Navigator.of(dialogContext).pop(); // Close the dialog using dialogContext
+                            Navigator.of(dialogContext)
+                                .pop(); // Close the dialog using dialogContext
                           },
                           child: Text(
                             "Cancel".tr(),
                             style: TextStyle(
                               color: Colors.black,
-                              fontSize: MediaQuery.of(dialogContext).size.width / 30,
+                              fontSize:
+                                  MediaQuery.of(dialogContext).size.width / 30,
                             ),
                           ),
                         ),
@@ -359,11 +386,13 @@ class AppSettingsState extends State<AppSettings> {
       GoogleSignInProvider sp, AppleLoginService ap) async {
     if (sp.isSignedIn != null && sp.isSignedIn!) {
       await sp.signOut();
+      await storage.deleteAll();
     } else if (ap.isSignedIn != null && ap.isSignedIn!) {
       await ap.signOut();
+      await storage.deleteAll();
     } else {
       await FirebaseAuth.instance.signOut();
-      await storage.delete(key: 'LoggedIn');
+      await storage.deleteAll();
     }
   }
 }

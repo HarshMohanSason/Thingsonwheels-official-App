@@ -1,4 +1,5 @@
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -163,9 +164,7 @@ class TowTileUIState extends State<TowTileUI> {
                     return Stack(
                       children: [
                         CircleAvatar(
-                          backgroundImage:
-                              NetworkImage(foodTruck.truckImages!.first,
-                              ),
+                          backgroundImage: CachedNetworkImageProvider(foodTruck.truckImages!.first),
                           radius: screenWidth / 12,
                         ),
                         Positioned(

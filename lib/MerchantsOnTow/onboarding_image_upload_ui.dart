@@ -193,15 +193,6 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
                    }
                   else
                     {
-                      /*Fluttertoast.showToast(
-                        msg: 'Error occurred, please try again'.tr(),
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.CENTER,
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white,
-                      );
-
-                       */
                       if(context.mounted)
                         {
                           Navigator.pop(context);

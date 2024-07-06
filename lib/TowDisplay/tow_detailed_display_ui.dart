@@ -1,5 +1,6 @@
 
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -176,7 +177,8 @@ class TowDetailedDisplayUIState extends State<TowDetailedDisplayUI> {
     if (imagePath.isNotEmpty) {
       return FittedBox(
         fit: BoxFit.cover,
-        child: Image.network(
+        child: CachedNetworkImage(
+          imageUrl:
           imagePath,
         ),
       );

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:page_view_indicators/circle_page_indicator.dart';
 import '../main.dart';
@@ -35,7 +36,7 @@ class _FullImageViewState extends State<FullImageView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children : [
               Padding(
-                padding: const EdgeInsets.only(top: 60, left: 10),
+                padding: const EdgeInsets.only(top: 50, left: 10),
                 child: Align(
                     alignment: Alignment.topLeft,
                     child: InkWell(
@@ -44,25 +45,27 @@ class _FullImageViewState extends State<FullImageView> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(top: screenHeight - 780),
-                child: Container(
-                    color: Colors.transparent,
-                    width: screenWidth,
-                    height: screenHeight/2,
-                    child: PageView.builder(
-                      controller: PageController(initialPage: widget.currImageIndex),
-                      onPageChanged:  (page)
-                      {
-                        setState(() {
-                          _currentPageNotifier.value = page ;
-                        });
-                      },
-                      itemCount: widget.imageUrls.length,
-                      itemBuilder: (context, index) {
-                        List<String> imageUrls = widget.imageUrls.map((dynamic imageUrl) => imageUrl.toString()).toList();
-                        return buildImageWidget(imageUrls[index]);
-                      },
-                    )
+                padding: const EdgeInsets.only(top: 20.0),
+                child: Center(
+                  child: Container(
+                      color: Colors.transparent,
+                      width: screenWidth,
+                      height: screenHeight/2,
+                      child: PageView.builder(
+                        controller: PageController(initialPage: widget.currImageIndex),
+                        onPageChanged:  (page)
+                        {
+                          setState(() {
+                            _currentPageNotifier.value = page ;
+                          });
+                        },
+                        itemCount: widget.imageUrls.length,
+                        itemBuilder: (context, index) {
+                          List<String> imageUrls = widget.imageUrls.map((dynamic imageUrl) => imageUrl.toString()).toList();
+                          return buildImageWidget(imageUrls[index]);
+                        },
+                      )
+                  ),
                 ),
               ),
               Padding(
@@ -80,7 +83,8 @@ class _FullImageViewState extends State<FullImageView> {
       child: InteractiveViewer(  //Using Interactive viewer to make sure the image is zoomable
         minScale: 0.5,
         maxScale: 4,
-        child: Image.network(
+        child: CachedNetworkImage(
+          imageUrl:
           imagePath,
         ),
       ),

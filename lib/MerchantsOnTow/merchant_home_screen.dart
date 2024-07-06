@@ -271,7 +271,7 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
                             decoration: InputDecoration(
                               hintText: merchantInfo['socialLink']
                                       ['facebook'].toString().isEmpty ?
-                                  'Enter facebook link': merchantInfo['socialLink']
+                                  'enter_facebook_link'.tr(): merchantInfo['socialLink']
                               ['facebook'],
                               prefixIcon: const Icon(Icons.facebook),
                               border: const OutlineInputBorder(),
@@ -303,7 +303,7 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
                             decoration: InputDecoration(
                               hintText: merchantInfo['socialLink']
                               ['instagram'].toString().isEmpty ?
-                              'Enter instagram link': merchantInfo['socialLink']
+                              'enter_instagram_link'.tr(): merchantInfo['socialLink']
                               ['instagram'],
                               prefixIcon: const Icon(FontAwesomeIcons.instagram),
                               border: const OutlineInputBorder(),
@@ -335,7 +335,7 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
                             decoration: InputDecoration(
                               hintText: merchantInfo['socialLink']
                                       ['tiktok'].toString().isEmpty ?
-                                  'Enter tiktok link' :  merchantInfo['socialLink']
+                                  'enter_tiktok_link'.tr() :  merchantInfo['socialLink']
                               ['tiktok'],
                               prefixIcon: const Icon(Icons.tiktok),
                               border: const OutlineInputBorder(),

@@ -24,9 +24,9 @@ class OtpUI extends StatefulWidget {
 class OtpUIState extends State<OtpUI> {
 
   TextEditingController otpTextController = TextEditingController();
-  final _formKey = GlobalKey<FormState>(); // GlobalKey for the Form
+  final _formKey = GlobalKey<FormState>();
   late Timer timer;
-  int remainingTime = 120; // Initial remaining time in seconds
+  int remainingTime = 60;
   bool verifyNewVerificationID = false;
 
   @override
