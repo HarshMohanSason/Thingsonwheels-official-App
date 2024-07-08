@@ -1,9 +1,8 @@
 
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import '../ResuableWidgets/toast_widget.dart';
 
 class TowService {
 
@@ -48,16 +47,11 @@ class TowService {
 
       return trucks;
     } on SocketException {
-      Fluttertoast.showToast(
-        msg: 'Check your Internet Connection',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+      showToast('Check your Internet Connection', Colors.red, Colors.white, 'SHORT');
     return [];
     }
     catch (e) {
+      showToast('Error occurred, please try again', Colors.red, Colors.white, 'SHORT');
       return []; // Return an empty list in case of error
     }
   }
@@ -76,13 +70,7 @@ class TowService {
     }
     on SocketException
     {
-      Fluttertoast.showToast(
-        msg: 'Check your Internet Connection',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+      showToast('Check your Internet Connection', Colors.red, Colors.white, 'SHORT');
       rethrow;
     }
     catch (e) {

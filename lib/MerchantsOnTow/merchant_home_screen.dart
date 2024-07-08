@@ -6,7 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:page_view_indicators/circle_page_indicator.dart';
 import 'package:thingsonwheels/AppSettings/app_settings_ui.dart';
-import 'package:thingsonwheels/MerchantsOnTow/merchant_home_screen_full_image_display.dart';
+import '../ResuableWidgets/view_full_image_ui.dart';
 import '../main.dart';
 import 'merchant_home_screen_image_edit.dart';
 import 'live_indicator_button_ui.dart';
@@ -606,8 +606,8 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  DetailedMerchantImageDisplay(
-                                      image: imageUrl!)));
+                                  FullImageView(
+                                      images: imageUrls, currImageIndex: index,)));
                     },
                     child: buildImageWidget(imageUrl));
               },

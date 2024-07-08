@@ -1,10 +1,9 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:thingsonwheels/ResuableWidgets/toast_widget.dart';
 import '../../main.dart';
 
 class GoogleSignInProvider extends ChangeNotifier {
@@ -189,21 +188,11 @@ class GoogleSignInProvider extends ChangeNotifier {
         // Clear local storage or perform other cleanup as needed
         await storage.delete(key: 'LoggedIn');
 
-        Fluttertoast.showToast(
-          msg: 'Your account will be deleted within 30 days of inactivity. You can still login'.tr(),
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-        );
+        showToast('Your account will be deleted within 30 days of inactivity. You can still login',Colors.green,Colors.white, 'SHORT');
+
       } catch (e) {
-        Fluttertoast.showToast(
-          msg: 'Error occurred, please try again'.tr(),
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-        );
+        showToast('Error occurred, please try again', Colors.red,Colors.white,'SHORT');
+
       }
     }
 }

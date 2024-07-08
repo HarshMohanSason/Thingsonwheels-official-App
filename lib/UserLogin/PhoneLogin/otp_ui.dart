@@ -3,13 +3,13 @@ import 'dart:async';
 import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'package:thingsonwheels/home_screen.dart';
 import 'package:thingsonwheels/MerchantsOnTow/merchant_service.dart';
 import 'package:thingsonwheels/MerchantsOnTow/merchant_on_boarding_form.dart';
 import 'package:thingsonwheels/UserLogin/PhoneLogin/phone_login_service.dart';
+import '../../ResuableWidgets/toast_widget.dart';
 import '../../main.dart';
 
 class OtpUI extends StatefulWidget {
@@ -178,65 +178,42 @@ class OtpUIState extends State<OtpUI> {
           onCompleted: (value)
           async {
             try {
-              if (_formKey.currentState!.validate()) {
-                bool verifyOTP = await phoneLoginLoading.checkOTP(widget.verificationID, otpTextController.text); //check if the otp is verified
-                bool isMerchant = await phoneLoginLoading.checkMerchantExistsWithSameNumber();
-                phoneLoginLoading.setIsLoading = false; // Set loading to false
-                if(verifyOTP && context.mounted && isMerchant)
-                  {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
-                    await storage.write(key: 'LoggedIn', value: "true");
-                    Fluttertoast.showToast(
-                      msg: 'You already have an account registered with this number. Sign out login with a different number'.tr(),
-                      toastLength: Toast.LENGTH_LONG,
-                      gravity: ToastGravity.CENTER,
-                      backgroundColor: Colors.lightBlue,
-                      textColor: Colors.white,
-                      fontSize: 16.0,
-                    );
-                  }
-               else if (verifyOTP && context.mounted && !merchantProvider.isMerchantSignUp) {
-                  phoneLoginLoading.setLoggedInWithPhone(true);
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
-                  await storage.write(key: 'LoggedIn', value: "true");
-                  await storage.write(key: 'LoggedInWithPhone', value: "true");
-                }
+              if (!_formKey.currentState!.validate()) {
+                phoneLoginLoading.setIsLoading = false;
+                showToast('OTP entered is invalid', Colors.red, Colors.white, 'SHORT');
+                return;
+              }
 
-                else if(verifyOTP && merchantProvider.isMerchantSignUp && context.mounted)
-                  {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=> const OnboardingFormUI()));
+              bool verifyOTP = await phoneLoginLoading.checkOTP(widget.verificationID, otpTextController.text);
+              bool isAlreadyMerchant = await phoneLoginLoading.checkMerchantExistsWithSameNumber();
+              phoneLoginLoading.setIsLoading = false;
+
+              if (!verifyOTP) {
+                showToast('OTP entered is invalid', Colors.red, Colors.white, 'SHORT');
+                return;
+              }
+
+              if (context.mounted) {
+                if (isAlreadyMerchant) {
+                  if (merchantProvider.isMerchantSignUp) {
+                    await _handleMerchantExistsAndSignUp(phoneLoginLoading);
+                  } else {
+                    await _handleMerchantExists(phoneLoginLoading);
                   }
-                else if (verifyNewVerificationID && context.mounted) {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => const HomeScreen()));
-                  await storage.write(key: 'LoggedIn', value: "true");
+                } else {
+                  if (merchantProvider.isMerchantSignUp) {
+                    await _handleNewMerchantSignUp();
+                  } else {
+                    await _handleNewUser(phoneLoginLoading);
+                  }
                 }
               }
-              else
-                {
-                phoneLoginLoading.setIsLoading = false;
-                  Fluttertoast.showToast(
-                    msg: 'OTP entered is invalid'.tr(),
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.CENTER,
-                    backgroundColor: Colors.red,
-                    textColor: Colors.white,
-                  );
-                }
-            }
-            catch(e)
-            {
+            } catch (e) {
               phoneLoginLoading.setIsLoading = false;
-              Fluttertoast.showToast(
-                msg: 'Error occurred, please try again'.tr(),
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.CENTER,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-              );
+              showToast('An error occurred: $e', Colors.red, Colors.white, 'SHORT');
             }
-
           },
+
           validator: (value) {
             final nonNumericRegExp = RegExp(r'^[0-9]');
             if (value!.isEmpty == true) {
@@ -252,4 +229,31 @@ class OtpUIState extends State<OtpUI> {
           }),
     );
   }
+
+  Future<void> _handleMerchantExistsAndSignUp(PhoneLoginService phoneLoginLoading) async {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+    phoneLoginLoading.setLoggedInWithPhone(true);
+    await storage.write(key: 'LoggedIn', value: "true");
+    await storage.write(key: 'LoggedInWithPhone', value: "true");
+    showToast('You already have a Merchant account registered with this number. Sign out login with a different number'.tr(), Colors.lightBlue, Colors.white, 'SHORT');
+  }
+
+  Future<void> _handleMerchantExists(PhoneLoginService phoneLoginLoading) async {
+    phoneLoginLoading.setLoggedInWithPhone(true);
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+    await storage.write(key: 'LoggedIn', value: "true");
+    await storage.write(key: 'LoggedInWithPhone', value: "true");
+  }
+
+  Future<void> _handleNewMerchantSignUp() async {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const OnboardingFormUI()));
+  }
+
+  Future<void> _handleNewUser(PhoneLoginService phoneLoginLoading) async {
+    phoneLoginLoading.setLoggedInWithPhone(true);
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+    await storage.write(key: 'LoggedIn', value: "true");
+    await storage.write(key: 'LoggedInWithPhone', value: "true");
+  }
+
 }

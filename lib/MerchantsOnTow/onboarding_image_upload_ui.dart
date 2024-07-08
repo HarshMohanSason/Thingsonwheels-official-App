@@ -3,12 +3,12 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:camera/camera.dart';
 import 'package:provider/provider.dart';
 import 'package:thingsonwheels/UserLogin/PhoneLogin/phone_login_service.dart';
 import '../CameraUI/camera_ui.dart';
+import '../ResuableWidgets/toast_widget.dart';
 import '../main.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'merchant_service.dart';
@@ -38,22 +38,11 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
       }
     } on PlatformException
     {
-      Fluttertoast.showToast(
-        msg: 'Could not add the image, allow access for Thingsonwheels to upload images in settings'.tr(),
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+      showToast('Could not add the image, allow access for Thingsonwheels to upload images in settings', Colors.red, Colors.white, 'SHORT');
     }
     catch (e) {
-      Fluttertoast.showToast(
-        msg: 'Error occurred, please try again'.tr(),
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+      showToast('Error occurred, please try again', Colors.red, Colors.white, 'SHORT');
+
     }
   }
 
@@ -130,23 +119,13 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
                 ),
                 onPressed: () async {
                    if (merchantProvider.businessImages.elementAt(0) == null) {
-                    Fluttertoast.showToast(
-                      msg: 'The main image cannot be empty'.tr(),
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.CENTER,
-                      backgroundColor: Colors.red,
-                      textColor: Colors.white,
-                    );
+
+                     showToast('The main image cannot be empty', Colors.red, Colors.white, 'SHORT');
                   }
                    if(await phoneProvider.checkMerchantExistsWithSameNumber() == true)
                      {
-                       Fluttertoast.showToast(
-                         msg: 'You already have an account with us, please exit and login from main screen'.tr(),
-                         toastLength: Toast.LENGTH_SHORT,
-                         gravity: ToastGravity.CENTER,
-                         backgroundColor: Colors.red,
-                         textColor: Colors.white,
-                       );
+                       showToast('You already have an account with us, please exit and login from main screen', Colors.red, Colors.white, 'SHORT');
+
                      }
                   else{
                     if(context.mounted) {
@@ -179,13 +158,8 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
                   isUploaded = await merchantProvider.uploadMerchantInfoToDB();
                   if(isUploaded)
                     {
-                      Fluttertoast.showToast(
-                        msg: 'Your Info was submitted'.tr(),
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.CENTER,
-                        backgroundColor: Colors.green,
-                        textColor: Colors.white,
-                      );
+                     showToast('Your Info was submitted', Colors.green, Colors.white, 'SHORT');
+
                       if(context.mounted) {
                         Navigator.push(context, MaterialPageRoute(
                             builder: (context) =>  const MerchantProfileScreen()));
@@ -246,13 +220,7 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
                                 builder: (_) => CameraUI(cameras: value))));
                       } catch (e) //Handle the case when no camera can be loaded
                       {
-                        Fluttertoast.showToast(
-                          msg: 'Unable to load camera from the device'.tr(),
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.CENTER,
-                          backgroundColor: Colors.white,
-                          textColor: Colors.black,
-                        );
+                        showToast('Unable to load camera from the device', Colors.white, Colors.black, 'SHORT');
                       }
                     },
                     child: Padding(
@@ -336,13 +304,7 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
                       try {
                         uploadOrTakeImage(context);
                       } catch (e) {
-                        Fluttertoast.showToast(
-                          msg: 'Error occurred, please try again'.tr(),
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.CENTER,
-                          backgroundColor: Colors.white,
-                          textColor: Colors.black,
-                        );
+                        showToast('Error occurred, please try again', Colors.black, Colors.white, 'SHORT');
                       }
                     },
                     child: Icon(

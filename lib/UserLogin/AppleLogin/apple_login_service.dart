@@ -2,11 +2,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:thingsonwheels/ResuableWidgets/toast_widget.dart';
 import '../../main.dart';
 import 'package:crypto/crypto.dart';
 
@@ -123,13 +122,7 @@ class AppleLoginService extends ChangeNotifier {
       notifyListeners();
     }
     on SocketException {
-      Fluttertoast.showToast(
-        msg: 'Check your Internet Connection'.tr(),
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+      showToast('Check your Internet Connection', Colors.red, Colors.white, 'SHORT');
       _hasError = true;
       _isLoading = false;
       notifyListeners();
@@ -159,24 +152,12 @@ class AppleLoginService extends ChangeNotifier {
       return false;
     }
     on SocketException {
-      Fluttertoast.showToast(
-        msg: 'Check your Internet Connection'.tr(),
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
-    rethrow;
+      showToast('Check your Internet Connection', Colors.red, Colors.white, 'SHORT');
+    return false;
     }
     catch (e) {
-      Fluttertoast.showToast(
-        msg: 'Error occurred, please try again'.tr(),
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
-    rethrow;}
+      showToast('Error occurred, please try again', Colors.red, Colors.white, 'SHORT');
+    return false;}
   }
 
   //Function to save the Data to the firestore database
@@ -196,13 +177,7 @@ class AppleLoginService extends ChangeNotifier {
       notifyListeners();
     }
     on SocketException {
-      Fluttertoast.showToast(
-        msg: 'Check your Internet Connection'.tr(),
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+      showToast('Check your Internet Connection', Colors.red, Colors.white, 'SHORT');
     }
     catch (e) {
       throw e.toString();
@@ -218,31 +193,13 @@ class AppleLoginService extends ChangeNotifier {
       });
       // Clear local storage or perform other cleanup as needed
       await storage.delete(key: 'LoggedIn');
+      showToast('Your account will be deleted within 30 days of inactivity. You can still login', Colors.green, Colors.white, 'SHORT');
 
-      Fluttertoast.showToast(
-        msg: 'Your account will be deleted within 30 days of inactivity. You can still login'.tr(),
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-      );
     } on SocketException {
-      Fluttertoast.showToast(
-        msg: 'Check your Internet Connection'.tr(),
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+      showToast('Check your Internet Connection', Colors.red, Colors.white, 'SHORT');
     }
     catch (e) {
-      Fluttertoast.showToast(
-        msg: 'Error occurred, please try again'.tr(),
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+      showToast('Error occurred, please try again', Colors.red, Colors.white, 'SHORT');
     }
   }
 }

@@ -29,7 +29,7 @@ class PhoneLoginScreenState extends State<PhoneLoginUi> {
   @override
   Widget build(BuildContext context) {
     final phoneLoginLoading = context.watch<PhoneLoginService>();
-    final merchantProvider = context.read<MerchantsOnTOWService>();
+    final merchantProvider = context.watch<MerchantsOnTOWService>();
     return PopScope(
       canPop: Platform.isIOS ? false: true,
       child: Scaffold(

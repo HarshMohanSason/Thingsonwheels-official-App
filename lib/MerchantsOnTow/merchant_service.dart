@@ -1,13 +1,13 @@
 
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thingsonwheels/ResuableWidgets/toast_widget.dart';
 
 // Provider class to handle state of MerchantOnTOWBoarding form.
 class MerchantsOnTOWService extends ChangeNotifier {
@@ -16,6 +16,7 @@ class MerchantsOnTOWService extends ChangeNotifier {
   {
     _loadIsMerchantSignUp();
   }
+
   final List<String?> _businessImages = List<String?>.generate(4, (_) => null);
   List<String?> get businessImages => _businessImages;
 
@@ -136,23 +137,11 @@ class MerchantsOnTOWService extends ChangeNotifier {
       }
       return imageUrls;
     } on SocketException {
-      Fluttertoast.showToast(
-        msg: 'Check your Internet Connection',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+      showToast('Check your Internet Connection', Colors.red, Colors.white, 'SHORT');
       return imageUrls;
     }
     catch (e) {
-      Fluttertoast.showToast(
-        msg: '$e',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+      showToast('$e', Colors.red, Colors.white, 'SHORT');
       return imageUrls;
     }
   }
@@ -175,23 +164,11 @@ class MerchantsOnTOWService extends ChangeNotifier {
       });
       return true;
     } on SocketException {
-      Fluttertoast.showToast(
-        msg: 'Check your Internet Connection',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+      showToast('Check your Internet Connection', Colors.red, Colors.white, 'SHORT');
       return false;
     }
     catch (e) {
-      Fluttertoast.showToast(
-        msg: '$e',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+      showToast('$e', Colors.red, Colors.white, 'SHORT');
       return false;
     }
   }
@@ -209,13 +186,7 @@ class MerchantsOnTOWService extends ChangeNotifier {
 
       return currMerchantInfo;
     } on SocketException {
-      Fluttertoast.showToast(
-        msg: 'Check your Internet Connection',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+      showToast('Check your Internet Connection', Colors.red, Colors.white, 'SHORT');
       return currMerchantInfo;
     }
     catch (e) {
@@ -233,13 +204,7 @@ class MerchantsOnTOWService extends ChangeNotifier {
           .map((snapshot) => snapshot.docs.first.data()['isLive'] ?? false);
     }
     on SocketException {
-      Fluttertoast.showToast(
-        msg: 'Check your Internet Connection',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+      showToast('Check your Internet Connection', Colors.red, Colors.white, 'SHORT');
       return Stream.value(false);
     }
     catch (e) {
@@ -256,33 +221,13 @@ class MerchantsOnTOWService extends ChangeNotifier {
       if (snapshot.docs.isNotEmpty) {
         var docRef = snapshot.docs.first.reference;
         await docRef.update({'isLive': true});
-        Fluttertoast.showToast(
-          msg: 'Live right now!'.tr(),
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
+        showToast('Live right now!', Colors.green, Colors.white, 'SHORT');
       }
     } on SocketException {
-      Fluttertoast.showToast(
-        msg: 'Check your Internet Connection'.tr(),
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+      showToast('Check your Internet Connection', Colors.red, Colors.white, 'SHORT');
     }
     catch (e) {
-      Fluttertoast.showToast(
-        msg: 'Could not go live, Please try again later',
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
+      showToast('Could not go live, Please try again later',Colors.red, Colors.white, 'LONG');
     }
   }
 
@@ -295,24 +240,10 @@ class MerchantsOnTOWService extends ChangeNotifier {
       if (snapshot.docs.isNotEmpty) {
         var docRef = snapshot.docs.first.reference;
         await docRef.update({'isLive': false});
-        Fluttertoast.showToast(
-          msg: 'No more live right now'.tr(),
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
+        showToast('No more live right now', Colors.green, Colors.white, 'SHORT');
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: 'Could not go off live, Please try again later',
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
+      showToast('Could not go off live, Please try again later', Colors.red, Colors.white, 'SHORT');
     }
   }
 
@@ -353,24 +284,11 @@ class MerchantsOnTOWService extends ChangeNotifier {
       }
     return true;
     } on SocketException {
-      Fluttertoast.showToast(
-        msg: 'Check your Internet Connection'.tr(),
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+      showToast('Check your Internet Connection', Colors.red, Colors.white, 'SHORT');
       return false;
     }
     catch (e) {
-      Fluttertoast.showToast(
-        msg: 'Error occurred, please try again'.tr(),
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
+      showToast('Error occured, please try again', Colors.red, Colors.white, 'SHORT');
     }
     return false;
   }
@@ -393,13 +311,7 @@ class MerchantsOnTOWService extends ChangeNotifier {
 
       return updatedImageUrls;
     } on SocketException {
-      Fluttertoast.showToast(
-        msg: 'Check your Internet Connection'.tr(),
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+      showToast('Check your Internet Connection', Colors.red, Colors.white, 'SHORT');
       return updatedImageUrls;
     }
     catch (e) {

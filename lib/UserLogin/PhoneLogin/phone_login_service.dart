@@ -1,11 +1,10 @@
 
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thingsonwheels/ResuableWidgets/toast_widget.dart';
 import '../../main.dart';
 
 class PhoneLoginService extends ChangeNotifier {
@@ -50,7 +49,7 @@ class PhoneLoginService extends ChangeNotifier {
   Future<bool> checkMerchantExistsWithSameNumber() async
   {
     try {
-      if (loggedInWithPhone && FirebaseAuth.instance.currentUser != null) {
+      if (FirebaseAuth.instance.currentUser != null) {
         var snapshot = await FirebaseFirestore.instance
             .collection('Merchants')
             .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
@@ -119,24 +118,10 @@ class PhoneLoginService extends ChangeNotifier {
 
           verificationFailed: (FirebaseAuthException e) async {
             if (e.code == 'too-many-requests') {
-              Fluttertoast.showToast(
-                msg: 'Too many requests. Please try again later.'.tr(),
-                toastLength: Toast.LENGTH_LONG,
-                gravity: ToastGravity.CENTER,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-                fontSize: 16.0,
-              );
+              showToast('Too many requests. Please try again later.', Colors.red, Colors.white, 'SHORT');
             }
             else {
-              Fluttertoast.showToast(
-                msg: e.message ?? 'An error occurred',
-                toastLength: Toast.LENGTH_LONG,
-                gravity: ToastGravity.CENTER,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-                fontSize: 16.0,
-              );
+              showToast(e.message ?? 'An error occurred', Colors.red, Colors.white, 'SHORT');
             }
             _isLoading = false;
             notifyListeners();
@@ -196,24 +181,11 @@ class PhoneLoginService extends ChangeNotifier {
       // Clear local storage or perform other cleanup as needed
       await storage.delete(key: 'LoggedIn');
 
-      Fluttertoast.showToast(
-        msg: 'Your account will be deleted within 30 days of inactivity. You can still login'.tr(),
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-      );
+      showToast('Your account will be deleted within 30 days of inactivity. You can still login', Colors.green,Colors.white, 'SHORT');
+
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: 'An error occured, try again later'.tr(),
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
+      showToast('An error occured, try again later', Colors.red, Colors.white, 'SHORT');
     }
   }
-
-
 
 }

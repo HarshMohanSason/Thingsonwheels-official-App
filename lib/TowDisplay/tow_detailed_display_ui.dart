@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:thingsonwheels/TowDisplay/live_indicator_button_ui.dart';
-import 'package:thingsonwheels/TowDisplay/zoomed_in_image_display.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import '../ResuableWidgets/toast_widget.dart';
+import '../ResuableWidgets/view_full_image_ui.dart';
 import '../main.dart';
 import 'tow_service.dart';
 import 'package:page_view_indicators/circle_page_indicator.dart';
@@ -39,14 +39,7 @@ class TowDetailedDisplayUIState extends State<TowDetailedDisplayUI> {
     if (await canLaunchUrlString(mapUrl)) {
       await launchUrlString(mapUrl);
     } else {
-      Fluttertoast.showToast(
-        msg: 'Could not launch the link',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: screenWidth / 25, // Adjust text size as needed
-      );
+      showToast('Could not launch the link', Colors.red, Colors.white, 'SHORT');
     }
   }
 
@@ -164,7 +157,7 @@ class TowDetailedDisplayUIState extends State<TowDetailedDisplayUI> {
             itemBuilder: (context, index) {
               String imageUrl = imageUrls[index];
               return InkWell
-                (onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FullImageView(imageUrls: foodTruck.truckImages!, currImageIndex: index,))),
+                (onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FullImageView(images: foodTruck.truckImages!, currImageIndex: index,))),
                   child: buildImageWidget(imageUrl));
             },
           ),
@@ -283,13 +276,7 @@ class TowDetailedDisplayUIState extends State<TowDetailedDisplayUI> {
         if (await canLaunchUrlString(socialLink)) {
           await launchUrlString(socialLink);
         } else {
-          Fluttertoast.showToast(
-            msg: 'Could not launch the link'.tr(),
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-          );
+          showToast('Could not launch the link', Colors.red, Colors.white, 'SHORT');
         }
       },
       child: Icon(

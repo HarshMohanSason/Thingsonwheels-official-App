@@ -148,12 +148,10 @@ class IntroLoginScreenUIState extends State<IntroLoginScreenUI> {
         borderRadius: BorderRadius.circular(20),
         child: InkWell(
           onTap: () async {
-            await handlePhoneLogin(context, () {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const PhoneLoginUi()),
               );
-            });
           },
           child: const Center(
             child: Row(
@@ -195,16 +193,6 @@ class IntroLoginScreenUIState extends State<IntroLoginScreenUI> {
     }
   }
 
-  Future<void> handlePhoneLogin(
-      BuildContext context, Function() callback) async {
-    try {
-      if (context.mounted) {
-        callback();
-      }
-    } catch (e) {
-      rethrow;
-    }
-  }
 
   Future<void> handleAppleLogin(BuildContext context) async {
     final ap = context.read<AppleLoginService>();
@@ -221,7 +209,6 @@ class IntroLoginScreenUIState extends State<IntroLoginScreenUI> {
     return GestureDetector(
       onTap: () {
         provider.setIsMerchantSignup(true);
-
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const PhoneLoginUi()),

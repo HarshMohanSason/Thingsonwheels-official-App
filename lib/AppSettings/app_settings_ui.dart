@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thingsonwheels/AppSettings/about_us_ui.dart';
 import 'package:thingsonwheels/AppSettings/terms_and_conditions_ui.dart';
 import 'package:thingsonwheels/AppSettings/faq.dart';
@@ -199,10 +200,10 @@ class AppSettingsState extends State<AppSettings> {
   }
 
   Widget _buildTile(BuildContext originalContext, String title) {
-    final sp = originalContext.read<GoogleSignInProvider>();
-    final ap = originalContext.read<AppleLoginService>();
-    final phoneProvider = originalContext.read<PhoneLoginService>();
-    final merchantProvider = originalContext.read<MerchantsOnTOWService>();
+    final sp = originalContext.watch<GoogleSignInProvider>();
+    final ap = originalContext.watch<AppleLoginService>();
+    final phoneProvider = originalContext.watch<PhoneLoginService>();
+    final merchantProvider = originalContext.watch<MerchantsOnTOWService>();
 
     return Card(
         elevation: 5,
@@ -384,15 +385,19 @@ class AppSettingsState extends State<AppSettings> {
 
   Future<void> userSignOut(
       GoogleSignInProvider sp, AppleLoginService ap) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     if (sp.isSignedIn != null && sp.isSignedIn!) {
       await sp.signOut();
       await storage.deleteAll();
+      await prefs.clear();
     } else if (ap.isSignedIn != null && ap.isSignedIn!) {
       await ap.signOut();
       await storage.deleteAll();
+      prefs.clear();
     } else {
       await FirebaseAuth.instance.signOut();
       await storage.deleteAll();
+      await prefs.clear();
     }
   }
 }
