@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thingsonwheels/AppSettings/about_us_ui.dart';
 import 'package:thingsonwheels/AppSettings/terms_and_conditions_ui.dart';
 import 'package:thingsonwheels/AppSettings/faq.dart';
+import 'package:thingsonwheels/MerchantsOnTow/merchant_on_boarding_form.dart';
 import 'package:thingsonwheels/ResuableWidgets/language_change_button.dart';
 import 'package:thingsonwheels/home_screen.dart';
 import 'package:thingsonwheels/MerchantsOnTow/merchant_service.dart';
@@ -29,17 +30,32 @@ class AppSettings extends StatefulWidget {
 }
 
 class AppSettingsState extends State<AppSettings> {
+
   String? imageUrl;
   String? name;
   String? phoneNumber;
   late User? user;
   bool isAlsoMerchant = false;
 
+  late GoogleSignInProvider googleSignServiceProvider;
+  late AppleLoginService appleLoginServiceProvider;
+  late PhoneLoginService phoneLoginServiceProvider;
+  late MerchantsOnTOWService merchantsOnTOWServiceProvider;
+
   @override
   void initState() {
     super.initState();
     user = FirebaseAuth.instance.currentUser;
     isAlsoAMerchant();
+  }
+
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    googleSignServiceProvider = context.watch<GoogleSignInProvider>();
+    appleLoginServiceProvider = context.watch<AppleLoginService>();
+    phoneLoginServiceProvider = context.watch<PhoneLoginService>();
+    merchantsOnTOWServiceProvider = context.watch<MerchantsOnTOWService>();
   }
 
   Future<bool> isAlsoAMerchant() async {
@@ -182,6 +198,8 @@ class AppSettingsState extends State<AppSettings> {
               _buildTile(context, "Register your business"),
               const SizedBox(height: 20),
               _buildTile(context, "Sign out"),
+              const SizedBox(height: 20),
+              _buildTile(context, "Delete account"),
               const SizedBox(height: 50),
               Align(
                 alignment: Alignment.bottomCenter,
@@ -200,11 +218,6 @@ class AppSettingsState extends State<AppSettings> {
   }
 
   Widget _buildTile(BuildContext originalContext, String title) {
-    final sp = originalContext.watch<GoogleSignInProvider>();
-    final ap = originalContext.watch<AppleLoginService>();
-    final phoneProvider = originalContext.watch<PhoneLoginService>();
-    final merchantProvider = originalContext.watch<MerchantsOnTOWService>();
-
     return Card(
         elevation: 5,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -227,6 +240,7 @@ class AppSettingsState extends State<AppSettings> {
             ),
             onTap: () async {
               if (title.tr() == "About Us".tr()) {
+
                 Navigator.push(originalContext,
                     MaterialPageRoute(builder: (context) => const AboutUs()));
               } else if (title == "FAQ".tr()) {
@@ -240,8 +254,7 @@ class AppSettingsState extends State<AppSettings> {
                     MaterialPageRoute(
                         builder: (context) => const TermsAndConditions()));
               } else if (title.tr() == "Register your business".tr()) {
-                bool doesExists = await phoneProvider.checkMerchantExistsWithSameNumber();
-                if (doesExists == true) {
+                if (isAlsoMerchant == true) {
                   Fluttertoast.showToast(
                     msg:
                         'You already have an account registered with this number. Sign out login with a different number'
@@ -252,25 +265,22 @@ class AppSettingsState extends State<AppSettings> {
                     textColor: Colors.white,
                     fontSize: 16.0,
                   );
-                  setState(() {
-                    doesExists = false;
-                  });
-                } else if (phoneProvider.loggedInWithPhone == true && doesExists == false &&
+                } else if (phoneLoginServiceProvider.loggedInWithPhone == true && isAlsoMerchant == false &&
                     originalContext.mounted) {
                   Navigator.push(
                       originalContext,
                       MaterialPageRoute(
-                          builder: (context) => const MerchantProfileScreen()));
-                } else {
-                  await userSignOut(sp, ap);
-
+                          builder: (context) => const OnboardingFormUI()));
+                }
+                else {
+                  await userSignOut(googleSignServiceProvider, appleLoginServiceProvider);
                   if (originalContext.mounted) {
                     Navigator.push(
                         originalContext,
                         MaterialPageRoute(
                             builder: (context) => const IntroLoginScreenUI()));
                   }
-                  merchantProvider.setIsMerchantSignup(true);
+                  merchantsOnTOWServiceProvider.setIsMerchantSignup(true);
                   await Future.delayed(const Duration(seconds: 1));
                   if (originalContext.mounted) {
                     Navigator.push(
@@ -279,6 +289,10 @@ class AppSettingsState extends State<AppSettings> {
                             builder: (context) => const PhoneLoginUi()));
                   }
                 }
+              }
+              else if(title == "Delete account")
+              {
+                  showDeleteAccountDialog(originalContext);
               }
               else {
                 showDialog(
@@ -305,7 +319,7 @@ class AppSettingsState extends State<AppSettings> {
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: () async {
-                                  await userSignOut(sp, ap);
+                                  await userSignOut(googleSignServiceProvider, appleLoginServiceProvider);
                                   if (dialogContext.mounted) {
                                     if (dialogContext
                                         .findRenderObject()!
@@ -383,21 +397,144 @@ class AppSettingsState extends State<AppSettings> {
         ));
   }
 
-  Future<void> userSignOut(
-      GoogleSignInProvider sp, AppleLoginService ap) async {
+  Future<void> userSignOut(GoogleSignInProvider googleLoginServiceProvider, AppleLoginService appleLoginServiceProvider) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (sp.isSignedIn != null && sp.isSignedIn!) {
-      await sp.signOut();
-      await storage.deleteAll();
+    if (googleLoginServiceProvider.isSignedIn != null && googleLoginServiceProvider.isSignedIn!) {
       await prefs.clear();
-    } else if (ap.isSignedIn != null && ap.isSignedIn!) {
-      await ap.signOut();
       await storage.deleteAll();
-      prefs.clear();
+      await googleLoginServiceProvider.signOut();
+    } else if (appleLoginServiceProvider.isSignedIn != null && appleLoginServiceProvider.isSignedIn!) {
+      await prefs.clear();
+      await storage.deleteAll();
+      await appleLoginServiceProvider.signOut();
     } else {
-      await FirebaseAuth.instance.signOut();
-      await storage.deleteAll();
+      phoneLoginServiceProvider.setLoggedInWithPhone(false);
       await prefs.clear();
+      await storage.deleteAll();
+      await FirebaseAuth.instance.signOut();
     }
   }
+
+  void showDeleteAccountDialog(BuildContext context) {
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          elevation: 5,
+          shadowColor: Colors.black,
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          content: SafeArea(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height / 3.5,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.error_outline, color: Colors.red, size: MediaQuery.of(context).size.width / 5.5),
+                  Padding(
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.width / 27),
+                    child: Text(
+                      'do_you_really_want_to_delete_your_account'.tr(),
+                      style: TextStyle(fontSize: MediaQuery.of(context).size.height / 68),
+                    ),
+                  ),
+                  const Spacer(),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width / 17),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          style: ButtonStyle(
+                            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                side: const BorderSide(
+                                  color: Colors.red,
+                                  width: 1.0,
+                                ),
+                              ),
+                            ),
+                            backgroundColor: WidgetStateProperty.all<Color>(Colors.white),
+                            fixedSize: WidgetStateProperty.all<Size>(
+                              Size(MediaQuery.of(context).size.width / 3.5, MediaQuery.of(context).size.width / 43.2),
+                            ),
+                          ),
+                          child:  Text(
+                            'Cancel'.tr(),
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            try {
+                              if (googleSignServiceProvider.isSignedIn != null && googleSignServiceProvider.isSignedIn!) {
+                                await googleSignServiceProvider.deleteGoogleRelatedAccount();
+                              } else if (appleLoginServiceProvider.isSignedIn != null && appleLoginServiceProvider.isSignedIn!) {
+                                await appleLoginServiceProvider.deleteAppleRelatedAccount();
+                              } else {
+                                await merchantsOnTOWServiceProvider.deleteMerchantDocument();
+                                await phoneLoginServiceProvider.deletePhoneRelatedAccount();
+                              }
+                              if (context.mounted) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const IntroLoginScreenUI(),
+                                  ),
+                                );
+                              }
+                            } catch (e) {
+                              Fluttertoast.showToast(
+                                msg: 'Error occurred, please try again'.tr(),
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                backgroundColor: Colors.red,
+                                textColor: Colors.white,
+                              );
+                            }
+                          },
+                          style: ButtonStyle(
+                            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
+                            backgroundColor: WidgetStateProperty.all<Color>(Colors.red),
+                            fixedSize: WidgetStateProperty.all<Size>(
+                              Size(MediaQuery.of(context).size.width / 3.5, MediaQuery.of(context).size.width / 43.2),
+                            ),
+                          ),
+                          child:  Text(
+                            'delete'.tr(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
 }

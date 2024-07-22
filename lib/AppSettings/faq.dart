@@ -80,8 +80,6 @@ class PrivacyPolicy extends StatelessWidget {
                       _buildBulletPoint('faq_thingsonwheels_desc'.tr()),
                       _buildH2Heading('faq_location'.tr()),
                       _buildBulletPoint('faq_location_desc'.tr()),
-                      _buildH2Heading('faq_delete_account'.tr()),
-                      _buildRichTextWithLink(context),
                       _buildH2Heading('faq_privacy_policy'.tr()),
                       _buildRichTextWithUrl(context, 'faq_privacy_policy_desc'.tr(), 'https://thingsonwheels-751ca.web.app/'),
                       _buildH2Heading('faq_merchant_name'.tr()),
@@ -148,45 +146,6 @@ class PrivacyPolicy extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildRichTextWithLink(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: RichText(
-        text: TextSpan(
-          text: 'faq_delete_account_desc.'.tr(),
-          style: TextStyle(
-            fontSize: screenWidth / 30,
-            color: Colors.black,
-          ),
-          children: <TextSpan>[
-            TextSpan(
-              text: 'faq_delete_account_link'.tr(),
-              style: TextStyle(
-                color: Colors.lightBlue,
-                fontSize: screenWidth / 30,
-                decoration: TextDecoration.underline,
-              ),
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return deleteAccountPopup(context);
-                    },
-                  );
-                },
-            ),
-             TextSpan(
-              text:
-              '\n${'faq_delete_account_note'.tr()}',
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildRichTextWithUrl(BuildContext context, String text, String url) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),

@@ -32,6 +32,7 @@ class FullImageView extends StatelessWidget {
           },
           itemCount: images.length,
           itemBuilder: (context, index) {
+
             List<String> imageUrls = images.map((dynamic imageUrl) => imageUrl.toString()).toList();
             return Center(
               child: InteractiveViewer(

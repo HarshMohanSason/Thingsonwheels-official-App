@@ -12,6 +12,7 @@ import 'dart:ui';
 import '../MerchantsOnTow/merchant_service.dart';
 import '../main.dart';
 import 'package:path_provider/path_provider.dart';
+import 'image_utils.dart';
 
 class CameraUI extends StatefulWidget {
   final List<String?>? imagesToUpdate;
@@ -36,6 +37,7 @@ class _CameraUIState extends State<CameraUI> {
     //Initialize the selected camera
 
     _cameraController = CameraController(
+      enableAudio: false,
         cameraDescription, ResolutionPreset.high,
         imageFormatGroup:
             ImageFormatGroup.bgra8888); //Create a camera Controller
@@ -46,14 +48,15 @@ class _CameraUIState extends State<CameraUI> {
           setState(() {});
         }
       });
-    } on CameraException catch (e) {
-      debugPrint('Camera error $e');
+    } on CameraException  {
+        if(mounted) {
+          ImageUtils.handleCameraException(context);
+        }
     }
 
     await _cameraController
         .lockCaptureOrientation(DeviceOrientation.portraitUp);
   }
-
   Future<XFile?> croppedImageToXFile(CropImageResult? image) async {
     try {
       if (image == null) {

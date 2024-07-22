@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
@@ -15,6 +14,7 @@ import '../../main.dart';
 class OtpUI extends StatefulWidget {
   final String verificationID; //verification ID sent for that OTP token
   final String phoneNo;
+
   const OtpUI({super.key, required this.verificationID, required this.phoneNo});
 
   @override
@@ -22,8 +22,9 @@ class OtpUI extends StatefulWidget {
 }
 
 class OtpUIState extends State<OtpUI> {
-
   TextEditingController otpTextController = TextEditingController();
+  late PhoneLoginService phoneLoginProvider;
+  late MerchantsOnTOWService merchantsOnTOWServiceProvider;
   final _formKey = GlobalKey<FormState>();
   late Timer timer;
   int remainingTime = 60;
@@ -31,14 +32,19 @@ class OtpUIState extends State<OtpUI> {
 
   @override
   void initState() {
-
     super.initState();
     startTimer();
   }
 
   @override
-  void dispose() {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    phoneLoginProvider = context.watch<PhoneLoginService>();
+    merchantsOnTOWServiceProvider = context.watch<MerchantsOnTOWService>();
+  }
 
+  @override
+  void dispose() {
     otpTextController.dispose();
     timer.cancel();
     super.dispose();
@@ -49,26 +55,19 @@ class OtpUIState extends State<OtpUI> {
     const oneSec = Duration(seconds: 1);
     timer = Timer.periodic(oneSec, (timer) {
       setState(() {
-        if(remainingTime < 1)
-          {
-            timer.cancel();
-          }
-        else
-          {
-            remainingTime --;
-          }
-
+        if (remainingTime < 1) {
+          timer.cancel();
+        } else {
+          remainingTime--;
+        }
       });
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
-
-    final phoneLoginLoading = context.watch<PhoneLoginService>();
     return PopScope(
-      canPop: Platform.isIOS ? false: true,
+      canPop: Platform.isIOS ? false : true,
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Padding(
@@ -88,14 +87,14 @@ class OtpUIState extends State<OtpUI> {
                     size: screenWidth / 12,
                   )),
               Padding(
-                padding: EdgeInsets.only(top: screenHeight/25, left: 10),
+                padding: EdgeInsets.only(top: screenHeight / 25, left: 10),
                 child: RichText(
                   text: TextSpan(
                     text: 'Enter your code'.tr(),
                     style: TextStyle(
                       color: Colors.black,
-                      fontWeight: FontWeight.bold,// Default text color
-                      fontSize: screenHeight/24, // Default text size
+                      fontWeight: FontWeight.bold, // Default text color
+                      fontSize: screenHeight / 24, // Default text size
                     ),
                   ),
                 ),
@@ -107,38 +106,38 @@ class OtpUIState extends State<OtpUI> {
                     text: '+1${widget.phoneNo}',
                     style: TextStyle(
                       color: Colors.black,
-                      fontWeight: FontWeight.bold,// Default text color
-                      fontSize: screenHeight/35, // Default text size
+                      fontWeight: FontWeight.bold, // Default text color
+                      fontSize: screenHeight / 35, // Default text size
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: screenWidth/3.8),
-              Center(child: Form(
-                  key: _formKey,
-                  child: _pinInputUI(context))),
+              SizedBox(height: screenWidth / 3.8),
+              Center(child: Form(key: _formKey, child: _pinInputUI(context))),
               const SizedBox(height: 20),
-               Center(
+              Center(
                   child: InkWell(
-                    onTap: () async
-                    {
-                      if(remainingTime < 1)
-                      {
-                          otpTextController.clear();
-                          String newOTPVerificationID = await phoneLoginLoading.sendOTP(widget.phoneNo, forceResend: true); //send the OTP again.
-                          verifyNewVerificationID = await phoneLoginLoading.checkOTP(newOTPVerificationID, widget.phoneNo);
-                          phoneLoginLoading.setIsLoading = false; // Ensure isLoading is set to false after resending OTP
-                      }
-                      else {
-                        return;
-                      }
-                    },
-                    child: phoneLoginLoading.isLoading ? const CircularProgressIndicator(color: Colors.black) : Text(
-                                  "${"Resend OTP?".tr()} $remainingTime s",
-                                  style: const TextStyle(fontSize: 15.5),
-                             ),
-                  )),
-
+                onTap: () async {
+                  if (remainingTime < 1) {
+                    otpTextController.clear();
+                    String newOTPVerificationID =
+                        await phoneLoginProvider.sendOTP(widget.phoneNo,
+                            forceResend: true); //send the OTP again.
+                    verifyNewVerificationID = await phoneLoginProvider.checkOTP(
+                        newOTPVerificationID, widget.phoneNo);
+                    phoneLoginProvider.setIsLoading =
+                        false; // Ensure isLoading is set to false after resending OTP
+                  } else {
+                    return;
+                  }
+                },
+                child: phoneLoginProvider.isLoading
+                    ? const CircularProgressIndicator(color: Colors.black)
+                    : Text(
+                        "${"Resend OTP?".tr()} $remainingTime s",
+                        style: const TextStyle(fontSize: 15.5),
+                      ),
+              )),
             ],
           ),
         ),
@@ -147,15 +146,13 @@ class OtpUIState extends State<OtpUI> {
   }
 
   Widget _pinInputUI(BuildContext context) {
-
-    final phoneLoginLoading = context.watch<PhoneLoginService>();
-    final merchantProvider = context.watch<MerchantsOnTOWService>();
     return SizedBox(
       width: screenWidth - 20,
       child: Pinput(
           pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
           controller: otpTextController,
-          length: 6, // Length for the OTP being entered
+          length: 6,
+          // Length for the OTP being entered
           defaultPinTheme: PinTheme(
             width: 100,
             height: 80,
@@ -170,50 +167,52 @@ class OtpUIState extends State<OtpUI> {
               fontWeight: FontWeight.bold,
             ),
           ),
-         errorTextStyle: const TextStyle(
-           color: Colors.white,
-           fontWeight: FontWeight.bold,
-         ),
-
-          onCompleted: (value)
-          async {
+          errorTextStyle: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+          onCompleted: (value) async {
             try {
               if (!_formKey.currentState!.validate()) {
-                phoneLoginLoading.setIsLoading = false;
-                showToast('OTP entered is invalid', Colors.red, Colors.white, 'SHORT');
+                phoneLoginProvider.setIsLoading = false;
+                showToast('OTP entered is invalid', Colors.red, Colors.white,
+                    'SHORT');
                 return;
               }
 
-              bool verifyOTP = await phoneLoginLoading.checkOTP(widget.verificationID, otpTextController.text);
-              bool isAlreadyMerchant = await phoneLoginLoading.checkMerchantExistsWithSameNumber();
-              phoneLoginLoading.setIsLoading = false;
+              bool verifyOTP = await phoneLoginProvider.checkOTP(
+                  widget.verificationID, otpTextController.text);
+              bool isAlreadyMerchant =
+                  await phoneLoginProvider.checkMerchantExistsWithSameNumber();
+              phoneLoginProvider.setIsLoading = false;
 
               if (!verifyOTP) {
-                showToast('OTP entered is invalid', Colors.red, Colors.white, 'SHORT');
+                showToast('OTP entered is invalid', Colors.red, Colors.white,
+                    'SHORT');
                 return;
               }
 
               if (context.mounted) {
                 if (isAlreadyMerchant) {
-                  if (merchantProvider.isMerchantSignUp) {
-                    await _handleMerchantExistsAndSignUp(phoneLoginLoading);
+                  if (merchantsOnTOWServiceProvider.isMerchantSignUp) {
+                    await _handleMerchantExistsAndSignUp(phoneLoginProvider);
                   } else {
-                    await _handleMerchantExists(phoneLoginLoading);
+                    await _handleMerchantExists(phoneLoginProvider);
                   }
                 } else {
-                  if (merchantProvider.isMerchantSignUp) {
+                  if (merchantsOnTOWServiceProvider.isMerchantSignUp) {
                     await _handleNewMerchantSignUp();
                   } else {
-                    await _handleNewUser(phoneLoginLoading);
+                    await _handleNewUser(phoneLoginProvider);
                   }
                 }
               }
             } catch (e) {
-              phoneLoginLoading.setIsLoading = false;
-              showToast('An error occurred: $e', Colors.red, Colors.white, 'SHORT');
+              phoneLoginProvider.setIsLoading = false;
+              showToast(
+                  'An error occurred: $e', Colors.red, Colors.white, 'SHORT');
             }
           },
-
           validator: (value) {
             final nonNumericRegExp = RegExp(r'^[0-9]');
             if (value!.isEmpty == true) {
@@ -221,7 +220,8 @@ class OtpUIState extends State<OtpUI> {
             }
             //check if the number isWithin 0-9 and is lowercase
             else if (!nonNumericRegExp.hasMatch(value)) {
-              return 'OTP can only contain digits'.tr(); //return error if it doesn't match the REGEXP
+              return 'OTP can only contain digits'
+                  .tr(); //return error if it doesn't match the REGEXP
             } else if (value.length < 6) {
               return 'OTP should be 6 digit number'.tr();
             }
@@ -230,30 +230,40 @@ class OtpUIState extends State<OtpUI> {
     );
   }
 
-  Future<void> _handleMerchantExistsAndSignUp(PhoneLoginService phoneLoginLoading) async {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+  Future<void> _handleMerchantExistsAndSignUp(
+      PhoneLoginService phoneLoginLoading) async {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (_) => const HomeScreen()));
     phoneLoginLoading.setLoggedInWithPhone(true);
     await storage.write(key: 'LoggedIn', value: "true");
     await storage.write(key: 'LoggedInWithPhone', value: "true");
-    showToast('You already have a Merchant account registered with this number. Sign out login with a different number'.tr(), Colors.lightBlue, Colors.white, 'SHORT');
+    showToast(
+        'You already have a Merchant account registered with this number. Sign out login with a different number'
+            .tr(),
+        Colors.lightBlue,
+        Colors.white,
+        'SHORT');
   }
 
-  Future<void> _handleMerchantExists(PhoneLoginService phoneLoginLoading) async {
+  Future<void> _handleMerchantExists(
+      PhoneLoginService phoneLoginLoading) async {
     phoneLoginLoading.setLoggedInWithPhone(true);
-    Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (_) => const HomeScreen()));
     await storage.write(key: 'LoggedIn', value: "true");
     await storage.write(key: 'LoggedInWithPhone', value: "true");
   }
 
   Future<void> _handleNewMerchantSignUp() async {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const OnboardingFormUI()));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => const OnboardingFormUI()));
   }
 
   Future<void> _handleNewUser(PhoneLoginService phoneLoginLoading) async {
     phoneLoginLoading.setLoggedInWithPhone(true);
-    Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (_) => const HomeScreen()));
     await storage.write(key: 'LoggedIn', value: "true");
     await storage.write(key: 'LoggedInWithPhone', value: "true");
   }
-
 }

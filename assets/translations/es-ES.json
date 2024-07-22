@@ -123,5 +123,14 @@
   "Switch to merchant": "Cambiar a comerciante",
   "enter_facebook_link": "Ingresa el enlace de Facebook",
   "enter_instagram_link": "Ingresa el enlace de Instagram",
-  "enter_tiktok_link": "Ingresa el enlace de TikTok"
+  "enter_tiktok_link": "Ingresa el enlace de TikTok",
+  "Delete account": "borrar cuenta",
+  "Could not login, please try again": "No se pudo iniciar sesión, inténtalo de nuevo",
+  "Could sign out, please try again": "No se pudo cerrar sesión, inténtalo de nuevo",
+  "Your account and data have been deleted": "Tu cuenta y tus datos han sido eliminados",
+  "Error saving data": "Error al guardar datos",
+  "Could not go live, Please try again later": "No se pudo publicar. Vuelve a intentarlo más tarde",
+  "Could not go off live, Please try again later": "No se pudo transmitir en vivo. Vuelve a intentarlo más tarde",
+  "Merchant information deleted successfully": "La información del comerciante se eliminó correctamente",
+  "Could not find any merchant information for this number": "No se pudo encontrar ninguna información del comerciante para este número"
 }

@@ -2,6 +2,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:thingsonwheels/ResuableWidgets/splash_loading_screen.dart';
 import 'package:thingsonwheels/home_screen.dart';
 import 'intro_login_screen.dart';
 
@@ -24,13 +25,6 @@ class _CheckIfLoggedInState extends State<CheckIfLoggedIn> {
     super.initState();
   }
 
-  @override
-  void dispose()
-  {
-    super.dispose();
-
-  }
-
   Future<void> initFuture()
   async {
     await checkIfLoggedIn();
@@ -45,7 +39,7 @@ class _CheckIfLoggedInState extends State<CheckIfLoggedIn> {
 
             if(snapshot.connectionState == ConnectionState.waiting)
             {
-              return const CircularProgressIndicator();
+              return const SplashLoadingScreen();
             }
             else if(snapshot.data == true)
             {

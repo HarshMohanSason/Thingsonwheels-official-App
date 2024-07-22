@@ -1,6 +1,7 @@
 
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -137,7 +138,7 @@ class MerchantsOnTOWService extends ChangeNotifier {
       }
       return imageUrls;
     } on SocketException {
-      showToast('Check your Internet Connection', Colors.red, Colors.white, 'SHORT');
+      showToast('Check your Internet Connection'.tr(), Colors.red, Colors.white, 'SHORT');
       return imageUrls;
     }
     catch (e) {
@@ -162,9 +163,10 @@ class MerchantsOnTOWService extends ChangeNotifier {
         'isLive': false,
         'uid': FirebaseAuth.instance.currentUser!.uid,
       });
+
       return true;
     } on SocketException {
-      showToast('Check your Internet Connection', Colors.red, Colors.white, 'SHORT');
+      showToast('Check your Internet Connection'.tr(), Colors.red, Colors.white, 'SHORT');
       return false;
     }
     catch (e) {
@@ -186,7 +188,7 @@ class MerchantsOnTOWService extends ChangeNotifier {
 
       return currMerchantInfo;
     } on SocketException {
-      showToast('Check your Internet Connection', Colors.red, Colors.white, 'SHORT');
+      showToast('Check your Internet Connection'.tr(), Colors.red, Colors.white, 'SHORT');
       return currMerchantInfo;
     }
     catch (e) {
@@ -204,7 +206,7 @@ class MerchantsOnTOWService extends ChangeNotifier {
           .map((snapshot) => snapshot.docs.first.data()['isLive'] ?? false);
     }
     on SocketException {
-      showToast('Check your Internet Connection', Colors.red, Colors.white, 'SHORT');
+      showToast('Check your Internet Connection'.tr(), Colors.red, Colors.white, 'SHORT');
       return Stream.value(false);
     }
     catch (e) {
@@ -224,10 +226,10 @@ class MerchantsOnTOWService extends ChangeNotifier {
         showToast('Live right now!', Colors.green, Colors.white, 'SHORT');
       }
     } on SocketException {
-      showToast('Check your Internet Connection', Colors.red, Colors.white, 'SHORT');
+      showToast('Check your Internet Connection'.tr(), Colors.red, Colors.white, 'SHORT');
     }
     catch (e) {
-      showToast('Could not go live, Please try again later',Colors.red, Colors.white, 'LONG');
+      showToast('Could not go live, Please try again later'.tr(),Colors.red, Colors.white, 'LONG');
     }
   }
 
@@ -240,10 +242,10 @@ class MerchantsOnTOWService extends ChangeNotifier {
       if (snapshot.docs.isNotEmpty) {
         var docRef = snapshot.docs.first.reference;
         await docRef.update({'isLive': false});
-        showToast('No more live right now', Colors.green, Colors.white, 'SHORT');
+        showToast('No more live right now'.tr(), Colors.green, Colors.white, 'SHORT');
       }
     } catch (e) {
-      showToast('Could not go off live, Please try again later', Colors.red, Colors.white, 'SHORT');
+      showToast('Could not go off live, Please try again later'.tr(), Colors.red, Colors.white, 'SHORT');
     }
   }
 
@@ -284,11 +286,11 @@ class MerchantsOnTOWService extends ChangeNotifier {
       }
     return true;
     } on SocketException {
-      showToast('Check your Internet Connection', Colors.red, Colors.white, 'SHORT');
+      showToast('Check your Internet Connection'.tr(), Colors.red, Colors.white, 'SHORT');
       return false;
     }
     catch (e) {
-      showToast('Error occured, please try again', Colors.red, Colors.white, 'SHORT');
+      showToast('Error occured, please try again'.tr(), Colors.red, Colors.white, 'SHORT');
     }
     return false;
   }
@@ -311,7 +313,7 @@ class MerchantsOnTOWService extends ChangeNotifier {
 
       return updatedImageUrls;
     } on SocketException {
-      showToast('Check your Internet Connection', Colors.red, Colors.white, 'SHORT');
+      showToast('Check your Internet Connection'.tr(), Colors.red, Colors.white, 'SHORT');
       return updatedImageUrls;
     }
     catch (e) {
@@ -327,7 +329,7 @@ class MerchantsOnTOWService extends ChangeNotifier {
     }
   }
 
-  void deleteMerchantDocument() async {
+  Future<void> deleteMerchantDocument() async {
     // Get the current user's UID
     String currentUserUID = FirebaseAuth.instance.currentUser!.uid;
 
@@ -346,9 +348,8 @@ class MerchantsOnTOWService extends ChangeNotifier {
           .doc(documentID)
           .delete();
 
-      // Show success message using FlutterToast
       Fluttertoast.showToast(
-        msg: 'Merchant information deleted successfully.',
+        msg: 'Merchant information deleted successfully'.tr(),
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         backgroundColor: Colors.green,
@@ -357,10 +358,10 @@ class MerchantsOnTOWService extends ChangeNotifier {
     } else {
       // Show failure message using FlutterToast
       Fluttertoast.showToast(
-        msg: 'Could not find any merchant information for this number.',
+        msg: 'Could not find any merchant information for this number'.tr(),
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.blue,
         textColor: Colors.white,
       );
     }

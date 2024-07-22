@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
@@ -19,6 +18,8 @@ class PhoneLoginUi extends StatefulWidget {
 class PhoneLoginScreenState extends State<PhoneLoginUi> {
   TextEditingController phoneController = TextEditingController(); //controller for the text
   final _formKey = GlobalKey<FormState>(); // GlobalKey for the Form
+  late PhoneLoginService phoneLoginServiceProvider;
+  late MerchantsOnTOWService merchantsOnTOWServiceProvider;
 
   @override
   void dispose() {
@@ -27,11 +28,16 @@ class PhoneLoginScreenState extends State<PhoneLoginUi> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    phoneLoginServiceProvider = context.watch<PhoneLoginService>();
+    merchantsOnTOWServiceProvider = context.watch<MerchantsOnTOWService>();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final phoneLoginLoading = context.watch<PhoneLoginService>();
-    final merchantProvider = context.watch<MerchantsOnTOWService>();
     return PopScope(
-      canPop: Platform.isIOS ? false: true,
+      canPop: Platform.isIOS ? false : true,
       child: Scaffold(
           backgroundColor: Colors.white,
           body: Padding(
@@ -40,24 +46,20 @@ class PhoneLoginScreenState extends State<PhoneLoginUi> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 InkWell(
                     onTap: () {
-                      if(mounted && merchantProvider.isMerchantSignUp == true)
-                        {
-                          merchantProvider.setIsMerchantSignup(false);
-                          Navigator.pop(context);
-                        }
-                      else
-                        if(mounted) {
-                          Navigator.pop(context);
-                        }
+                      if (mounted &&
+                          merchantsOnTOWServiceProvider.isMerchantSignUp == true) {
+                        merchantsOnTOWServiceProvider.setIsMerchantSignup(false);
+                        Navigator.pop(context);
+                      } else if (mounted) {
+                        Navigator.pop(context);
+                      }
                     },
                     child: Icon(
                       Icons.arrow_back,
                       size: screenWidth / 12,
                     )),
-
                 Padding(
                   padding: const EdgeInsets.only(top: 40, left: 10),
                   child: Center(
@@ -66,15 +68,16 @@ class PhoneLoginScreenState extends State<PhoneLoginUi> {
                         text: 'Please enter your'.tr(),
                         style: TextStyle(
                           color: Colors.black,
-                          fontWeight: FontWeight.bold,// Default text color
-                          fontSize: screenHeight/25, // Default text size
+                          fontWeight: FontWeight.bold, // Default text color
+                          fontSize: screenHeight / 25, // Default text size
                         ),
-                        children:  <TextSpan>[
+                        children: <TextSpan>[
                           TextSpan(
                             text: 'number'.tr(),
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
-                              color: Colors.black, // Different color for emphasis
+                              color:
+                                  Colors.black, // Different color for emphasis
                               // Slightly larger font for emphasis
                             ),
                           ),
@@ -83,32 +86,32 @@ class PhoneLoginScreenState extends State<PhoneLoginUi> {
                     ),
                   ),
                 ),
-                SizedBox(height: screenWidth/4.1),
+                SizedBox(height: screenWidth / 4.1),
                 Center(
                     child: Form(key: _formKey, child: phoneTextForm(context))),
-
-                if (phoneLoginLoading.isLoading)
+                if (phoneLoginServiceProvider.isLoading)
                   Container(
                     width: screenWidth,
                     height: screenHeight,
-                    color: Colors.black.withOpacity(0.5), // Semi-transparent background
+                    color: Colors.black.withOpacity(0.5),
+                    // Semi-transparent background
                     child: const Center(
                       child: CircularProgressIndicator(
                         color: Colors.black,
                       ),
                     ),
                   ),
-              const Spacer(),
-              Padding(
-                  padding: const EdgeInsets.only(bottom: 40),
-                  child: nextButton(context))],
+                const Spacer(),
+                Padding(
+                    padding: const EdgeInsets.only(bottom: 40),
+                    child: nextButton(context))
+              ],
             ),
           )),
     );
   }
 
   Widget phoneTextForm(BuildContext context) {
-
     return SizedBox(
       width: screenWidth - 20,
       child: TextFormField(
@@ -128,13 +131,14 @@ class PhoneLoginScreenState extends State<PhoneLoginUi> {
             hintText: '+1',
             hintStyle: TextStyle(
               fontSize: screenWidth / 20,
-              color: Colors.grey, // Change the hint text color to your preference
+              color:
+                  Colors.grey, // Change the hint text color to your preference
             ),
             helperText: 'Enter your phone number'.tr(),
             helperStyle: TextStyle(
               fontSize: screenWidth / 25,
-              color:
-              Colors.grey, // Change the helper text color to your preference
+              color: Colors
+                  .grey, // Change the helper text color to your preference
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(5),
@@ -191,8 +195,6 @@ class PhoneLoginScreenState extends State<PhoneLoginUi> {
   }
 
   Widget nextButton(BuildContext context) {
-
-    final phoneLoginLoading = context.watch<PhoneLoginService>();
     return Padding(
       padding: const EdgeInsets.only(left: 10),
       child: ElevatedButton(
@@ -208,18 +210,20 @@ class PhoneLoginScreenState extends State<PhoneLoginUi> {
             ),
           ),
           onPressed: () async {
-          //If the form is validated when pressing the next arrow button
+            //If the form is validated when pressing the next arrow button
             if (_formKey.currentState!.validate()) {
-                String getOTPVerificationID = await phoneLoginLoading.sendOTP(
-                    phoneController
-                        .text); //send OTP verificationCode to that number
-                if (context.mounted) {
-                  Navigator.push(context, MaterialPageRoute(
-                      builder: (context) =>
-                          OtpUI(verificationID: getOTPVerificationID,
-                              phoneNo: phoneController.text)));
-                }
+              String getOTPVerificationID = await phoneLoginServiceProvider.sendOTP(
+                  phoneController
+                      .text); //send OTP verificationCode to that number
+              if (context.mounted) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => OtpUI(
+                            verificationID: getOTPVerificationID,
+                            phoneNo: phoneController.text)));
               }
+            }
           },
           child: Text(
             'Next'.tr(),

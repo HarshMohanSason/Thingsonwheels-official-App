@@ -2,8 +2,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:thingsonwheels/ResuableWidgets/toast_widget.dart';
 import '../../main.dart';
@@ -122,7 +124,7 @@ class AppleLoginService extends ChangeNotifier {
       notifyListeners();
     }
     on SocketException {
-      showToast('Check your Internet Connection', Colors.red, Colors.white, 'SHORT');
+      showToast('Check your Internet Connection'.tr(), Colors.red, Colors.white, 'SHORT');
       _hasError = true;
       _isLoading = false;
       notifyListeners();
@@ -152,11 +154,11 @@ class AppleLoginService extends ChangeNotifier {
       return false;
     }
     on SocketException {
-      showToast('Check your Internet Connection', Colors.red, Colors.white, 'SHORT');
+      showToast('Check your Internet Connection'.tr(), Colors.red, Colors.white, 'SHORT');
     return false;
     }
     catch (e) {
-      showToast('Error occurred, please try again', Colors.red, Colors.white, 'SHORT');
+      showToast('Error occurred, please try again'.tr(), Colors.red, Colors.white, 'SHORT');
     return false;}
   }
 
@@ -177,29 +179,31 @@ class AppleLoginService extends ChangeNotifier {
       notifyListeners();
     }
     on SocketException {
-      showToast('Check your Internet Connection', Colors.red, Colors.white, 'SHORT');
+      showToast('Check your Internet Connection'.tr(), Colors.red, Colors.white, 'SHORT');
     }
     catch (e) {
-      throw e.toString();
+      showToast('Error occurred, please try again'.tr(), Colors.red, Colors.white, 'SHORT');
     }
   }
 
   Future deleteAppleRelatedAccount() async {
     try {
+
       // Update Firestore document to mark account for deletion
       await FirebaseFirestore.instance.collection('userInfo').doc(
-          firebaseAuth.currentUser!.uid).update({
-        'toBeDeleted': true,
-      });
+          firebaseAuth.currentUser!.uid).delete();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
       // Clear local storage or perform other cleanup as needed
-      await storage.delete(key: 'LoggedIn');
-      showToast('Your account will be deleted within 30 days of inactivity. You can still login', Colors.green, Colors.white, 'SHORT');
+      await storage.deleteAll(); // Assuming storage is an instance of your local storage handler
+      await signOut();
+      showToast('Your account and data have been deleted'.tr(), Colors.green, Colors.white, 'LONG');
 
     } on SocketException {
-      showToast('Check your Internet Connection', Colors.red, Colors.white, 'SHORT');
-    }
-    catch (e) {
-      showToast('Error occurred, please try again', Colors.red, Colors.white, 'SHORT');
+      showToast('Check your Internet Connection'.tr(), Colors.red, Colors.white, 'SHORT');
+    } catch (e) {
+      showToast('Error occurred, please try again'.tr(), Colors.red, Colors.white, 'SHORT');
     }
   }
+
 }

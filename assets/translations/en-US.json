@@ -123,5 +123,14 @@
   "Switch to merchant": "Switch to merchant",
   "enter_facebook_link": "Enter Facebook link",
   "enter_instagram_link": "Enter Instagram link",
-  "enter_tiktok_link": "Enter TikTok link"
+  "enter_tiktok_link": "Enter TikTok link",
+  "Delete account": "Delete account",
+  "Could not login, please try again": "Could not login, please try again",
+  "Could sign out, please try again": "Could sign out, please try again",
+  "Your account and data have been deleted": "Your account and data have been deleted",
+  "Error saving data": "Error saving data",
+  "Could not go live, Please try again later": "Could not go live, Please try again later",
+  "Could not go off live, Please try again later": "Could not go off live, Please try again later",
+  "Merchant information deleted successfully": "Merchant information deleted successfully",
+  "Could not find any merchant information for this number": "Could not find any merchant information for this number"
 }

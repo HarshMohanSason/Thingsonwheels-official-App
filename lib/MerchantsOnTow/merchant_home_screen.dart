@@ -463,7 +463,7 @@ class MerchantProfileScreenState extends State<MerchantProfileScreen> {
                             if (updates.isEmpty) {
                               // No changes detected
                               Fluttertoast.showToast(
-                                msg: 'Make some changes in order ot save them.'
+                                msg: 'Make some changes in order to save them.'
                                     .tr(),
                                 toastLength: Toast.LENGTH_SHORT,
                                 gravity: ToastGravity.CENTER,

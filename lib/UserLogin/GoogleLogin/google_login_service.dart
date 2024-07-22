@@ -1,8 +1,12 @@
 
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thingsonwheels/ResuableWidgets/toast_widget.dart';
 import '../../main.dart';
 
@@ -133,7 +137,8 @@ class GoogleSignInProvider extends ChangeNotifier {
     }
     catch(e)
     {
-      rethrow;
+      showToast('An error occurred, please try again'.tr(), Colors.red, Colors.white, 'SHORT');
+      return false;
     }
   }
 
@@ -174,25 +179,28 @@ class GoogleSignInProvider extends ChangeNotifier {
   }
   catch(e)
     {
-      throw e.toString();
+      showToast('Error saving data'.tr(), Colors.red, Colors.white, 'SHORT');
+
     }
     }
 
-    Future deleteGoogleRelatedAccount() async {
-      try {
-        // Update Firestore document to mark account for deletion
-        await FirebaseFirestore.instance.collection('userInfo').doc(
-            firebaseAuth.currentUser!.uid).update({
-          'toBeDeleted': true,
-        });
-        // Clear local storage or perform other cleanup as needed
-        await storage.delete(key: 'LoggedIn');
+  Future deleteGoogleRelatedAccount() async {
+    try {
 
-        showToast('Your account will be deleted within 30 days of inactivity. You can still login',Colors.green,Colors.white, 'SHORT');
+      await FirebaseFirestore.instance.collection('userInfo').doc(
+          firebaseAuth.currentUser!.uid).delete();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+      await storage.deleteAll(); // Assuming storage is an instance of your local storage handler
+      await signOut();
+      showToast('Your account and data have been deleted'.tr(), Colors.green, Colors.white, 'LONG');
 
-      } catch (e) {
-        showToast('Error occurred, please try again', Colors.red,Colors.white,'SHORT');
-
-      }
+    } on SocketException {
+      showToast(
+          'Check your Internet Connection'.tr(), Colors.red, Colors.white, 'SHORT');
     }
+    catch (e) {
+      showToast('An error occurred, please try again'.tr(), Colors.red, Colors.white, 'SHORT');
+    }
+  }
 }

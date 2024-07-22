@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -22,18 +21,26 @@ class ImageUploadSection extends StatefulWidget {
 }
 
 class ImageUploadSectionState extends State<ImageUploadSection> {
-
   bool isUploaded = false;
+  late MerchantsOnTOWService merchantsOnTOWServiceProvider;
+  late PhoneLoginService phoneLoginServiceProvider;
+
+  @override
+  didChangeDependencies() {
+    super.didChangeDependencies();
+    merchantsOnTOWServiceProvider = context.watch<MerchantsOnTOWService>();
+    phoneLoginServiceProvider = context.watch<PhoneLoginService>();
+  }
 
   Future<void> addImageFromGallery(BuildContext context) async {
-    final imageListProvider = Provider.of<MerchantsOnTOWService>(context, listen: false);
+
     final ImagePicker picker = ImagePicker();
     try {
       var pickedImages = await picker.pickMultiImage();
       if (pickedImages.isNotEmpty) {
         // Update only non-null elements in the images list
-        for (int i = 0; i < pickedImages.length && i< imageListProvider.businessImages.length; i++) {
-          imageListProvider.addImage(pickedImages[i].path);
+        for (int i = 0; i < pickedImages.length && i< merchantsOnTOWServiceProvider.businessImages.length; i++) {
+          merchantsOnTOWServiceProvider.addImage(pickedImages[i].path);
         }
       }
     } on PlatformException
@@ -42,16 +49,13 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
     }
     catch (e) {
       showToast('Error occurred, please try again', Colors.red, Colors.white, 'SHORT');
-
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final merchantProvider = context.watch<MerchantsOnTOWService>();
-    final phoneProvider = context.watch<PhoneLoginService>();
     return PopScope(
-      canPop: Platform.isIOS ? false: true,
+      canPop: Platform.isIOS ? false : true,
       child: Scaffold(
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -67,10 +71,10 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
                   ),
                 ),
                 onTap: () {
-                 Navigator.pop(context);
+                  Navigator.pop(context);
                 }),
             Padding(
-              padding: const EdgeInsets.only(top: 20,left: 15),
+              padding: const EdgeInsets.only(top: 20, left: 15),
               child: RichText(
                   text: TextSpan(
                       text: 'Add images of your business'.tr(),
@@ -84,21 +88,24 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
               padding: const EdgeInsets.only(top: 40, left: 40, right: 40),
               child: Row(
                 children: [
-                  if (merchantProvider.businessImages.isNotEmpty)
-                    imageContainer(merchantProvider.businessImages.elementAt(0), 0),
+                    imageContainer(
+                   merchantsOnTOWServiceProvider.businessImages.isNotEmpty ? merchantsOnTOWServiceProvider.businessImages.elementAt(0): null, 0),
                   const Spacer(),
-                    imageContainer(merchantProvider.businessImages.elementAt(1), 1),
+                  imageContainer(
+                      merchantsOnTOWServiceProvider.businessImages.isNotEmpty ? merchantsOnTOWServiceProvider.businessImages.elementAt(1): null, 1),
                 ],
               ),
             ),
-           const  SizedBox(height: 40),
+            const SizedBox(height: 40),
             Padding(
               padding: const EdgeInsets.only(left: 40, right: 40),
               child: Row(
                 children: [
-                  imageContainer(merchantProvider.businessImages.elementAt(2), 2),
+                  imageContainer(
+                      merchantsOnTOWServiceProvider.businessImages.isNotEmpty ? merchantsOnTOWServiceProvider.businessImages.elementAt(2): null, 2),
                   const Spacer(),
-                  imageContainer(merchantProvider.businessImages.elementAt(3), 3)
+                  imageContainer(
+                      merchantsOnTOWServiceProvider.businessImages.isNotEmpty ? merchantsOnTOWServiceProvider.businessImages.elementAt(3): null, 3)
                 ],
               ),
             ),
@@ -118,17 +125,19 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
                   ),
                 ),
                 onPressed: () async {
-                   if (merchantProvider.businessImages.elementAt(0) == null) {
-
-                     showToast('The main image cannot be empty', Colors.red, Colors.white, 'SHORT');
+                  if (merchantsOnTOWServiceProvider.businessImages.elementAt(0) == null) {
+                    showToast('The main image cannot be empty'.tr(), Colors.red,
+                        Colors.white, 'SHORT');
                   }
-                   if(await phoneProvider.checkMerchantExistsWithSameNumber() == true)
-                     {
-                       showToast('You already have an account with us, please exit and login from main screen', Colors.red, Colors.white, 'SHORT');
-
-                     }
-                  else{
-                    if(context.mounted) {
+                  if (await phoneLoginServiceProvider.checkMerchantExistsWithSameNumber() ==
+                      true) {
+                    showToast(
+                        'You already have an account with us, please exit and login from main screen'.tr(),
+                        Colors.red,
+                        Colors.white,
+                        'SHORT');
+                  } else {
+                    if (context.mounted) {
                       showDialog(
                           context: context,
                           barrierDismissible: false,
@@ -143,42 +152,44 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
                                     strokeWidth: 6,
                                   ),
                                   DefaultTextStyle(
-                                    style: TextStyle(
-                                        fontSize: screenWidth / 28),
-                                    child: Text('Uploading'.tr(),
+                                    style:
+                                        TextStyle(fontSize: screenWidth / 28),
+                                    child: Text(
+                                      'Uploading'.tr(),
                                       style: const TextStyle(
-                                          fontWeight: FontWeight.bold
-                                      ),),
+                                          fontWeight: FontWeight.bold),
+                                    ),
                                   )
                                 ],
                               ),
                             );
                           });
                     }
-                  isUploaded = await merchantProvider.uploadMerchantInfoToDB();
-                  if(isUploaded)
-                    {
-                     showToast('Your Info was submitted', Colors.green, Colors.white, 'SHORT');
+                    isUploaded =
+                        await merchantsOnTOWServiceProvider.uploadMerchantInfoToDB();
+                    if (isUploaded) {
+                      showToast('Your Info was submitted'.tr(), Colors.green,
+                          Colors.white, 'SHORT');
 
-                      if(context.mounted) {
-                        Navigator.push(context, MaterialPageRoute(
-                            builder: (context) =>  const MerchantProfileScreen()));
+                      if (context.mounted) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const MerchantProfileScreen()));
                       }
-                   }
-                  else
-                    {
-                      if(context.mounted)
-                        {
-                          Navigator.pop(context);
-                        }
+                    } else {
+                      if (context.mounted) {
+                        Navigator.pop(context);
+                      }
 
-                     setState(() {
-                       isUploaded = false;
-                     });
+                      setState(() {
+                        isUploaded = false;
+                      });
                     }
-                    }
+                  }
                 },
-                child:  Text(
+                child: Text(
                   'Register'.tr(),
                   style: const TextStyle(
                       fontSize: 18,
@@ -193,7 +204,9 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
     );
   }
 
-  Future uploadOrTakeImage(BuildContext context) //Widget to display the option to display and upload image
+  Future uploadOrTakeImage(
+      BuildContext
+          context) //Widget to display the option to display and upload image
   {
     var parentContext = context;
     var boxHeight = screenHeight / 5; //Adjust the size
@@ -220,7 +233,8 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
                                 builder: (_) => CameraUI(cameras: value))));
                       } catch (e) //Handle the case when no camera can be loaded
                       {
-                        showToast('Unable to load camera from the device', Colors.white, Colors.black, 'SHORT');
+                        showToast('Unable to load camera from the device'.tr(),
+                            Colors.red, Colors.white, 'SHORT');
                       }
                     },
                     child: Padding(
@@ -278,7 +292,7 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
     return imageFile == null
         ? DottedBorder(
             color: Colors.grey,
-            strokeWidth: index == 0 ? 4: 2,
+            strokeWidth: index == 0 ? 4 : 2,
             dashPattern: const [18, 18],
             child: Stack(
               children: [
@@ -304,7 +318,8 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
                       try {
                         uploadOrTakeImage(context);
                       } catch (e) {
-                        showToast('Error occurred, please try again', Colors.black, Colors.white, 'SHORT');
+                        showToast('Error occurred, please try again'.tr(),
+                            Colors.black, Colors.white, 'SHORT');
                       }
                     },
                     child: Icon(
@@ -323,7 +338,8 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
                 width: screenWidth / 3,
                 height: screenHeight / 5,
                 color: Colors.grey[200],
-                child: FittedBox(fit: BoxFit.contain, child: Image.file(File(imageFile))),
+                child: FittedBox(
+                    fit: BoxFit.contain, child: Image.file(File(imageFile))),
               ),
               Positioned(
                 top: 0,
@@ -345,7 +361,6 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
 
   /* Widget to make the delete or cancel popup */
   Future deleteOrCancel(BuildContext context, int index) {
-    final merchantTowProvider = Provider.of<MerchantsOnTOWService>(context, listen: false);
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -394,14 +409,14 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
                                     ),
                                   ),
                                   backgroundColor:
-                                  WidgetStateProperty.all<Color>(
+                                      WidgetStateProperty.all<Color>(
                                           Colors.white),
                                   // White background color
                                   fixedSize: WidgetStateProperty.all<Size>(
                                     Size(screenWidth / 3.5, screenWidth / 43.2),
                                   ),
                                 ),
-                                child:  Text(
+                                child: Text(
                                   'Cancel'.tr(),
                                   style: const TextStyle(
                                     color: Colors.black,
@@ -413,7 +428,8 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
                             ElevatedButton(
                                 onPressed: () {
                                   setState(() {
-                                    merchantTowProvider.businessImages[index] = null;
+                                    merchantsOnTOWServiceProvider.businessImages[index] =
+                                        null;
                                     Navigator.pop(context);
                                   });
                                 },
@@ -424,7 +440,7 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
                                           borderRadius:
                                               BorderRadius.circular(10.0))),
                                   backgroundColor:
-                                  WidgetStateProperty.all(Colors.red),
+                                      WidgetStateProperty.all(Colors.red),
                                   fixedSize: WidgetStateProperty.all(Size(
                                       screenWidth / 3.5, screenWidth / 43.2)),
                                 ),
@@ -445,5 +461,4 @@ class ImageUploadSectionState extends State<ImageUploadSection> {
               ));
         });
   }
-
 }

@@ -74,11 +74,13 @@ class TowDetailedDisplayUIState extends State<TowDetailedDisplayUI> {
                 const SizedBox(height: 30),
                 Row(
                   children: [
-                    Text(
-                      widget.foodTruck.truckName,
-                      style: TextStyle(
-                        fontSize: screenWidth / 14, // Adjusted font size
-                        fontWeight: FontWeight.bold,
+                    Expanded(
+                      child: Text(
+                        widget.foodTruck.truckName,
+                        style: TextStyle(
+                          fontSize: screenWidth / 17, // Adjusted font size
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                     const Spacer(),

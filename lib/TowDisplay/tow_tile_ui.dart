@@ -209,7 +209,7 @@ class TowTileUIState extends State<TowTileUI> {
               ),
             ),
             title: Text(
-              foodTruck.truckName,
+              foodTruck.truckName.length < 15 ?   foodTruck.truckName :   "${foodTruck.truckName.substring(0, 15)}...",
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,

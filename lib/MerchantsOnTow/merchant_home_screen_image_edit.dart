@@ -4,11 +4,14 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:camera/camera.dart';
 import 'package:thingsonwheels/MerchantsOnTow/merchant_home_screen.dart';
 import '../CameraUI/camera_ui.dart';
+import '../CameraUI/image_utils.dart';
+import '../ResuableWidgets/toast_widget.dart';
 import '../main.dart';
 import 'package:dotted_border/dotted_border.dart';
 
@@ -85,14 +88,14 @@ class ImageEditSectionState extends State<ImageEditSection> {
           });
         }
       }
-    } catch (e) {
-      Fluttertoast.showToast(
-        msg: 'Error adding images',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.white,
-        textColor: Colors.black,
-      );
+    } on PlatformException {
+      if(mounted) {
+        ImageUtils.handleGalleryError(context);
+      }
+    }
+    catch(e)
+    {
+      showToast("Error adding images, try again", Colors.red, Colors.white, "SHORT");
     }
   }
 
@@ -133,7 +136,6 @@ class ImageEditSectionState extends State<ImageEditSection> {
               padding: const EdgeInsets.only(top: 40, left: 40, right: 40),
               child: Row(
                 children: [
-                  if (newSavedImageUrls.isNotEmpty)
                     imageContainer(
                         newSavedImageUrls.isNotEmpty ? newSavedImageUrls.elementAt(0) : null,
                         0

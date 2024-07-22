@@ -1,6 +1,8 @@
 
 import 'dart:async';
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -79,7 +81,8 @@ class PhoneLoginService extends ChangeNotifier {
       return true;
     }
     catch (e) {
-      rethrow;
+      showToast('An error occurred, please try again'.tr(), Colors.red, Colors.white, 'SHORT');
+      return false;
     }
   }
 
@@ -118,7 +121,7 @@ class PhoneLoginService extends ChangeNotifier {
 
           verificationFailed: (FirebaseAuthException e) async {
             if (e.code == 'too-many-requests') {
-              showToast('Too many requests. Please try again later.', Colors.red, Colors.white, 'SHORT');
+              showToast('Too many requests. Please try again later'.tr(), Colors.red, Colors.white, 'SHORT');
             }
             else {
               showToast(e.message ?? 'An error occurred', Colors.red, Colors.white, 'SHORT');
@@ -173,18 +176,29 @@ class PhoneLoginService extends ChangeNotifier {
 
   Future deletePhoneRelatedAccount() async {
     try {
-      // Update Firestore document to mark account for deletion
-      await FirebaseFirestore.instance.collection('userInfo').doc(
-          FirebaseAuth.instance.currentUser!.uid).update({
-        'toBeDeleted': true,
-      });
-      // Clear local storage or perform other cleanup as needed
-      await storage.delete(key: 'LoggedIn');
-
-      showToast('Your account will be deleted within 30 days of inactivity. You can still login', Colors.green,Colors.white, 'SHORT');
-
+      await FirebaseFirestore.instance.collection('userInfo').doc(FirebaseAuth.instance.currentUser!.uid).delete();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+      await storage.deleteAll();
+      FirebaseAuth.instance.signOut();
+      showToast('Your account and data have been deleted.'.tr(), Colors.green, Colors.white, 'LONG');
     } catch (e) {
-      showToast('An error occured, try again later', Colors.red, Colors.white, 'SHORT');
+      showToast('An error occurred, please try again'.tr(), Colors.red, Colors.white, 'SHORT');
+    }
+  }
+
+  Future signOutViaPhone() async{
+    try{
+     await FirebaseAuth.instance.signOut();
+     SharedPreferences prefs = await SharedPreferences.getInstance();
+     await prefs.clear();
+     await storage.deleteAll();
+    }
+    on SocketException{
+      showToast("Check your Internet Connection".tr(), Colors.red, Colors.white,"SHORT");
+    }
+    catch (e){
+      showToast("Could not sign out, please try again".tr(),Colors.red, Colors.white, "SHORT");
     }
   }
 

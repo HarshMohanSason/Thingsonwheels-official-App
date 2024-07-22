@@ -28,8 +28,6 @@ class LiveIndicatorState extends State<LiveIndicator> with SingleTickerProviderS
     }
   }
 
-
-
   @override
   void dispose() {
     _controller.dispose();
