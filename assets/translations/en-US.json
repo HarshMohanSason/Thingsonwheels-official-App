@@ -132,5 +132,11 @@
   "Could not go live, Please try again later": "Could not go live, Please try again later",
   "Could not go off live, Please try again later": "Could not go off live, Please try again later",
   "Merchant information deleted successfully": "Merchant information deleted successfully",
-  "Could not find any merchant information for this number": "Could not find any merchant information for this number"
+  "Could not find any merchant information for this number": "Could not find any merchant information for this number",
+  "Create an account / Sign in": "Create an account / Sign in",
+  "You have been signed out!. You can go to settings to sign back in": "You have been signed out!. You can go to settings to sign back in",
+  "Sign in as Merchant": "Sign in as Merchant",
+  "You do not have a merchant account yet. Please sign up as a merchant first in order to access merchant profile screen": "You do not have a merchant account yet. Please sign up as a merchant first in order to access merchant profile screen",
+  "You are not registered as a merchant, please first register as a merchant in order to sign in as one": "You are not registered as a merchant, please first register as a merchant in order to sign in as one",
+  "You are already a merchant, either use a different mobile number or sign in as a merchant from the home screen": "You are already a merchant, either use a different mobile number or sign in as a merchant from the home screen"
 }

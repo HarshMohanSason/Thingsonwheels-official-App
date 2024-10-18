@@ -63,8 +63,11 @@ dependencies:
   intl: ^0.19.0
   easy_localization: ^3.0.7
   sign_button: ^2.0.6
-  font_awesome_flutter: ^9.2.0
   permission_handler: ^11.3.1
+  flutter_svg: ^2.0.4
+  icons_flutter: ^0.0.4
+  uuid: ^4.5.1
+
 
 flutter_native_splash:
   color: "#FF9800"
@@ -111,9 +114,19 @@ flutter:
      - assets/images/launch_screen_background.png
      - assets/translations/en-US.json
      - assets/translations/es-ES.json
-     - assets/images/AppleButtonImage.png
      - assets/images/wheel.png
      - assets/images/towText.png
+     - assets/images/food_truck.jpg
+     - assets/images/Icons_person.png
+     - assets/GIFs/loading_indicator.gif
+     - assets/icons/house.svg
+     - assets/icons/person.svg
+     - assets/icons/Reels.svg
+     - assets/images/dosa.png
+     - assets/images/timer.png
+     - assets/images/page_info.png
+     - assets/images/image_icon.png
+     - assets/images/ChatCircle.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -131,10 +144,29 @@ flutter:
     - family: WinterSong
       fonts:
        - asset: assets/fonts/WinterSong-owRGB.ttf
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
+
+    - family: General Sans
+      fonts:
+       - asset: assets/fonts/general-sans/GeneralSans-Bold.otf
+       - asset: assets/fonts/general-sans/GeneralSans-Italic.otf
+       - asset: assets/fonts/general-sans/GeneralSans-Light.otf
+       - asset: assets/fonts/general-sans/GeneralSans-LightItalic.otf
+       - asset: assets/fonts/general-sans/GeneralSans-Regular.otf
+
+    - family: Poppins
+      fonts:
+       - asset: assets/fonts/Poppins/Poppins-Black.ttf
+       - asset: assets/fonts/Poppins/Poppins-Bold.ttf
+       - asset: assets/fonts/Poppins/Poppins-Black.ttf
+       - asset: assets/fonts/Poppins/Poppins-ExtraBold.ttf
+       - asset: assets/fonts/Poppins/Poppins-Light.ttf
+
+    - family: AppIcons
+      fonts:
+       - asset: assets/fonts/AppIcons/AppIcons.ttf
+
+
+
   #         weight: 700
   #
   # For details regarding fonts from package dependencies,

@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "541625264570-33gd8rhofsopuqlqekmu0qfkqbdko7p8.apps.googleusercontent.com",
+          "client_id": "541625264570-1rp9n80spkup9d7ti4q4mf6lri9hoahq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.thingsonwheels",
-            "certificate_hash": "6197cf4d73f70381c715b1b44ba9257eebaa34f7"
+            "certificate_hash": "f013826198fbf113f8dd39942bd1d7e7ad435517"
           }
         },
         {
@@ -39,10 +39,10 @@
               "client_type": 3
             },
             {
-              "client_id": "541625264570-3nmjvv79aio8sf2k2bd4eitah99ms2ba.apps.googleusercontent.com",
+              "client_id": "541625264570-37vh9evjfe054n21ut3ho0lkju4uv23m.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.thingsonwheels"
+                "bundle_id": "com.release.thingsonwheels"
               }
             }
           ]
@@ -58,11 +58,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "541625264570-o5j19mksq6l7so9afvb8njm3uuvremd4.apps.googleusercontent.com",
+          "client_id": "541625264570-gbjfdj2k7ujiof6nubh4frma0uqf2026.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.towpublish.Thingsonwheels",
-            "certificate_hash": "6197cf4d73f70381c715b1b44ba9257eebaa34f7"
+            "certificate_hash": "f013826198fbf113f8dd39942bd1d7e7ad435517"
           }
         },
         {
@@ -83,10 +83,10 @@
               "client_type": 3
             },
             {
-              "client_id": "541625264570-3nmjvv79aio8sf2k2bd4eitah99ms2ba.apps.googleusercontent.com",
+              "client_id": "541625264570-37vh9evjfe054n21ut3ho0lkju4uv23m.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.thingsonwheels"
+                "bundle_id": "com.release.thingsonwheels"
               }
             }
           ]

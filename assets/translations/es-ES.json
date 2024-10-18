@@ -132,5 +132,11 @@
   "Could not go live, Please try again later": "No se pudo publicar. Vuelve a intentarlo más tarde",
   "Could not go off live, Please try again later": "No se pudo transmitir en vivo. Vuelve a intentarlo más tarde",
   "Merchant information deleted successfully": "La información del comerciante se eliminó correctamente",
-  "Could not find any merchant information for this number": "No se pudo encontrar ninguna información del comerciante para este número"
+  "Could not find any merchant information for this number": "No se pudo encontrar ninguna información del comerciante para este número",
+  "Create an account / Sign in": "Crear una cuenta / Iniciar sesión",
+  "You have been signed out!. You can go to settings to sign back in": "¡Has cerrado sesión!. Puedes ir a configuración para volver a iniciar sesión",
+  "Sign in as Merchant": "Iniciar sesión como comerciante",
+  "You do not have a merchant account yet. Please sign up as a merchant first in order to access merchant profile screen": "Aún no tienes una cuenta de comerciante. Primero regístrese como comerciante para acceder a la pantalla de perfil de comerciante",
+  "You are not registered as a merchant, please first register as a merchant in order to sign in as one": "No está registrado como comerciante, primero regístrese como comerciante para poder iniciar sesión como tal",
+  "You are already a merchant, either use a different mobile number or sign in as a merchant from the home screen": "Ya eres comerciante, utiliza un número de móvil diferente o inicia sesión como comerciante desde la pantalla de inicio"
 }
