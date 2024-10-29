@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:thingsonwheels/Food%20Trucks/food_truck_tile_ui.dart';
+import 'package:thingsonwheels/Food%20Trucks/menu_display.dart';
 import 'package:thingsonwheels/main.dart';
 
 import 'food_truck_structure.dart';
@@ -65,9 +66,14 @@ class FoodTruckTileDisplayState extends State<FoodTruckTileDisplay> {
                   itemBuilder: (BuildContext context, int index) {
 
                     return Padding(
-                        padding: const EdgeInsets.only(left: 20, right: 20),
-                        child: FoodTruckTileUi(
-                            foodTruckStructure: snapshot.data![index]));
+                        padding:const  EdgeInsets.only(left: 20, right: 20),
+                        child: GestureDetector(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>MenuDisplay(foodTruckStructure: snapshot.data![index],)));
+                          },
+                          child: FoodTruckTileUi(
+                              foodTruckStructure: snapshot.data![index]),
+                        ));
                   });
             }
           }

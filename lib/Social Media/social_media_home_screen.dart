@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:icons_flutter/icons_flutter.dart';
 import 'package:thingsonwheels/Social%20Media/display_social_media_posts.dart';
 import 'package:thingsonwheels/Social%20Media/social_media_post_upload_overlay.dart';
 import 'package:thingsonwheels/main.dart';

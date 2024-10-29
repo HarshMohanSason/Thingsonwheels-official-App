@@ -8,10 +8,14 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart' as sqflite_ffi;
 import 'package:thingsonwheels/Image%20Upload/image_upload_helper.dart';
+import 'package:thingsonwheels/Login%20Methods/Apple/apple_login_service.dart';
+import 'package:thingsonwheels/Login%20Methods/Email/email_service.dart';
+import 'package:thingsonwheels/Login%20Methods/Google/google_login_service.dart';
 import 'package:thingsonwheels/Merchant%20Sign%20Up/merchant_structure.dart';
 import 'package:thingsonwheels/Social%20Media/post_upload_state.dart';
-import 'package:thingsonwheels/User%20Login/intro_to_tow_screen.dart';
-import 'package:thingsonwheels/User%20Login/phone_login_service.dart';
+import 'CheckOut/checkout_state.dart';
+import 'Login Methods/Phone/phone_login_service.dart';
+import 'Login Methods/intro_to_tow_screen.dart';
 
 var colorTheme = Colors.orange; //Global color theme for the app
 FlutterView view = WidgetsBinding.instance.platformDispatcher.views.first;
@@ -25,7 +29,8 @@ FlutterSecureStorage storage =
     const FlutterSecureStorage(); //Global instance for secure Storage
 
 void main() async {
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized(); //ensure all the widgets are initialized
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding
+      .ensureInitialized(); //ensure all the widgets are initialized
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await Firebase.initializeApp();
   await EasyLocalization.ensureInitialized();
@@ -54,10 +59,14 @@ class Thingsonwheels extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: ((context) => PhoneLoginService())),
-        ChangeNotifierProvider(create: ((context)=> MerchantStructure())),
-        ChangeNotifierProvider(create: ((context)=> ImageUploadHelper())),
-        ChangeNotifierProvider(create: ((context)=>PostUploadState())),
-        ChangeNotifierProvider(create: ((context)=> MenuItem()))
+        ChangeNotifierProvider(create: ((context) => MerchantStructure())),
+        ChangeNotifierProvider(create: ((context) => ImageUploadHelper())),
+        ChangeNotifierProvider(create: ((context) => PostUploadState())),
+        ChangeNotifierProvider(create: ((context) => MenuItem())),
+        ChangeNotifierProvider(create: ((context) => CheckoutState())),
+        ChangeNotifierProvider(create: (context) => EmailService()),
+        ChangeNotifierProvider(create: (context)=> GoogleLoginService()),
+        ChangeNotifierProvider(create: (context)=> AppleLoginService())
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -65,7 +74,8 @@ class Thingsonwheels extends StatelessWidget {
           theme: ThemeData(
             fontFamily: 'Poppins',
             canvasColor: Colors.white,
-            textSelectionTheme: const TextSelectionThemeData(cursorColor: Colors.red),
+            textSelectionTheme:
+                const TextSelectionThemeData(cursorColor: Colors.red),
             colorScheme: ColorScheme.fromSeed(seedColor: colorTheme),
             useMaterial3: true,
           ),

@@ -37,6 +37,48 @@ class SocialMediaPostUploadUiState extends State<SocialMediaPostUploadUi> {
     captionController.dispose();
   }
 
+  void _startUploadingAPost(BuildContext context) async {
+    if (_captionKey.currentState!.validate()) {
+      postUploadStateProvider.uploadState = PostUploadStateEnum.loading;
+      String postImage = await postUploadStateProvider.getImageUrlFromFirebaseStorage(widget.postImage);
+      if (postImage.isNotEmpty) {
+        SocialMediaPostStructure socialMediaPostStructure =
+            SocialMediaPostStructure(
+          caption:
+              captionController.text.isNotEmpty ? captionController.text : null,
+          userName: FirebaseAuth.instance.currentUser!.displayName!,
+          userProfileImage: FirebaseAuth.instance.currentUser!.photoURL,
+          postImage: postImage,
+          likes: 0,
+          comments: [],
+        );
+        await postUploadStateProvider.uploadPost(socialMediaPostStructure);
+      }
+      switch (postUploadStateProvider.uploadState) {
+        case PostUploadStateEnum.success:
+          if (context.mounted) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const HomeScreen()),
+            );
+            showToast("Your post has been uploaded!", Colors.green,
+                Colors.white, "LONG");
+          }
+          break;
+
+        case PostUploadStateEnum.error:
+          if (context.mounted) {
+            setState(() {
+              return;
+            });
+          }
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,6 +149,7 @@ class SocialMediaPostUploadUiState extends State<SocialMediaPostUploadUi> {
                   height: 20,
                 ),
                 CustomTextForms(
+                  keyBoardType: TextInputType.name,
                   hintText: 'Enter a caption',
                   hideText: false,
                   validator: TextFormValidators.validateCaption,
@@ -133,48 +176,7 @@ class SocialMediaPostUploadUiState extends State<SocialMediaPostUploadUi> {
             top: 15, bottom: screenWidth / 8, left: 20, right: 20),
         child: GestureDetector(
           onTap: () async {
-            if (_captionKey.currentState!.validate()) {
-              String postImage = await postUploadStateProvider
-                  .getImageUrlFromFirebaseStorage(widget.postImage);
-              if (postImage.isNotEmpty) {
-                SocialMediaPostStructure socialMediaPostStructure =
-                    SocialMediaPostStructure(
-                  caption: captionController.text.isNotEmpty
-                      ? captionController.text
-                      : null,
-                  userName: FirebaseAuth.instance.currentUser!.displayName!,
-                  userProfileImage: FirebaseAuth.instance.currentUser!.photoURL,
-                  postImage: postImage,
-                  likes: 0,
-                  comments: [],
-                );
-                await postUploadStateProvider
-                    .uploadPost(socialMediaPostStructure);
-              }
-              switch (postUploadStateProvider.uploadState) {
-                case PostUploadStateEnum.success:
-                  if (context.mounted) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const HomeScreen()),
-                    );
-                    showToast("Your post has been uploaded!", Colors.green,
-                        Colors.white, "LONG");
-                  }
-                  break;
-
-                case PostUploadStateEnum.error:
-                  if (context.mounted) {
-                    setState(() {
-                      return;
-                    });
-                  }
-                  break;
-                default:
-                  break;
-              }
-            }
+            _startUploadingAPost(context);
           },
           child:
               postUploadStateProvider.uploadState == PostUploadStateEnum.loading

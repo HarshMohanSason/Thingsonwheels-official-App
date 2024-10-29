@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
@@ -19,14 +18,16 @@ class PostUploadState extends ChangeNotifier {
 
   PostUploadStateEnum get uploadState => _uploadState;
 
+  set uploadState(PostUploadStateEnum state) {
+    _uploadState = state;
+    notifyListeners();
+  }
+
   Future uploadPost(SocialMediaPostStructure post) async {
     _uploadState = PostUploadStateEnum.loading;
     notifyListeners();
-
     try {
       await FirebaseFirestore.instance
-          .collection('collectionPath')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection('socialMediaPosts')
           .doc()
           .set(post.toMap());

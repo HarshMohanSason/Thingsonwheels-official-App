@@ -1,3 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:thingsonwheels/Reusable%20Widgets/toast_widget.dart';
 import '../main.dart';
@@ -52,8 +54,15 @@ class HomeScreenAppBar extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            const CircleAvatar(
-              backgroundColor: Colors.white,
+            CircleAvatar(
+              foregroundImage:
+                  FirebaseAuth.instance.currentUser!.photoURL != null
+                      ? CachedNetworkImageProvider(
+                          FirebaseAuth.instance.currentUser!.photoURL!)
+                      : null,
+              child: FirebaseAuth.instance.currentUser!.photoURL == null
+                  ? const Icon(Icons.person)
+                  : null,
             ),
           ],
         ),

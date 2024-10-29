@@ -26,8 +26,7 @@ class LabeledImageContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final MenuItem menuItem = Provider.of<MenuItem>(context);
-    final MerchantStructure merchantStructure =
-        Provider.of<MerchantStructure>(context);
+    final MerchantStructure merchantStructure = Provider.of<MerchantStructure>(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -42,9 +41,8 @@ class LabeledImageContainer extends StatelessWidget {
           ),
         ),
         Container(
-            padding: EdgeInsets.only(top: screenWidth / 20),
+            padding: const EdgeInsets.only(top: 15, bottom: 15),
             width: double.infinity,
-            height: screenHeight / 5,
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey.shade300, width: 1.0),
               borderRadius: BorderRadius.circular(5.0),
@@ -58,6 +56,7 @@ class LabeledImageContainer extends StatelessWidget {
 
   Widget imageOrGalleryMenuItemSelection() {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         ElevatedButton.icon(
           onPressed: onButton1Pressed,

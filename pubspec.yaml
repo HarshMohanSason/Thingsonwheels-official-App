@@ -32,10 +32,7 @@ dependencies:
     sdk: flutter
   image_picker: ^0.8.5+3
   location: ^5.0.0
-  cupertino_icons: ^1.0.2
-  flutter_signin_button: ^2.0.0
   google_sign_in: ^6.2.1
-  animated_text_kit: ^4.2.2
   firebase_core: ^2.25.4
   firebase_auth: ^4.17.4
   firebase_storage: ^11.6.6
@@ -49,24 +46,20 @@ dependencies:
   flutter_secure_storage: ^9.0.0
   url_launcher: ^6.0.0
   sign_in_with_apple: ^5.0.0
-  crypto: ^3.0.3
   camera: ^0.11.0+1
   croppy: ^1.1.4
-  dotted_border: ^2.1.0
   cached_network_image: ^3.3.1
   sqflite_common_ffi: ^2.3.3
-  shared_preferences: ^2.2.3
   path_provider: ^2.1.3
   flutter_native_splash: ^2.4.0
   path: ^1.9.0
   flutter_localization: ^0.2.0
-  intl: ^0.19.0
   easy_localization: ^3.0.7
-  sign_button: ^2.0.6
   permission_handler: ^11.3.1
-  flutter_svg: ^2.0.4
   icons_flutter: ^0.0.4
   uuid: ^4.5.1
+  crypto: ^3.0.6
+
 
 
 flutter_native_splash:
@@ -114,11 +107,11 @@ flutter:
      - assets/images/launch_screen_background.png
      - assets/translations/en-US.json
      - assets/translations/es-ES.json
-     - assets/images/wheel.png
-     - assets/images/towText.png
      - assets/images/food_truck.jpg
      - assets/images/Icons_person.png
      - assets/GIFs/loading_indicator.gif
+     - assets/images/google_button_image.png
+     - assets/images/apple_button_image.jpg
      - assets/icons/house.svg
      - assets/icons/person.svg
      - assets/icons/Reels.svg
@@ -127,6 +120,7 @@ flutter:
      - assets/images/page_info.png
      - assets/images/image_icon.png
      - assets/images/ChatCircle.png
+     - assets/images/payment_confirmation_image.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -141,18 +135,6 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: WinterSong
-      fonts:
-       - asset: assets/fonts/WinterSong-owRGB.ttf
-
-    - family: General Sans
-      fonts:
-       - asset: assets/fonts/general-sans/GeneralSans-Bold.otf
-       - asset: assets/fonts/general-sans/GeneralSans-Italic.otf
-       - asset: assets/fonts/general-sans/GeneralSans-Light.otf
-       - asset: assets/fonts/general-sans/GeneralSans-LightItalic.otf
-       - asset: assets/fonts/general-sans/GeneralSans-Regular.otf
-
     - family: Poppins
       fonts:
        - asset: assets/fonts/Poppins/Poppins-Black.ttf

@@ -47,7 +47,7 @@ class EditCurrentMenuItemState extends State<EditCurrentMenuItems> {
                         icon: Icon(
                           AppIcons.keyboard_backspace,
                           color: Colors.white,
-                          size: screenWidth / 25,
+                          size:  screenWidth / 20
                         ),
                       ),
                       Text(

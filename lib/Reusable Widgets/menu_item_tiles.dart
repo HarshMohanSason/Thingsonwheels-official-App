@@ -10,6 +10,7 @@ class MenuItemTiles extends StatelessWidget {
   final bool isMoreVert;
   final int index;
 
+
   const MenuItemTiles(
       {super.key,
       required this.menuItem,
@@ -72,7 +73,6 @@ class MenuItemTiles extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-
               ],
             ),
           ),

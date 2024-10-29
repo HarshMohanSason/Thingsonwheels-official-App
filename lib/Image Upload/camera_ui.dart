@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:image/image.dart' as img;
 import 'package:camera/camera.dart';
 import 'package:croppy/croppy.dart';
 import 'package:flutter/material.dart';
@@ -63,20 +64,35 @@ class CameraUiState extends State<CameraUi> {
       }
       var imageData =
           await image.uiImage.toByteData(format: ImageByteFormat.png);
-
       if (imageData != null) {
-        var unit8val = imageData.buffer.asUint8List();
-        var tempDir = await getTemporaryDirectory();
-        var timestamp = DateTime.now().millisecondsSinceEpoch;
-        var filePath = "${tempDir.path}/temp_croppedImage_$timestamp.png";
+        var uint8List = imageData.buffer.asUint8List();
 
-        // Delete existing file if it exists
-        if (await File(filePath).exists()) {
-          await File(filePath).delete();
+        // Decode image to get orientation and metadata.
+        img.Image? decodedImage = img.decodeImage(uint8List);
+        if (decodedImage == null) return null;
+
+        // Rotate if the image is in landscape (width > height).
+        if (decodedImage.width > decodedImage.height) {
+          decodedImage = img.copyRotate(decodedImage,
+              angle: -90); // Rotate 90 degrees left.
         }
-        File file = await File(filePath).create();
-        file.writeAsBytesSync(unit8val);
-        return XFile(file.path);
+
+        // Convert back to Uint8List.
+        var rotatedBytes = img.encodePng(decodedImage);
+        if (imageData != null) {
+          var unit8val = imageData.buffer.asUint8List();
+          var tempDir = await getTemporaryDirectory();
+          var timestamp = DateTime.now().millisecondsSinceEpoch;
+          var filePath = "${tempDir.path}/temp_croppedImage_$timestamp.png";
+
+          // Delete existing file if it exists
+          if (await File(filePath).exists()) {
+            await File(filePath).delete();
+          }
+          File file = await File(filePath).create();
+          file.writeAsBytesSync(unit8val);
+          return XFile(file.path);
+        }
       }
     } catch (e) {
       showToast('An error occurred saving the cropped image, please try again',
@@ -192,12 +208,9 @@ class CameraUiState extends State<CameraUi> {
                                           SocialMediaPostUploadUi(
                                               postImage: finalImage.path)));
                             case ImageUploadType.menuItem:
-                             menuItem.itemImage = finalImage.path;
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const MerchantSignUpFlow()));
+                              menuItem.itemImage = finalImage.path;
+                              Navigator.pop(context);
+                              Navigator.pop(context);
                             default:
                               return;
                           }

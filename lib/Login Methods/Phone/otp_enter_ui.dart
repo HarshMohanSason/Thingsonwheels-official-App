@@ -2,13 +2,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
+import 'package:thingsonwheels/Login%20Methods/Phone/phone_login_service.dart';
 import 'package:thingsonwheels/Merchant%20Sign%20Up/merchant_sign_up_flow.dart';
 import 'package:thingsonwheels/Reusable%20Widgets/text_form_validators.dart';
 import 'package:thingsonwheels/Reusable%20Widgets/toast_widget.dart';
-import 'package:thingsonwheels/User%20Login/intro_to_tow_screen.dart';
-import 'package:thingsonwheels/User%20Login/login_state.dart';
-import 'package:thingsonwheels/User%20Login/phone_login_service.dart';
 import 'package:thingsonwheels/main.dart';
+
+import '../intro_to_tow_screen.dart';
+import '../login_state.dart';
 
 class OtpEnterUi extends StatefulWidget {
   final String phoneNumber;

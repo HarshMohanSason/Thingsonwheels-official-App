@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:thingsonwheels/Food%20Trucks/food_truck_structure.dart';
 import 'package:thingsonwheels/Food%20Trucks/is_live_button.dart';
+import 'package:thingsonwheels/Reusable%20Widgets/display_rating.dart';
 import '../main.dart';
 import 'food_truck_images_display.dart';
 
@@ -58,7 +58,7 @@ class FoodTruckTileUi extends StatelessWidget {
                 children: [
                   Align(
                       alignment: Alignment.centerRight,
-                      child: displayRating(foodTruckStructure.currentRating)),
+                      child: DisplayRating(currentRating: foodTruckStructure.currentRating)),
                   Row(
                     children: [
                       Text(
@@ -92,37 +92,6 @@ class FoodTruckTileUi extends StatelessWidget {
               ),
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget displayRating(int currentRating) {
-    return Container(
-      width: screenWidth / 9,
-      height: screenWidth / 20,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        color: const Color(0xFF007012),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            FontAwesomeIcons.solidStar,
-            color: Colors.white,
-            size: screenWidth / 43.2,
-          ),
-          const SizedBox(
-            width: 5,
-          ),
-          Text(
-            '$currentRating',
-            style: TextStyle(
-                color: Colors.white,
-                fontSize: screenWidth / 36,
-                fontWeight: FontWeight.w600),
-          )
         ],
       ),
     );

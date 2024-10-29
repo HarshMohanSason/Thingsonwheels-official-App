@@ -43,14 +43,9 @@ class SocialMediaPostTileUi extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           child: Stack(
             children: [
-              Container(
-                color: Colors.grey.shade500,
-                height: screenHeight / 3,
-                width: screenWidth - 40,
-                child: CachedNetworkImage(
-                  imageUrl: socialMediaStructure.postImage,
-                  fit: BoxFit.cover,
-                ),
+              CachedNetworkImage(
+                imageUrl: socialMediaStructure.postImage,
+                fit: BoxFit.cover,
               ),
               Positioned(
                 bottom: 15, // Adjusted to bring it up slightly from the bottom
@@ -63,9 +58,14 @@ class SocialMediaPostTileUi extends StatelessWidget {
                       Icon(FontAwesome.heart,
                           size: screenWidth / 18, color: Colors.red),
                       const SizedBox(width: 15), // Add space between icons
-                      Image.asset(
-                        'assets/images/ChatCircle.png',
-                        scale: 0.8,
+                      InkWell(
+                        onTap: () {
+                          _showCommentSheet(context, socialMediaStructure);
+                        },
+                        child: Image.asset(
+                          'assets/images/ChatCircle.png',
+                          scale: 0.8,
+                        ),
                       ),
                       const Spacer(),
                       ClipRect(
@@ -86,8 +86,8 @@ class SocialMediaPostTileUi extends StatelessWidget {
                             child: Row(
                               children: [
                                 Text(
-                                  SocialMediaPostStructure.formatLikesAndComments(
-                                      socialMediaStructure.likes),
+                                  SocialMediaPostStructure.formatWithCount(
+                                      socialMediaStructure.likes, 'like'),
                                   // Display number of likes with heart emoji
                                   style: const TextStyle(
                                     fontSize: 14, // Font size
@@ -121,22 +121,160 @@ class SocialMediaPostTileUi extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                SocialMediaPostStructure.formatDate(socialMediaStructure.timestamp),
-                style: TextStyle(
-                    fontSize: screenWidth / 35, color: const Color(0xFFAFAFAF)),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    socialMediaStructure.caption!.length > 15
+                        ? '${socialMediaStructure.caption!.substring(0, 15)}...'
+                        : socialMediaStructure.caption!,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: screenWidth / 30,
+                      color: const Color(0xFFAFAFAF),
+                    ),
+                  ),
+                  Text(
+                    SocialMediaPostStructure.formatDate(
+                        socialMediaStructure.timestamp),
+                    style: TextStyle(
+                        fontSize: screenWidth / 35,
+                        color: const Color(0xFFAFAFAF)),
+                  ),
+                ],
               ),
               Text(
-                socialMediaStructure.comments.length < 2
-                    ? '1 comment'
-                    : '${SocialMediaPostStructure.formatLikesAndComments(socialMediaStructure.comments.length)} comments',
-                style: TextStyle(
-                    fontSize: screenWidth / 35, color: const Color(0xFFAFAFAF)),
-              ),
+                  SocialMediaPostStructure.formatWithCount(
+                      socialMediaStructure.comments.length, 'comment'),
+                  style: TextStyle(
+                      fontSize: screenWidth / 35,
+                      color: const Color(0xFFAFAFAF))),
             ],
           ),
         )
       ],
+    );
+  }
+
+  void _showCommentSheet(
+      BuildContext context, SocialMediaPostStructure socialMediaPostStructure) {
+    showModalBottomSheet(
+      backgroundColor: Colors.white,
+      context: context,
+      isScrollControlled: true,
+      // Allows better control over height
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(30), // Rounded top corners
+        ),
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          height: screenHeight / 1.3, // Set height to half the screen
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              // Handle for drag-down gesture
+              Container(
+                width: screenWidth / 5,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              const SizedBox(height: 10),
+              // Display comments
+              Expanded(
+                child: ListView.builder(
+                  itemCount: socialMediaPostStructure.comments.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      leading: CircleAvatar(
+                        foregroundImage: socialMediaPostStructure
+                                    .comments[index]!.profileImage !=
+                                null
+                            ? CachedNetworkImageProvider(
+                                socialMediaPostStructure
+                                    .comments[index]!.profileImage!)
+                            : null,
+                        child: socialMediaPostStructure
+                                    .comments[index]!.profileImage ==
+                                null
+                            ? const Icon(Icons.person)
+                            : null,
+                      ),
+                      title: Text(
+                        socialMediaPostStructure.comments[index]!.userName,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: screenWidth / 25,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        socialMediaPostStructure.comments[index]!.comment,
+                        style: TextStyle(
+                            fontSize: screenWidth / 30,
+                            color: const Color(0xFF505050)),
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              // TextField for input
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: TextFormField(
+                  maxLines: 2,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5),
+                      borderSide: BorderSide(
+                        color: Colors.grey.withOpacity(
+                            0.2), // Change the border color to your preference
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5),
+                      borderSide: BorderSide(
+                        color: Colors.grey.withOpacity(0.2),
+                        // Change the focused border color to your preference
+                        width: 2,
+                      ),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5),
+                      borderSide: const BorderSide(
+                        color: Colors.red,
+                        // Change the error border color to your preference
+                        width: 2,
+                      ),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5),
+                      borderSide: const BorderSide(
+                        color: Colors.red,
+                        // Change the focused error border color to your preference
+                        width: 2,
+                      ),
+                    ),
+                    suffixIcon: GestureDetector(
+                        onTap: () {
+                          //print("Yo");
+                        },
+                        child: const Icon(Icons.send, color: Colors.black,)),
+                    hintText: 'Write a comment...',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

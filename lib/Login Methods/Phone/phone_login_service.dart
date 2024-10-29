@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:thingsonwheels/User%20Login/login_state.dart';
-import '../Reusable Widgets/toast_widget.dart';
+import '../../Reusable Widgets/toast_widget.dart';
+import '../login_state.dart';
 
 class PhoneLoginService extends ChangeNotifier {
 

@@ -1,16 +1,15 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:thingsonwheels/Login%20Methods/Phone/phone_login_service.dart';
 import 'package:thingsonwheels/Reusable%20Widgets/create_a_button.dart';
 import 'package:thingsonwheels/Reusable%20Widgets/custom_text_form.dart';
 import 'package:thingsonwheels/Reusable%20Widgets/text_form_validators.dart';
 import 'package:thingsonwheels/Reusable%20Widgets/toast_widget.dart';
-import 'package:thingsonwheels/User%20Login/login_state.dart';
-import 'package:thingsonwheels/User%20Login/otp_enter_ui.dart';
-import 'package:thingsonwheels/User%20Login/phone_login_service.dart';
 import 'package:thingsonwheels/main.dart';
-
-import '../IconFiles/app_icons_icons.dart';
+import '../../IconFiles/app_icons_icons.dart';
+import '../login_state.dart';
+import 'otp_enter_ui.dart';
 
 class PhoneNumberEnterUi extends StatefulWidget {
   const PhoneNumberEnterUi({super.key});
@@ -56,7 +55,7 @@ class PhoneNumberEnterUiState extends State<PhoneNumberEnterUi> {
                     ),
                   ),
                   SizedBox(
-                    height: screenWidth / 4,
+                    height: screenWidth / 5,
                   ),
                   Row(
                     children: [
@@ -83,6 +82,7 @@ class PhoneNumberEnterUiState extends State<PhoneNumberEnterUi> {
                     height: 50,
                   ),
                   CustomTextForms(
+                    keyBoardType: TextInputType.phone,
                     hintText: 'Enter your phone number',
                     hideText: false,
                     validator: TextFormValidators.validatePhoneNumber,

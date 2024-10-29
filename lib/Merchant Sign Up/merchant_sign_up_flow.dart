@@ -6,10 +6,10 @@ import 'package:thingsonwheels/Merchant%20Sign%20Up/merchant_business_image_uplo
 import 'package:thingsonwheels/Merchant%20Sign%20Up/merchant_structure.dart';
 import 'package:thingsonwheels/Reusable%20Widgets/create_a_button.dart';
 import 'package:thingsonwheels/Reusable%20Widgets/toast_widget.dart';
-import 'package:thingsonwheels/User%20Login/intro_to_tow_screen.dart';
 import 'package:thingsonwheels/home_screen.dart';
 import 'package:thingsonwheels/main.dart';
 import '../IconFiles/app_icons_icons.dart';
+import '../Login Methods/intro_to_tow_screen.dart';
 import 'merchant_sign_up_form_ui.dart';
 
 class MerchantSignUpFlow extends StatefulWidget {

@@ -194,7 +194,7 @@ class AppSettingsHomeState extends State<AppSettingsHome> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
       child: CachedNetworkImage(
-          width: screenWidth / 3.5,
+          width: screenWidth / 4,
           height: screenWidth / 4,
           fit: BoxFit.cover,
           imageUrl: currentUserInfo!.tileImages[index]!),

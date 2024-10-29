@@ -36,7 +36,7 @@ class MerchantSignUpFormUiState extends State<MerchantSignUpFormUi> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: screenHeight,
+      height: screenHeight + 150,
       child: Form(
         key: widget.merchantFormKey,
         child: Column(
@@ -131,6 +131,7 @@ class MerchantSignUpFormUiState extends State<MerchantSignUpFormUi> {
               height: 60,
             ),
             CustomTextForms(
+                maxLines: 1,
                 initialValue: merchantStructureProvider.merchantBusinessName,
                 hintText: 'Enter your business name',
                 labelText: 'Name',
@@ -142,6 +143,8 @@ class MerchantSignUpFormUiState extends State<MerchantSignUpFormUi> {
               height: 30,
             ),
             CustomTextForms(
+              maxLines: 1,
+              keyBoardType: TextInputType.emailAddress,
               initialValue: merchantStructureProvider.merchantEmail,
               hintText: 'Enter your business email',
               labelText: 'Business Email',
@@ -154,6 +157,8 @@ class MerchantSignUpFormUiState extends State<MerchantSignUpFormUi> {
               height: 30,
             ),
             CustomTextForms(
+              maxLines: 1,
+              keyBoardType: TextInputType.streetAddress,
               initialValue: merchantStructureProvider.merchantAddress,
               hintText: 'Enter your business address',
               labelText: 'Business Address',
@@ -166,8 +171,9 @@ class MerchantSignUpFormUiState extends State<MerchantSignUpFormUi> {
               height: 30,
             ),
             CustomTextForms(
-              initialValue:
-                  merchantStructureProvider.merchantBusinessPhoneNumber,
+              maxLines: 1,
+              keyBoardType: TextInputType.phone,
+              initialValue: merchantStructureProvider.merchantBusinessPhoneNumber,
               hintText: 'Enter your business contact number',
               labelText: 'Contact Number',
               maxLength: 10,

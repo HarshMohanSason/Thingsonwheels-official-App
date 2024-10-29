@@ -58,7 +58,8 @@ class MerchantBusinessImageUploadState extends State<MerchantBusinessImageUpload
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return SizedBox(
+      height: screenHeight + 150,
       child: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

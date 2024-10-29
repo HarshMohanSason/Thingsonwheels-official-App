@@ -9,6 +9,9 @@ class CreateAButton extends StatelessWidget {
   final double borderRadius;
   final Color? borderColor; // Optional border color
   final double? textSize;
+  final IconData? icon;
+  final double? iconSize;
+  final Color? iconColor;
 
   const CreateAButton(
       {super.key,
@@ -19,7 +22,10 @@ class CreateAButton extends StatelessWidget {
       required this.textColor,
       required this.borderRadius,
       this.textSize,
-      this.borderColor});
+      this.borderColor,
+      this.icon,
+      this.iconSize,
+      this.iconColor});
 
   @override
   Widget build(BuildContext context) {
@@ -34,15 +40,27 @@ class CreateAButton extends StatelessWidget {
                   color: borderColor!,
                 )
               : null),
-      child: Center(
-        child: Text(
-          buttonText,
-          style: TextStyle(
-            fontSize: textSize,
-            fontWeight: FontWeight.bold,
-            color: textColor,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            buttonText,
+            style: TextStyle(
+              fontSize: textSize,
+              fontWeight: FontWeight.bold,
+              color: textColor,
+            ),
           ),
-        ),
+          icon != null
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Icon(
+                    icon,
+                    size: iconSize,
+                    color: iconColor,
+                  ))
+              : Container()
+        ],
       ),
     );
   }
